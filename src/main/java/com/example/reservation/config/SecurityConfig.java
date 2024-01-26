@@ -32,7 +32,7 @@ public class SecurityConfig {
         // 인증 인가 관련
         httpSecurity
                 .authorizeHttpRequests((auth)->auth
-                        .requestMatchers("/main","/test","/app/v1/users/login","/app/v1/users/signup").permitAll()
+                        .requestMatchers("/app/v1/users/email-certification","/main","/test","/app/v1/users/login","/app/v1/users/signup").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );

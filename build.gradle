@@ -26,7 +26,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // mail
- //   implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // template
     implementation 'org.springframework.boot:spring-boot-starter-mustache'
