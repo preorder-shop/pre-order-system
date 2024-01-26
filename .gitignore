@@ -7,6 +7,8 @@ build/
 
 src/main/resources/application-aws.properties
 src/main/resources/application-mail.properties
+src/main/resources/application-config.properties
+
 
 ### STS ###
 .apt_generated
