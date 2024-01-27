@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SignUpReq {
-    @NotBlank
+
     private String email;
-    @NotBlank
+
     private String code;
-    @NotBlank
     private String name;
-    @NotBlank
+
     private String password;
+    private String greeting;
 
     public User toEntity(String encryptedPw) {
         return User
@@ -24,6 +24,7 @@ public class SignUpReq {
                 .email(this.email)
                 .password(encryptedPw)
                 .role("ROLE_USER")
+                .greeting(greeting)
                 .build();
     }
 

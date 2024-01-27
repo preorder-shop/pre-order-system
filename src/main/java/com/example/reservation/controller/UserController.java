@@ -1,9 +1,6 @@
 package com.example.reservation.controller;
 
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_EMAIL;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_EMAIL_CODE;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_PASSWORD;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_USER_NAME;
+import static com.example.reservation.common.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.common.response.BaseResponse;
@@ -45,9 +42,10 @@ public class UserController {
 
         // 형식적 validation
         checkUsernameValidation(signUpReq.getName());
-        checkEmailValidation(signUpReq.getCode());
+        checkEmailValidation(signUpReq.getEmail());
         checkCodeValidation(signUpReq.getCode());
         checkPasswordValidation(signUpReq.getPassword());
+        checkGreetingValidation(signUpReq.getGreeting());
 
         SignUpRes signUpRes = userService.createUser(signUpReq);
 
@@ -105,28 +103,33 @@ public class UserController {
     }
 
     private void checkUsernameValidation(String name){
-        if(name.isBlank())
+        if(name==null || name.isBlank())
             throw new BaseException(USERS_EMPTY_USER_NAME);
 
     }
     private void checkEmailValidation(String email){
-        if(email.isBlank()){
+        if(email==null || email.isBlank()){
             throw new BaseException(USERS_EMPTY_EMAIL);
         }
 
     }
 
     private void checkCodeValidation(String code){
-        if(code.isBlank()){
+        if(code==null || code.isBlank()){
             throw new BaseException(USERS_EMPTY_EMAIL_CODE);
         }
 
     }
 
     private void checkPasswordValidation(String pd){
-        if(pd.isBlank()){
+        if(pd==null || pd.isBlank()){
             throw new BaseException(USERS_EMPTY_PASSWORD);
         }
+    }
 
+    private void checkGreetingValidation(String greeting){
+        if(greeting==null || greeting.isBlank()){
+            throw new BaseException(USERS_EMPTY_GREETING);
+        }
     }
 }

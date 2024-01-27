@@ -1,5 +1,7 @@
 package com.example.reservation.service;
 
+import static com.example.reservation.common.response.BaseResponseStatus.CERTIF_INVALID_CODE;
+import static com.example.reservation.common.response.BaseResponseStatus.CERTIF_INVALID_CODE_OR_EMAIL;
 import static com.example.reservation.common.response.BaseResponseStatus.POST_USERS_EXISTS_EMAIL;
 
 import com.example.reservation.common.CertificationNumber;
@@ -42,9 +44,7 @@ public class UserService {
     private final EmailProvider emailProvider;
     private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;
-
     private final JWTUtil jwtUtil;
-
     private final AuthenticationManager authenticationManager;
 
     public SignUpRes createUser(SignUpReq signUpReq){
@@ -54,30 +54,28 @@ public class UserService {
            throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
 
-        Optional<Certification> byEmailAndCode = certificationRepository.findByEmailAndCode(signUpReq.getEmail(),
-                signUpReq.getCode());
-        if(byEmailAndCode.isEmpty()){
-            return "이메일 인증을 진행해 주세요.";
-        }
+        Certification certification = certificationRepository.findByEmailAndCode(signUpReq.getEmail(),
+                        signUpReq.getCode())
+                .orElseThrow(() -> new BaseException(CERTIF_INVALID_CODE_OR_EMAIL));
 
+
+        // todo : 추후 Redis Db 로 변경 예정
         // 인증 코드 유효시간 체크
-        Certification certification = byEmailAndCode.get();
         LocalDateTime certificateTime = certification.getUpdated_at();
         LocalDateTime signupTime = LocalDateTime.now();
         Duration diff = Duration.between(certificateTime, signupTime);
         long diffMin = diff.toMinutes();
         if(diffMin>10){
-            return "인증 코드 유효시간이 지났습니다. 다시 이메일 인증을 해주세요.";
+            throw new BaseException(CERTIF_INVALID_CODE);
         }
+
 
         // 회원가입 진행
 
-        String password = signUpReq.getPassword();
-        String encodePassword = encoder.encode(password); // 비번 암호화
-        User user = signUpReq.toEntity(encodePassword); // entity 생성
-        userRepository.save(user); // db에 push
+        User user = signUpReq.toEntity(encoder.encode(signUpReq.getPassword())); // 회원 entity 생성
+        User save = userRepository.save(user);// db에 push
 
-        return "회원가입이 완료되었습니다.";
+        return new SignUpRes(save.getId(),save.getName(), save.getEmail(), save.getGreeting());
     }
     public String login(LoginReq loginReq){
 

@@ -24,6 +24,11 @@ public enum BaseResponseStatus {
     USERS_EMPTY_USER_NAME(false, HttpStatus.BAD_REQUEST.value(), "사용자 이름을 입력해주세요."),
 
     USERS_EMPTY_EMAIL_CODE(false, HttpStatus.BAD_REQUEST.value(), "인증 코드 번호를 입력해주세요."),
+    USERS_EMPTY_GREETING(false, HttpStatus.BAD_REQUEST.value(), "인사말을 입력해주세요."),
+
+    CERTIF_INVALID_CODE_OR_EMAIL(false,HttpStatus.BAD_REQUEST.value(), "인증번호와 이메일을 다시한번 확인해주세요."),
+
+    CERTIF_INVALID_CODE(false,HttpStatus.BAD_REQUEST.value(), "인증번호 유효시간이 지났습니다."),
 
     /**
      * 500 :  Database, Server 오류
