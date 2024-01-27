@@ -1,12 +1,16 @@
 package com.example.reservation.service;
 
+import static com.example.reservation.common.response.BaseResponseStatus.POST_USERS_EXISTS_EMAIL;
+
 import com.example.reservation.common.CertificationNumber;
+import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.CustomUserDetails;
 import com.example.reservation.dto.EmailCertificationReq;
 import com.example.reservation.dto.LoginReq;
 import com.example.reservation.dto.PatchPasswordReq;
 import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
+import com.example.reservation.dto.SignUpRes;
 import com.example.reservation.entity.Certification;
 import com.example.reservation.entity.User;
 import com.example.reservation.jwt.JWTUtil;
@@ -43,12 +47,11 @@ public class UserService {
 
     private final AuthenticationManager authenticationManager;
 
-    public String signup(SignUpReq signUpReq){
+    public SignUpRes createUser(SignUpReq signUpReq){
 
-        // todo : 예외처리 -> 이메일 중복확인
         if(checkEmailDuplication(signUpReq.getEmail())) // 이미 가입된 이메일인지 확인
         {
-            return "이미 존재하는 이메일입니다.";
+           throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
 
         Optional<Certification> byEmailAndCode = certificationRepository.findByEmailAndCode(signUpReq.getEmail(),

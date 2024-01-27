@@ -1,15 +1,24 @@
 package com.example.reservation.controller;
 
+import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_EMAIL;
+import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_EMAIL_CODE;
+import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_PASSWORD;
+import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_USER_NAME;
+
+import com.example.reservation.common.exceptions.BaseException;
+import com.example.reservation.common.response.BaseResponse;
 import com.example.reservation.dto.EmailCertificationReq;
 import com.example.reservation.dto.LoginReq;
 import com.example.reservation.dto.PatchPasswordReq;
 import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
+import com.example.reservation.dto.SignUpRes;
 import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.jwt.LoginFilter;
 import com.example.reservation.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.http.HttpResponse;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,12 +41,17 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public String signup(@RequestBody SignUpReq signUpReq){
+    public BaseResponse<SignUpRes> createUser(@RequestBody SignUpReq signUpReq){
 
-        // todo : 형식적 validation
-        String result = userService.signup(signUpReq);
+        // 형식적 validation
+        checkUsernameValidation(signUpReq.getName());
+        checkEmailValidation(signUpReq.getCode());
+        checkCodeValidation(signUpReq.getCode());
+        checkPasswordValidation(signUpReq.getPassword());
 
-        return result;
+        SignUpRes signUpRes = userService.createUser(signUpReq);
+
+        return new BaseResponse<>(signUpRes);
     }
 
 
@@ -87,6 +101,32 @@ public class UserController {
         String result = userService.patchPassword(patchPasswordReq, jwtToken);
 
         return result;
+
+    }
+
+    private void checkUsernameValidation(String name){
+        if(name.isBlank())
+            throw new BaseException(USERS_EMPTY_USER_NAME);
+
+    }
+    private void checkEmailValidation(String email){
+        if(email.isBlank()){
+            throw new BaseException(USERS_EMPTY_EMAIL);
+        }
+
+    }
+
+    private void checkCodeValidation(String code){
+        if(code.isBlank()){
+            throw new BaseException(USERS_EMPTY_EMAIL_CODE);
+        }
+
+    }
+
+    private void checkPasswordValidation(String pd){
+        if(pd.isBlank()){
+            throw new BaseException(USERS_EMPTY_PASSWORD);
+        }
 
     }
 }

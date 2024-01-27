@@ -17,6 +17,14 @@ public enum BaseResponseStatus {
 
     USERS_EMPTY_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "이메일을 입력해주세요."),
 
+    POST_USERS_EXISTS_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"이미 가입한 이메일 입니다."),
+
+    USERS_EMPTY_PASSWORD(false, HttpStatus.BAD_REQUEST.value(), "비밀번호를 입력해주세요."),
+
+    USERS_EMPTY_USER_NAME(false, HttpStatus.BAD_REQUEST.value(), "사용자 이름을 입력해주세요."),
+
+    USERS_EMPTY_EMAIL_CODE(false, HttpStatus.BAD_REQUEST.value(), "인증 코드 번호를 입력해주세요."),
+
     /**
      * 500 :  Database, Server 오류
      */
