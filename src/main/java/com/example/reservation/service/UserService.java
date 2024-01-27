@@ -1,8 +1,7 @@
 package com.example.reservation.service;
 
-import static com.example.reservation.common.response.BaseResponseStatus.CERTIF_INVALID_CODE;
-import static com.example.reservation.common.response.BaseResponseStatus.CERTIF_INVALID_CODE_OR_EMAIL;
-import static com.example.reservation.common.response.BaseResponseStatus.POST_USERS_EXISTS_EMAIL;
+import static com.example.reservation.common.response.BaseResponseStatus.*;
+
 
 import com.example.reservation.common.CertificationNumber;
 import com.example.reservation.common.exceptions.BaseException;
@@ -79,34 +78,37 @@ public class UserService {
     }
     public String login(LoginReq loginReq){
 
-        // todo : 로그인 정보 확인
-        String password = loginReq.getPassword();
-        String encode = encoder.encode(password);
-        User user = userRepository.findByEmailAndPassword(loginReq.getEmail(), encode)
-                .orElseThrow(() -> new IllegalArgumentException("로그인 정보 틀림"));
+        User user = userRepository.findByEmail(loginReq.getEmail())
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
-        Authentication authenticate;
 
-        try{
-             authenticate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getRole())
-            );
-        }catch (Exception e){
-            return "로그인 에러 발생";
-        }
+        boolean matches = encoder.matches(loginReq.getPassword(), user.getPassword());
+        if(!matches) throw new BaseException(USERS_INVALID_PASSWORD);
 
-        // 헤더에
-        CustomUserDetails customUserDetails = (CustomUserDetails) authenticate.getPrincipal();
 
-        String username = customUserDetails.getUsername();
+        // token 발급
+//        Authentication authenticate;
+//
+//        try{
+//             authenticate = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getRole())
+//            );
+//        }catch (Exception e){
+//            throw new BaseException();
+//        }
+//
+//        // 헤더에
+//        CustomUserDetails customUserDetails = (CustomUserDetails) authenticate.getPrincipal();
+//
+//        String username = customUserDetails.getUsername();
+//
+//        Collection<? extends GrantedAuthority> authorities = authenticate.getAuthorities();
+//        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+//        GrantedAuthority auth = iterator.next();
+//
+//        String role = auth.getAuthority();
 
-        Collection<? extends GrantedAuthority> authorities = authenticate.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-
-        String role = auth.getAuthority();
-
-        String token = jwtUtil.createJwt(username, role, 60*60*1000L);
+        String token = jwtUtil.createJwt(user.getName(), user.getRole(), 60*60*1000L);
 
         // JWT 는 header 에 담아서 return
         return token;

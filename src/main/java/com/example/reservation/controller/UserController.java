@@ -18,6 +18,7 @@ import java.net.http.HttpResponse;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,7 @@ public class UserController {
     private final UserService userService;
 
     private final JWTUtil jwtUtil;
+    private final BCryptPasswordEncoder encoder;
 
     // 회원가입
     @PostMapping("/signup")
@@ -57,12 +59,16 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody LoginReq loginReq, HttpServletResponse response){
 
+        checkEmailValidation(loginReq.getEmail());
+        checkPasswordValidation(loginReq.getPassword());
+
         String token = userService.login(loginReq);
 
         response.addHeader("Authorization", "Bearer " + token);
 
         return "로그인 완료";
     }
+
 
 
     // 이메일 인증
