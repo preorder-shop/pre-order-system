@@ -9,6 +9,7 @@ public class SignUpReq {
 
     private String name;
     private String email;
+    private String code;
     private String password;
 
     public User toEntity(String encryptedPw){
@@ -17,6 +18,7 @@ public class SignUpReq {
                 .name(this.name)
                 .email(this.email)
                 .password(encryptedPw)
+                .role("ROLE_USER")
                 .build();
     }
 

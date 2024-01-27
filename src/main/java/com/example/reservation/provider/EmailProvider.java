@@ -40,7 +40,7 @@ public class EmailProvider {
 
     private String getCertificationMessage( String certificationNumber){
         String message = "";
-        message +="<h2 style='text-align:center;'>예약구매 웹사이트 이메일 인증번호입니다.</h2>";
+        message +="<h3 style='text-align:center;'>아래 인증코드를 사이트에 입력해주세요.</h3>";
         message+="<h3 style='text-align:center;'>인증코드 : <strong style='font-size:32px; letter-spacing:8px;'>"+certificationNumber+"</strong></h3>";
         return message;
     }

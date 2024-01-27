@@ -1,5 +1,6 @@
 package com.example.reservation.config;
 
+import com.example.reservation.jwt.JWTFilter;
 import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -54,10 +55,12 @@ public class SecurityConfig {
         // 인증 인가 관련
         httpSecurity
                 .authorizeHttpRequests((auth)->auth
-                        .requestMatchers("/join","/login","/app/v1/users/email-certification","/main","/test","/app/v1/users/login","/app/v1/users/signup").permitAll()
+                        .requestMatchers("/app/v1/users/signup","/join","/login","/app/v1/users/email-certification","/main","/test","/app/v1/users/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
+        httpSecurity
+                .addFilterBefore(new JWTFilter(jwtUtil),LoginFilter.class);
 
         httpSecurity
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);

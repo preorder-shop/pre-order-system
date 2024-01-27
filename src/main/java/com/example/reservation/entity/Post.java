@@ -5,46 +5,40 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // 생성자를 통해서 값 변경 목적으로 접근하는 메시지들 차단
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Certification {
+public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
+    private String title;
 
-    private String code;
+    private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
+    @Column(nullable = false,name="createdAt")
     private LocalDateTime created_at;
 
     @UpdateTimestamp
     @Column(nullable = false,name = "updatedAt")
-    private LocalDateTime updated_at; // -> 나중에 칼럼 삭제의 기준
+    private LocalDateTime updated_at;
 
-
-    @Builder
-    public Certification(String email, String code){
-        this.email = email;
-        this.code = code;
-        this.created_at = LocalDateTime.now();
-    }
-
-    public void changeCertificationNumber(String number){
-        this.code = number;
-    }
 
 
 }

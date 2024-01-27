@@ -1,5 +1,6 @@
 package com.example.reservation.dto;
 
+import com.example.reservation.entity.User;
 import com.example.reservation.entity.UserEntity;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,11 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final UserEntity userEntity;
+    private final User user;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(User user) {
 
-        this.userEntity = userEntity;
+        this.user = user;
     }
 
 
@@ -27,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return userEntity.getRole();
+                return user.getRole();
             }
         });
 
@@ -37,13 +38,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
 
-        return userEntity.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
 
-        return userEntity.getUsername();
+        return user.getEmail(); // email 과 password 로 로그인을 진행하기 때문
     }
 
     @Override
