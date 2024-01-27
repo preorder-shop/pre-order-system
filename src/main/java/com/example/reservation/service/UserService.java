@@ -1,7 +1,10 @@
 package com.example.reservation.service;
 
 import com.example.reservation.common.CertificationNumber;
+import com.example.reservation.dto.CustomUserDetails;
 import com.example.reservation.dto.EmailCertificationReq;
+import com.example.reservation.dto.LoginReq;
+import com.example.reservation.dto.PatchPasswordReq;
 import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
 import com.example.reservation.entity.Certification;
@@ -12,9 +15,15 @@ import com.example.reservation.repository.CertificationRepository;
 import com.example.reservation.repository.UserRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +40,8 @@ public class UserService {
     private final CertificationRepository certificationRepository;
 
     private final JWTUtil jwtUtil;
+
+    private final AuthenticationManager authenticationManager;
 
     public String signup(SignUpReq signUpReq){
 
@@ -64,6 +75,42 @@ public class UserService {
         userRepository.save(user); // db에 push
 
         return "회원가입이 완료되었습니다.";
+    }
+    public String login(LoginReq loginReq){
+
+        // todo : 로그인 정보 확인
+        String password = loginReq.getPassword();
+        String encode = encoder.encode(password);
+        User user = userRepository.findByEmailAndPassword(loginReq.getEmail(), encode)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 정보 틀림"));
+
+        Authentication authenticate;
+
+        try{
+             authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getRole())
+            );
+        }catch (Exception e){
+            return "로그인 에러 발생";
+        }
+
+        // 헤더에
+        CustomUserDetails customUserDetails = (CustomUserDetails) authenticate.getPrincipal();
+
+        String username = customUserDetails.getUsername();
+
+        Collection<? extends GrantedAuthority> authorities = authenticate.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+
+        String role = auth.getAuthority();
+
+        String token = jwtUtil.createJwt(username, role, 60*60*1000L);
+
+        // JWT 는 header 에 담아서 return
+        return token;
+
+
     }
 
     public String emailCertificate( EmailCertificationReq emailCertificationReq){
@@ -101,11 +148,8 @@ public class UserService {
 
     public String patchUserInfo(PatchUserInfoReq patchUserInfoReq,String token){
 
-        // todo : jwt꺼내서 해당 사용자 객체 가져옴.
-        String email =jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
-
-        Optional<User> user = userRepository.findByEmailAndRole(email, role);
+        //  jwt 꺼내서 해당 사용자 객체 가져옴.
+        Optional<User> user = getUserByJWTToken(token);
 
         if(user.isEmpty()){
             return "해당하는 정보의 유저 없음";
@@ -116,7 +160,7 @@ public class UserService {
             user.get().changeName(patchUserInfoReq.getName());
 
         }
-        if(patchUserInfoReq.getGreeting()==null){
+        if(patchUserInfoReq.getGreeting()!=null){
             user.get().changeGreeting(patchUserInfoReq.getGreeting());
 
         }
@@ -124,9 +168,32 @@ public class UserService {
         return "유저 정보를 변경했습니다.";
 
     }
+    public String patchPassword(PatchPasswordReq patchPasswordReq,String token){
+        Optional<User> user = getUserByJWTToken(token);
+
+        String newPassword = encoder.encode(patchPasswordReq.getPassword());
+
+        if(user.isEmpty()){
+            return "해당 유저 정보 없음";
+        }
+
+        user.get().changePassword(newPassword);
+        return "비밀번호 변경을 완료했습니다.";
+
+
+
+    }
 
     private boolean checkEmailDuplication(String email){
         return userRepository.existsByEmail(email);
+    }
+
+    private Optional<User> getUserByJWTToken(String token){
+        String email =jwtUtil.getEmail(token);
+        String role = jwtUtil.getRole(token);
+
+       return userRepository.findByEmailAndRole(email, role);
+
     }
 
 

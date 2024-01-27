@@ -1,9 +1,15 @@
 package com.example.reservation.controller;
 
 import com.example.reservation.dto.EmailCertificationReq;
+import com.example.reservation.dto.LoginReq;
+import com.example.reservation.dto.PatchPasswordReq;
 import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
+import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.jwt.LoginFilter;
 import com.example.reservation.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import java.net.http.HttpResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,6 +28,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final JWTUtil jwtUtil;
+
     // 회원가입
     @PostMapping("/signup")
     public String signup(@RequestBody SignUpReq signUpReq){
@@ -34,10 +42,15 @@ public class UserController {
 
 
     // 로그인
-//    @PostMapping("/login")
-//    public String login(){
-//        return "로그인 완료";
-//    }
+    @PostMapping("/login")
+    public String login(@RequestBody LoginReq loginReq, HttpServletResponse response){
+
+        String token = userService.login(loginReq);
+
+        response.addHeader("Authorization", "Bearer " + token);
+
+        return "로그인 완료";
+    }
 
 
     // 이메일 인증
@@ -67,9 +80,13 @@ public class UserController {
 
     // 비밀번호 변경
     @PatchMapping("/password")
-    public String patchUserPassword(){
+    public String patchUserPassword(@RequestHeader("Authorization") String authorizationHeader,@RequestBody PatchPasswordReq patchPasswordReq){
 
-        return "비밀번호 변경을 완료했습니다.";
+        // todo : 값에 대한 형식적 validation 처리
+        String jwtToken = authorizationHeader.substring(7);
+        String result = userService.patchPassword(patchPasswordReq, jwtToken);
+
+        return result;
 
     }
 }

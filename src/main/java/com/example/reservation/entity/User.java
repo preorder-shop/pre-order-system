@@ -80,6 +80,10 @@ public class User {
         this.greeting = greeting;
     }
 
+    public void changePassword(String password){
+        this.password = password;
+    }
+
     public enum State {
         ACTIVE,
         INACTIVE, // 휴면계정 (오랫동안 접속 안했을때)

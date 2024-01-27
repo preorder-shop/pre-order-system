@@ -17,11 +17,13 @@ public class Follow {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "follower_id")
-    private User follower;
+    @JoinColumn(name = "to_user")
+    private User toUser; //  follow 신청 받은 유저
 
     @ManyToOne
-    @JoinColumn(name = "following_id")
-    private User following;
+    @JoinColumn(name = "from_user")
+    private User fromUser; // follow 를 신청한 id
+
+    // from -> to from 이 to 로 follow 요청
 }
 
