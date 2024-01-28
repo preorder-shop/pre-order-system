@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,7 +45,7 @@ public class Comment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private User.State state = User.State.ACTIVE;
+    private User.State state;
 
 
 
@@ -52,6 +53,14 @@ public class Comment {
         ACTIVE,
         BLACK, // 신고로 차단 / 블랙 글
         DELETE // 삭제한 글
+    }
+
+    @Builder
+    public Comment(String content, User user,Post post){
+        this.content = content;
+        this.user = user;
+        this.post = post;
+        this.state = User.State.ACTIVE;
     }
 
 

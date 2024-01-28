@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,6 +39,13 @@ public class Post {
     @UpdateTimestamp
     @Column(nullable = false,name = "updatedAt")
     private LocalDateTime updated_at;
+
+    @Builder
+    public Post(String title,String content,User user){
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
 
 
 
