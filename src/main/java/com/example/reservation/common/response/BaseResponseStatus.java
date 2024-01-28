@@ -34,11 +34,16 @@ public enum BaseResponseStatus {
 
     CERTIF_INVALID_CODE(false,HttpStatus.BAD_REQUEST.value(), "인증번호 유효시간이 지났습니다."),
 
-    INVALID_TOKEN(false,HttpStatus.BAD_REQUEST.value(), "유효한 토큰이 아닙니다."),
+    TOKEN_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효한 토큰이 아닙니다."),
 
     INVALID_LOGIN(false,HttpStatus.BAD_REQUEST.value(), "잘못된 로그인 정보입니다."),
 
+    POST_ID_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효하지 않은 게시글 아이디입니다."),
+
     FOLLOW_INVALID(false,HttpStatus.BAD_REQUEST.value(), "자기 자신은 팔로우할 수 없습니다."),
+
+    COMMENT_EMPTY(false, HttpStatus.BAD_REQUEST.value(), "댓글을 입력해주세요."),
+
 
 
 

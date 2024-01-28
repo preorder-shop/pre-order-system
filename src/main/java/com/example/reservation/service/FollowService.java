@@ -10,7 +10,6 @@ import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.repository.FollowRepository;
 import com.example.reservation.repository.UserRepository;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class FollowService {
         // todo
         // 토큰값으로 from 유저 확인
         User fromUser = userRepository.findByEmailAndRole(jwtUtil.getEmail(token), jwtUtil.getRole(token))
-                .orElseThrow(()->new BaseException(INVALID_TOKEN));
+                .orElseThrow(()->new BaseException(TOKEN_INVALID));
 
         // Id 값으로 to 유저 확인
         User toUser = userRepository.findByIdAndState(id, State.ACTIVE)

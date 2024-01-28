@@ -5,7 +5,6 @@ import static com.example.reservation.common.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.CertificationNumber;
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.dto.CustomUserDetails;
 import com.example.reservation.dto.EmailCertificationReq;
 import com.example.reservation.dto.LoginReq;
 import com.example.reservation.dto.PatchPasswordReq;
@@ -20,15 +19,10 @@ import com.example.reservation.repository.CertificationRepository;
 import com.example.reservation.repository.UserRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -190,7 +184,7 @@ public class UserService {
         String role = jwtUtil.getRole(token);
 
         return userRepository.findByEmailAndRole(email, role)
-                .orElseThrow(() -> new BaseException(INVALID_TOKEN));
+                .orElseThrow(() -> new BaseException(TOKEN_INVALID));
 
     }
 
