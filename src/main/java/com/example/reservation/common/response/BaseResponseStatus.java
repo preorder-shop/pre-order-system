@@ -38,6 +38,11 @@ public enum BaseResponseStatus {
 
     INVALID_LOGIN(false,HttpStatus.BAD_REQUEST.value(), "잘못된 로그인 정보입니다."),
 
+    FOLLOW_INVALID(false,HttpStatus.BAD_REQUEST.value(), "자기 자신은 팔로우할 수 없습니다."),
+
+
+
+
     /**
      * 500 :  Database, Server 오류
      */
