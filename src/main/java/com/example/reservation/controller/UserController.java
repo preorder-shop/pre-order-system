@@ -18,7 +18,11 @@ import java.net.http.HttpResponse;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/app/v1/users")
+@RequestMapping("/api/v1/users")
 @RestController
 public class UserController {
 
@@ -37,6 +41,8 @@ public class UserController {
 
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder encoder;
+
+    private final AuthenticationManager authenticationManager; // DB를 통해서 유저정보를 가져와서 로그인한 데이터와 검증
 
     // 회원가입
     @PostMapping("/signup")
@@ -57,19 +63,41 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody LoginReq loginReq, HttpServletResponse response){
+    public BaseResponse<String> login(@RequestBody LoginReq loginReq, HttpServletResponse response){
 
         checkEmailValidation(loginReq.getEmail());
         checkPasswordValidation(loginReq.getPassword());
 
-        String token = userService.login(loginReq);
+//        String token = userService.login(loginReq);
+//
+//        response.addHeader("Authorization", "Bearer " + token);
 
-        response.addHeader("Authorization", "Bearer " + token);
 
-        return "로그인 완료";
+        try{
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
+            authenticationManager.authenticate(authenticationToken);
+
+        }catch (Exception e){
+            throw new BaseException(INVALID_LOGIN);
+        }
+
+        String userRole = userService.getUserRole(loginReq.getEmail());
+
+        String accessToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "ACCESS");
+        String refreshToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "REFRESH");
+
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        jwtUtil.addRefreshTokenInCookie(refreshToken,response);
+
+        return new BaseResponse<>("로그인을 완료했습니다.");
     }
 
-
+    @GetMapping("/logout")
+    public BaseResponse<String> logout(){
+        // todo : token : 현재 토큰 만료 처리
+        return new BaseResponse<>("로그아웃을 완료했습니다.");
+    }
 
     // 이메일 인증
     @PostMapping("/email-certification")
@@ -88,7 +116,9 @@ public class UserController {
     @PatchMapping("")
     public String patchUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PatchUserInfoReq patchUserInfoReq){
 
-        // todo : 값에 대한 형식적 validation 처리
+        checkUsernameValidation(patchUserInfoReq.getName());
+        checkGreetingValidation(patchUserInfoReq.getGreeting());
+
         String jwtToken = authorizationHeader.substring(7);
         String result = userService.patchUserInfo(patchUserInfoReq, jwtToken);
 

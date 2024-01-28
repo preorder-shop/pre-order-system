@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
@@ -25,5 +26,11 @@ public class Follow {
     private User fromUser; // follow 를 신청한 id
 
     // from -> to from 이 to 로 follow 요청
+
+    @Builder
+    public Follow(User toUser,User fromUser){
+        this.toUser = toUser;
+        this.fromUser = fromUser;
+    }
 }
 

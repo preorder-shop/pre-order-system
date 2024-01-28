@@ -19,6 +19,7 @@ public enum BaseResponseStatus {
 
     POST_USERS_EXISTS_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"이미 가입한 이메일 입니다."),
 
+    USERS_INVALID_ID(false,HttpStatus.BAD_REQUEST.value(),"잘못된 아이디 정보입니다."),
     USERS_INVALID_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"이메일 정보를 다시 확인해주세요."),
     USERS_INVALID_PASSWORD(false,HttpStatus.BAD_REQUEST.value(),"비밀번호 정보를 다시 확인해주세요."),
 
@@ -32,6 +33,10 @@ public enum BaseResponseStatus {
     CERTIF_INVALID_CODE_OR_EMAIL(false,HttpStatus.BAD_REQUEST.value(), "인증번호와 이메일을 다시한번 확인해주세요."),
 
     CERTIF_INVALID_CODE(false,HttpStatus.BAD_REQUEST.value(), "인증번호 유효시간이 지났습니다."),
+
+    INVALID_TOKEN(false,HttpStatus.BAD_REQUEST.value(), "유효한 토큰이 아닙니다."),
+
+    INVALID_LOGIN(false,HttpStatus.BAD_REQUEST.value(), "잘못된 로그인 정보입니다."),
 
     /**
      * 500 :  Database, Server 오류

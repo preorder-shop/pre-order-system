@@ -3,6 +3,7 @@ package com.example.reservation.jwt;
 import com.example.reservation.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -62,10 +63,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+      //  String token = jwtUtil.createJwt(username, role, 60*60*10L);
+        String accessToken = jwtUtil.createToken(username,role,"ACCESS");
+        String refreshToken = jwtUtil.createToken(username,role,"REFRESH");
 
         // JWT 는 header 에 담아서 return
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorization", "Bearer " + accessToken);
+      //  response.addHeader("Refresh", "Bearer " + refreshToken);
+//        Cookie cookie = new Cookie("refreshToken",refreshToken);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+
+        // refresh token 은 쿠키에 담아서 전송
+        jwtUtil.addRefreshTokenInCookie(refreshToken,response);
 
     }
 

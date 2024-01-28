@@ -81,7 +81,6 @@ public class UserService {
         User user = userRepository.findByEmail(loginReq.getEmail())
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
-
         boolean matches = encoder.matches(loginReq.getPassword(), user.getPassword());
         if(!matches) throw new BaseException(USERS_INVALID_PASSWORD);
 
@@ -108,7 +107,8 @@ public class UserService {
 //
 //        String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(user.getName(), user.getRole(), 60*60*1000L);
+        // ACCESS & REFRESH TOKEN 발급
+        String token = jwtUtil.createToken(user.getName(), user.getRole(), "ACCESS");
 
         // JWT 는 header 에 담아서 return
         return token;
@@ -152,19 +152,15 @@ public class UserService {
     public String patchUserInfo(PatchUserInfoReq patchUserInfoReq,String token){
 
         //  jwt 꺼내서 해당 사용자 객체 가져옴.
-        Optional<User> user = getUserByJWTToken(token);
-
-        if(user.isEmpty()){
-            return "해당하는 정보의 유저 없음";
-        }
+        User user  = getUserByJWTToken(token);
 
 
         if(patchUserInfoReq.getName()!=null){
-            user.get().changeName(patchUserInfoReq.getName());
+            user.changeName(patchUserInfoReq.getName());
 
         }
         if(patchUserInfoReq.getGreeting()!=null){
-            user.get().changeGreeting(patchUserInfoReq.getGreeting());
+            user.changeGreeting(patchUserInfoReq.getGreeting());
 
         }
 
@@ -172,15 +168,13 @@ public class UserService {
 
     }
     public String patchPassword(PatchPasswordReq patchPasswordReq,String token){
-        Optional<User> user = getUserByJWTToken(token);
+        User user = getUserByJWTToken(token);
 
         String newPassword = encoder.encode(patchPasswordReq.getPassword());
 
-        if(user.isEmpty()){
-            return "해당 유저 정보 없음";
-        }
 
-        user.get().changePassword(newPassword);
+
+        user.changePassword(newPassword);
         return "비밀번호 변경을 완료했습니다.";
 
 
@@ -191,13 +185,24 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    private Optional<User> getUserByJWTToken(String token){
+    private User getUserByJWTToken(String token){
         String email =jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-       return userRepository.findByEmailAndRole(email, role);
+        return userRepository.findByEmailAndRole(email, role)
+                .orElseThrow(() -> new BaseException(INVALID_TOKEN));
 
     }
 
+    public String getUserRole(String email){
+
+
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
+
+        return user.getRole();
+
+    }
 
 }

@@ -52,13 +52,17 @@ public class SecurityConfig {
         httpSecurity
                 .httpBasic((auth)->auth.disable());
 
+        httpSecurity
+                .formLogin((auth)->auth.disable());
+
         // 인증 인가 관련
         httpSecurity
                 .authorizeHttpRequests((auth)->auth
-                        .requestMatchers("/app/v1/users/signup","/login","/app/v1/users/email-certification","/app/v1/users/login").permitAll()
+                        .requestMatchers("/api/v1/users/signup","/login","/api/v1/users/email-certification","/api/v1/users/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
+
         httpSecurity
                 .addFilterBefore(new JWTFilter(jwtUtil),LoginFilter.class);
 
