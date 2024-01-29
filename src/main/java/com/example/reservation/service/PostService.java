@@ -7,10 +7,12 @@ import static com.example.reservation.common.response.BaseResponseStatus.TOKEN_I
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.CreatePostReq;
 import com.example.reservation.dto.CreatePostRes;
+import com.example.reservation.entity.Feed;
 import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
 import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.LikePostRepository;
 import com.example.reservation.repository.PostRepository;
 import com.example.reservation.repository.UserRepository;
@@ -27,6 +29,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final LikePostRepository likePostRepository;
+    private final FeedRepository feedRepository;
 
     public CreatePostRes createPost(String jwt,CreatePostReq createPostReq){
 
@@ -41,6 +44,15 @@ public class PostService {
 
         Post post = postRepository.save(buildPost);
 
+        String log = user.getName()+"님이 "+post.getTitle()+" 이라는 제목의 글을 작성했습니다.";
+
+        Feed feed = Feed.builder()
+                .user(user)
+                .name(user.getName())
+                .log(log)
+                .build();
+        feedRepository.save(feed);
+
         return CreatePostRes.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -52,8 +64,6 @@ public class PostService {
 
     public String likePost(String jwt,Long postId){
 
-        // 해당 유저로 해당 글에 좋아요를 한 적이 있으면 좋아요를 취소시키고
-        // 종아요를 한 적이 없으면 좋아요 추가
         User user = userRepository.findByEmailAndRole(jwtUtil.getEmail(jwt), jwtUtil.getRole(jwt))
                 .orElseThrow(()->new BaseException(TOKEN_INVALID));
 
@@ -64,6 +74,8 @@ public class PostService {
 //        if(Objects.equals(user.getId(), post.getUser().getId())){
 //            return "자기 자신의 글은 좋아요를 할수 없습니다.";
 //        }
+        String userName = user.getName();
+        String postUserName = post.getUser().getName();
 
         Optional<LikePost> byUserAndPost = likePostRepository.findByUserAndPost(user, post);
 
@@ -75,11 +87,31 @@ public class PostService {
                     .build();
 
             likePostRepository.save(likePost);
+
+            String log = userName+"님이 "+postUserName+"님의 "+post.getTitle() +"제목의 글을 좋아합니다." ;
+
+            Feed feed = Feed.builder()
+                    .user(user)
+                    .name(userName)
+                    .log(log)
+                    .build();
+            feedRepository.save(feed);
+
             return "해당 글에 좋아요를 완료했습니다.";
 
         }
         // todo : 나중에 state 상태 변경으로 바꾸기.
         likePostRepository.delete(byUserAndPost.get());
+
+        String log = userName+"님이 "+postUserName+"님의 "+post.getTitle() +"제목의 글 좋아요를 취소했습니다." ;
+
+        Feed feed = Feed.builder()
+                .user(user)
+                .name(userName)
+                .log(log)
+                .build();
+        feedRepository.save(feed);
+
         return "해당 글에 좋아요를 취소했습니다.";
 
     }

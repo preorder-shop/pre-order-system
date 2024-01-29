@@ -9,12 +9,14 @@ import com.example.reservation.dto.CreateCommentReq;
 import com.example.reservation.dto.CreateCommentRes;
 import com.example.reservation.dto.CreatePostReq;
 import com.example.reservation.entity.Comment;
+import com.example.reservation.entity.Feed;
 import com.example.reservation.entity.LikeComment;
 import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
 import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.repository.CommentRepository;
+import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.LikeCommentRepository;
 import com.example.reservation.repository.PostRepository;
 import com.example.reservation.repository.UserRepository;
@@ -33,13 +35,10 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final JWTUtil jwtUtil;
-
     private final LikeCommentRepository likeCommentRepository;
+    private final FeedRepository feedRepository;
 
     public CreateCommentRes createComment(String jwt, CreateCommentReq createCommentReq, Long postId) {
-
-        String email = jwtUtil.getEmail(jwt);
-        String role = jwtUtil.getRole(jwt);
 
         User user = userRepository.findByEmailAndRole(jwtUtil.getEmail(jwt), jwtUtil.getRole(jwt))
                 .orElseThrow(() -> new BaseException(TOKEN_INVALID));
@@ -54,6 +53,15 @@ public class CommentService {
                 .build();
 
         Comment comment = commentRepository.save(build);
+
+        String log = user.getName()+"님이 "+post.getUser().getName()+"의 글에 "+comment.getContent()+" 라는 내용의 댓글을 작성했습니다." ;
+
+        Feed feed = Feed.builder()
+                .user(user)
+                .name(user.getName())
+                .log(log)
+                .build();
+        feedRepository.save(feed);
 
         return CreateCommentRes.builder()
                 .id(comment.getId())
@@ -72,6 +80,9 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new BaseException(COMMENT_ID_INVALID));
 
+        String userName = user.getName();
+        String commentUserName = comment.getUser().getName();
+
         Optional<LikeComment> byUserAndComment = likeCommentRepository.findByUserAndComment(user, comment);
 
         if (!byUserAndComment.isPresent()) {
@@ -82,11 +93,31 @@ public class CommentService {
                     .build();
 
             likeCommentRepository.save(likeComment);
+
+            String log = userName+"님이 "+commentUserName+"님의 "+comment.getContent() +" 내용의 댓글을 좋아합니다." ;
+
+            Feed feed = Feed.builder()
+                    .user(user)
+                    .name(userName)
+                    .log(log)
+                    .build();
+            feedRepository.save(feed);
+
             return "해당 댓글에 좋아요를 완료했습니다.";
 
         }
         // todo : 나중에 state 상태 변경으로 바꾸기.
         likeCommentRepository.delete(byUserAndComment.get());
+
+        String log = userName+"님이 "+commentUserName+"님의 "+comment.getContent() +" 내용의 댓글에 좋아요를 취소했습니다." ;
+
+        Feed feed = Feed.builder()
+                .user(user)
+                .name(userName)
+                .log(log)
+                .build();
+        feedRepository.save(feed);
+
         return "해당 댓글에 좋아요를 취소했습니다.";
 
     }
