@@ -10,6 +10,7 @@ import com.example.reservation.dto.CreateCommentRes;
 import com.example.reservation.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +43,17 @@ public class CommentController {
         if(comment==null || comment.isBlank())
             throw new BaseException(COMMENT_EMPTY);
 
+    }
+
+    /**
+     * 좋아요 API
+     */
+    @GetMapping("/like/{id}")
+    public BaseResponse<String> likeComment(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("id") Long id){
+
+        String jwtToken = authorizationHeader.substring(7);
+        String result = commentService.likeComment(jwtToken, id);
+
+        return new BaseResponse<>(result);
     }
 }

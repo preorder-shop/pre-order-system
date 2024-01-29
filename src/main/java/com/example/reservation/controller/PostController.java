@@ -6,6 +6,7 @@ import com.example.reservation.dto.CreatePostRes;
 import com.example.reservation.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class PostController {
     /**
      * 좋아요 API
      */
-    @PostMapping("/like/{id}")
+    @GetMapping ("/like/{id}")
     public BaseResponse<String> likePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("id") Long id){
 
         String jwtToken = authorizationHeader.substring(7);

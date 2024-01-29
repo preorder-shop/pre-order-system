@@ -75,12 +75,12 @@ public class PostService {
                     .build();
 
             likePostRepository.save(likePost);
-            return "좋아요를 완료했습니다.";
+            return "해당 글에 좋아요를 완료했습니다.";
 
         }
         // todo : 나중에 state 상태 변경으로 바꾸기.
         likePostRepository.delete(byUserAndPost.get());
-        return "좋아요를 취소했습니다.";
+        return "해당 글에 좋아요를 취소했습니다.";
 
     }
 }

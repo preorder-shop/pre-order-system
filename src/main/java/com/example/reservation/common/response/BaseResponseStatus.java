@@ -44,6 +44,8 @@ public enum BaseResponseStatus {
 
     COMMENT_EMPTY(false, HttpStatus.BAD_REQUEST.value(), "댓글을 입력해주세요."),
 
+    COMMENT_ID_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효하지 않은 댓글 아이디입니다."),
+
 
 
 
