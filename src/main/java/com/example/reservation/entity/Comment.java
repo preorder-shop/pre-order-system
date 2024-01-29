@@ -48,7 +48,6 @@ public class Comment {
     private User.State state;
 
 
-
     public enum State {
         ACTIVE,
         BLACK, // 신고로 차단 / 블랙 글

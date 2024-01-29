@@ -6,6 +6,7 @@ import com.example.reservation.dto.CreatePostRes;
 import com.example.reservation.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -30,4 +31,18 @@ public class PostController {
 
         return new BaseResponse<>(createPostRes);
     }
+
+    /**
+     * 좋아요 API
+     */
+    @PostMapping("/like/{id}")
+    public BaseResponse<String> likePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("id") Long id){
+
+        String jwtToken = authorizationHeader.substring(7);
+        String result = postService.likePost(jwtToken, id);
+
+        return new BaseResponse<>(result);
+    }
+
+
 }

@@ -14,22 +14,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class Follow {
+public class LikePost {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "to_user",nullable = false)
-    private User toUser; //  follow 신청 받은 유저
+    @JoinColumn(nullable = false,name="user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "from_user",nullable = false)
-    private User fromUser; // follow 를 신청한 id
+    @JoinColumn(nullable = false,name = "post_id")
+    private Post post;
 
     @CreationTimestamp
     @Column(nullable = false,name = "createdAt")
@@ -39,12 +39,10 @@ public class Follow {
     @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updated_at;
 
-    // from -> to from 이 to 로 follow 요청
-
     @Builder
-    public Follow(User toUser,User fromUser){
-        this.toUser = toUser;
-        this.fromUser = fromUser;
+    public LikePost(User user,Post post){
+        this.user = user;
+        this.post = post;
     }
-}
 
+}
