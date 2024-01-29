@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
 
     CERTIF_INVALID_CODE_OR_EMAIL(false,HttpStatus.BAD_REQUEST.value(), "인증번호와 이메일을 다시한번 확인해주세요."),
 
+
     CERTIF_INVALID_CODE(false,HttpStatus.BAD_REQUEST.value(), "인증번호 유효시간이 지났습니다."),
 
     TOKEN_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효한 토큰이 아닙니다."),
@@ -54,6 +55,7 @@ public enum BaseResponseStatus {
      * 500 :  Database, Server 오류
      */
 
+    FAIL_SEND_CODE(false,HttpStatus.INTERNAL_SERVER_ERROR.value(), "인증코드 전송을 실패했습니다."),
     UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다.");
 
 

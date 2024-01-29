@@ -101,11 +101,11 @@ public class UserController {
 
     // 이메일 인증
     @PostMapping("/email-certification")
-    public String emailCertificate(@RequestBody EmailCertificationReq emailCertificationReq){
+    public BaseResponse<String> emailCertificate(@RequestBody EmailCertificationReq emailCertificationReq){
 
         String result = userService.emailCertificate(emailCertificationReq);
 
-        return result;
+        return new BaseResponse<>(result);
     }
 
 

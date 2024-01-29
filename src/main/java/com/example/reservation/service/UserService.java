@@ -115,7 +115,7 @@ public class UserService {
         String email = emailCertificationReq.getEmail();
 
         if(checkEmailDuplication(email)){ // 이미 가입된 이메일인지 확인
-            return "이미 존재하는 이메일입니다.";
+            throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
         
         // 이미 해당 이메일로 인증코드를 보낸적이 있는지 확인
@@ -126,7 +126,7 @@ public class UserService {
         String certificationNumber = CertificationNumber.getCertificationNumber(); // 인증번호
         boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
 
-        if(!isSuccessed) return "이메일에 인증코드 전송 실패";
+        if(!isSuccessed)  throw new BaseException(FAIL_SEND_CODE);
 
         if(present){
             byEmail.get().changeCertificationNumber(certificationNumber);
@@ -139,7 +139,7 @@ public class UserService {
             certificationRepository.save(certification); // 성공시 저장.
         }
 
-        return "이메일 인증코드 전송 성공";
+        return "해당 이메일로 인증코드를 전송했습니다.";
 
     }
 
