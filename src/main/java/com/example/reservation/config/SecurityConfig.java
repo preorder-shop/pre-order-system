@@ -3,6 +3,9 @@ package com.example.reservation.config;
 import com.example.reservation.jwt.JWTFilter;
 import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.jwt.LoginFilter;
+import com.example.reservation.repository.TokenRepository;
+import com.example.reservation.service.TokenService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,14 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,JWTUtil jwtUtil) {
+    private final JWTFilter jwtFilter;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil
+                          ,JWTFilter jwtFilter
+    ) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -41,38 +48,53 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
-                .csrf((auth)->auth.disable());
+                .csrf((auth) -> auth.disable());
 
         httpSecurity
-                .formLogin((auth)->auth.disable());
+                .formLogin((auth) -> auth.disable());
 
         httpSecurity
-                .httpBasic((auth)->auth.disable());
+                .httpBasic((auth) -> auth.disable());
 
         httpSecurity
-                .formLogin((auth)->auth.disable());
+                .formLogin((auth) -> auth.disable());
 
         // 인증 인가 관련
         httpSecurity
-                .authorizeHttpRequests((auth)->auth
-                        .requestMatchers("/api/v1/users/signup","/login","/api/v1/users/email-certification","/api/v1/users/login").permitAll()
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/api/v1/users/signup", "/api/v1/users/email-certification",
+                                "/api/v1/users/login", "/login"
+                        ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
 
+//
+//        httpSecurity
+//                .addFilterBefore(new JWTFilter(jwtUtil,tokenService), LoginFilter.class);
+
+
         httpSecurity
-                .addFilterBefore(new JWTFilter(jwtUtil),LoginFilter.class);
-
+                .addFilterBefore(jwtFilter,LoginFilter.class);
         httpSecurity
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class);
 
-
-                return httpSecurity.build();
+        return httpSecurity.build();
 
     }
+
+    @Bean
+    public FilterRegistrationBean<JWTFilter> jwtFilterFilterRegistrationBean(){
+        FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(jwtFilter);
+        registrationBean.addUrlPatterns("/api/*"); // 필터를 어떤 URL에 적용할지 지정
+        return registrationBean;
+    }
+
 
 
 }

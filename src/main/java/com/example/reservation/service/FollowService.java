@@ -27,13 +27,14 @@ public class FollowService {
     private final JWTUtil jwtUtil;
     private final FeedRepository feedRepository;
 
-    public void followOther(String token, Long id) {
+    public String followOther(String userEmail, Long id) {
 
         String log;
+        String message="";
 
         // 토큰값으로 from 유저 확인
-        User fromUser = userRepository.findByEmailAndRole(jwtUtil.getEmail(token), jwtUtil.getRole(token))
-                .orElseThrow(() -> new BaseException(TOKEN_INVALID));
+        User fromUser = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         // Id 값으로 to 유저 확인
         User toUser = userRepository.findByIdAndState(id, State.ACTIVE)
@@ -48,6 +49,7 @@ public class FollowService {
         if (exist.isPresent()) { // 이미 팔로우 했으면 취소 처리
             followRepository.delete(exist.get());
             log = fromUser.getName() + "님이 " + toUser.getName() + " 님을 팔로우 취소 했습니다.";
+            message = "팔로우를 취소했습니다.";
 
         } else {
             Follow follow = Follow.builder()
@@ -59,6 +61,8 @@ public class FollowService {
 
             log = fromUser.getName() + "님이 " + toUser.getName() + " 님을 팔로우 했습니다.";
 
+            message = "해당 사용자를 팔로우했습니다.";
+
         }
 
         Feed feed = Feed.builder()
@@ -68,5 +72,6 @@ public class FollowService {
                 .build();
         feedRepository.save(feed);
 
+        return message;
     }
 }

@@ -17,7 +17,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class JWTUtil { // JWT 생성
 
     private final SecretKey secretKey;
-
     private final long accessTokenValidMs;
     private final long refreshTokenValidMs;
 
@@ -45,6 +44,10 @@ public class JWTUtil { // JWT 생성
     public Boolean isExpired(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+    }
+
+    public Date getExpiredDate(String token){
+         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }
 
     // JWT 토큰을 생성할 메서드

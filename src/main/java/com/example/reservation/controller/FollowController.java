@@ -4,6 +4,8 @@ import com.example.reservation.common.response.BaseResponse;
 import com.example.reservation.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +22,14 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping ("/{id}")
-    public BaseResponse<String> followOther(@RequestHeader("Authorization") String authorizationHeader, @PathVariable(name = "id") Long id){
-        // 쿼리 파라미터로 팔로우할 사용자의 id 값을 받아서 해당 사용자와 현재 사용자의 관계를 follow table에 업데이트 한다.
-        String jwtToken = authorizationHeader.substring(7);
-        followService.followOther(jwtToken,id);
+    public BaseResponse<String> followOther(@PathVariable(name = "id") Long id){
 
-        return new BaseResponse<>("해당 사용자를 팔로우했습니다.");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        String result = followService.followOther(userEmail, id);
+
+        return new BaseResponse<>(result);
     }
 
 }

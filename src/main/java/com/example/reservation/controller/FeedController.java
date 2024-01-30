@@ -7,6 +7,8 @@ import com.example.reservation.service.FeedService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +24,11 @@ public class FeedController {
     private final FeedService feedService;
 
     @GetMapping("")
-    public BaseResponse<List<GetFeedRes>> getFeedList(@RequestHeader("Authorization") String authorizationHeader
-    ,@RequestParam(name="startPage",required = false) int startPage){
+    public BaseResponse<List<GetFeedRes>> getFeedList(){
 
-        String jwtToken = authorizationHeader.substring(7);
-        List<GetFeedRes> feedList = feedService.getFeedList(jwtToken,startPage);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+        List<GetFeedRes> feedList = feedService.getFeedList(userEmail);
 
         return new BaseResponse<>(feedList);
     }

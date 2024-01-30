@@ -13,14 +13,17 @@ import com.example.reservation.dto.SignUpRes;
 import com.example.reservation.jwt.JWTUtil;
 import com.example.reservation.jwt.LoginFilter;
 import com.example.reservation.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.http.HttpResponse;
+import java.util.Date;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,10 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder encoder;
-
     private final AuthenticationManager authenticationManager; // DB를 통해서 유저정보를 가져와서 로그인한 데이터와 검증
 
     // 회원가입
@@ -68,12 +69,7 @@ public class UserController {
         checkEmailValidation(loginReq.getEmail());
         checkPasswordValidation(loginReq.getPassword());
 
-//        String token = userService.login(loginReq);
-//
-//        response.addHeader("Authorization", "Bearer " + token);
-
-
-        try{
+        try{  // 유저 검증
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
             authenticationManager.authenticate(authenticationToken);
@@ -87,6 +83,12 @@ public class UserController {
         String accessToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "ACCESS");
         String refreshToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "REFRESH");
 
+
+        Date expiredDate = jwtUtil.getExpiredDate(refreshToken);
+        String userEmail = loginReq.getEmail();
+        userService.accessTokenSave(refreshToken,userEmail,expiredDate);
+
+
         response.addHeader("Authorization", "Bearer " + accessToken);
         jwtUtil.addRefreshTokenInCookie(refreshToken,response);
 
@@ -94,8 +96,14 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public BaseResponse<String> logout(){
-        // todo : token : 현재 토큰 만료 처리
+    public BaseResponse<String> logout(HttpServletResponse response){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        userService.deleteRefreshToken(userEmail);
+        response.addHeader("Authorization","");
+        expireCookie(response,"refreshToken");
         return new BaseResponse<>("로그아웃을 완료했습니다.");
     }
 
@@ -113,29 +121,61 @@ public class UserController {
 
     // 사용자 정보 변경
 
+//    @PatchMapping("")
+//    public String patchUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PatchUserInfoReq patchUserInfoReq){
+//
+//        checkUsernameValidation(patchUserInfoReq.getName());
+//        checkGreetingValidation(patchUserInfoReq.getGreeting());
+//
+//        String jwtToken = authorizationHeader.substring(7);
+//        String result = userService.patchUserInfo(patchUserInfoReq, jwtToken);
+//
+//        return result;
+//    }
+
     @PatchMapping("")
-    public String patchUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PatchUserInfoReq patchUserInfoReq){
+    public BaseResponse<String> patchUserInfo(@RequestBody PatchUserInfoReq patchUserInfoReq){
 
         checkUsernameValidation(patchUserInfoReq.getName());
         checkGreetingValidation(patchUserInfoReq.getGreeting());
 
-        String jwtToken = authorizationHeader.substring(7);
-        String result = userService.patchUserInfo(patchUserInfoReq, jwtToken);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
 
-        return result;
+        String result = userService.patchUserInfo(patchUserInfoReq, userEmail);
+
+        return new BaseResponse<>(result);
     }
 
-
     // 비밀번호 변경
+//    @PatchMapping("/password")
+//    public String patchUserPassword(@RequestHeader("Authorization") String authorizationHeader,@RequestBody PatchPasswordReq patchPasswordReq){
+//
+//        // todo : 값에 대한 형식적 validation 처리
+//        String jwtToken = authorizationHeader.substring(7);
+//        String result = userService.patchPassword(patchPasswordReq, jwtToken);
+//
+//        return result;
+//
+//    }
+
     @PatchMapping("/password")
-    public String patchUserPassword(@RequestHeader("Authorization") String authorizationHeader,@RequestBody PatchPasswordReq patchPasswordReq){
+    public String patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq){
 
         // todo : 값에 대한 형식적 validation 처리
-        String jwtToken = authorizationHeader.substring(7);
-        String result = userService.patchPassword(patchPasswordReq, jwtToken);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        String result = userService.patchPassword(patchPasswordReq, userEmail);
 
         return result;
 
+    }
+
+    private static void expireCookie(HttpServletResponse response,String name) {
+        Cookie cookie=new Cookie(name, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     private void checkUsernameValidation(String name){

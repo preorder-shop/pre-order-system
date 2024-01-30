@@ -27,7 +27,6 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // comment 를 달려면 현재 commnet를 작성하는 작성자 & comment를 달 글
     @PostMapping("/{id}")
     public BaseResponse<CreateCommentRes> createComment(@RequestHeader("Authorization") String auth, @RequestBody CreateCommentReq createCommentReq, @PathVariable("id") Long id){
 

@@ -41,11 +41,15 @@ public enum BaseResponseStatus {
 
     POST_ID_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효하지 않은 게시글 아이디입니다."),
 
+    POST_EMPTY_TITLE(false, HttpStatus.BAD_REQUEST.value(), "제목을 입력해 주세요"),
+    POST_EMPTY_CONTENT(false, HttpStatus.BAD_REQUEST.value(), "포스트 내용을 입력해 주세요"),
+
     FOLLOW_INVALID(false,HttpStatus.BAD_REQUEST.value(), "자기 자신은 팔로우할 수 없습니다."),
 
     COMMENT_EMPTY(false, HttpStatus.BAD_REQUEST.value(), "댓글을 입력해주세요."),
 
     COMMENT_ID_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효하지 않은 댓글 아이디입니다."),
+
 
 
 

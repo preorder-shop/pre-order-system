@@ -3,6 +3,7 @@ package com.example.reservation.service;
 
 import static com.example.reservation.common.response.BaseResponseStatus.POST_ID_INVALID;
 import static com.example.reservation.common.response.BaseResponseStatus.TOKEN_INVALID;
+import static com.example.reservation.common.response.BaseResponseStatus.USERS_INVALID_EMAIL;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.CreatePostReq;
@@ -31,10 +32,10 @@ public class PostService {
     private final LikePostRepository likePostRepository;
     private final FeedRepository feedRepository;
 
-    public CreatePostRes createPost(String jwt,CreatePostReq createPostReq){
+    public CreatePostRes createPost(String userEmail, CreatePostReq createPostReq) {
 
-        User user = userRepository.findByEmailAndRole(jwtUtil.getEmail(jwt), jwtUtil.getRole(jwt))
-                .orElseThrow(()->new BaseException(TOKEN_INVALID));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         Post buildPost = Post.builder()
                 .title(createPostReq.getTitle())
@@ -44,7 +45,7 @@ public class PostService {
 
         Post post = postRepository.save(buildPost);
 
-        String log = user.getName()+"님이 "+post.getTitle()+" 이라는 제목의 글을 작성했습니다.";
+        String log = user.getName() + "님이 " + post.getTitle() + " 이라는 제목의 글을 작성했습니다.";
 
         Feed feed = Feed.builder()
                 .user(user)
@@ -62,10 +63,10 @@ public class PostService {
 
     }
 
-    public String likePost(String jwt,Long postId){
+    public String likePost(String userEmail, Long postId) {
 
-        User user = userRepository.findByEmailAndRole(jwtUtil.getEmail(jwt), jwtUtil.getRole(jwt))
-                .orElseThrow(()->new BaseException(TOKEN_INVALID));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(POST_ID_INVALID));
@@ -79,7 +80,7 @@ public class PostService {
 
         Optional<LikePost> byUserAndPost = likePostRepository.findByUserAndPost(user, post);
 
-        if(!byUserAndPost.isPresent()){
+        if (!byUserAndPost.isPresent()) {
             // 객체 생성
             LikePost likePost = LikePost.builder()
                     .user(user)
@@ -88,7 +89,7 @@ public class PostService {
 
             likePostRepository.save(likePost);
 
-            String log = userName+"님이 "+postUserName+"님의 "+post.getTitle() +"제목의 글을 좋아합니다." ;
+            String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글을 좋아합니다.";
 
             Feed feed = Feed.builder()
                     .user(user)
@@ -103,7 +104,7 @@ public class PostService {
         // todo : 나중에 state 상태 변경으로 바꾸기.
         likePostRepository.delete(byUserAndPost.get());
 
-        String log = userName+"님이 "+postUserName+"님의 "+post.getTitle() +"제목의 글 좋아요를 취소했습니다." ;
+        String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글 좋아요를 취소했습니다.";
 
         Feed feed = Feed.builder()
                 .user(user)
