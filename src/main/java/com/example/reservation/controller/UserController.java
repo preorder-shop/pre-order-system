@@ -160,13 +160,15 @@ public class UserController {
 //    }
 
     @PatchMapping("/password")
-    public String patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq){
+    public String patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq,HttpServletResponse response){
 
-        // todo : 값에 대한 형식적 validation 처리
+        checkPasswordValidation(patchPasswordReq.getPassword());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
         String result = userService.patchPassword(patchPasswordReq, userEmail);
+        response.addHeader("Authorization","");
+        expireCookie(response,"refreshToken");
 
         return result;
 

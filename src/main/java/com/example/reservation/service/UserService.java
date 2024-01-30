@@ -112,7 +112,6 @@ public class UserService {
 
         tokenRepository.deleteByEmail(email);
 
-
     }
 
     public String patchUserInfo(PatchUserInfoReq patchUserInfoReq, String email) {
@@ -146,6 +145,9 @@ public class UserService {
         String newPassword = encoder.encode(patchPasswordReq.getPassword());
 
         user.changePassword(newPassword);
+
+        deleteRefreshToken(email);
+
         return "비밀번호 변경을 완료했습니다.";
 
     }
