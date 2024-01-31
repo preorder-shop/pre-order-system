@@ -137,7 +137,6 @@ public class UserService {
     }
 
     public String patchPassword(PatchPasswordReq patchPasswordReq, String email) {
-     //   User user = getUserByJWTToken(token);
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));

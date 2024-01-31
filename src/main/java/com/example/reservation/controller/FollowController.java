@@ -2,6 +2,7 @@ package com.example.reservation.controller;
 
 import com.example.reservation.common.response.BaseResponse;
 import com.example.reservation.service.FollowService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping ("/{id}")
+    @GetMapping("/{id}")
     public BaseResponse<String> followOther(@PathVariable(name = "id") Long id){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

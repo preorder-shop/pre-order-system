@@ -160,7 +160,7 @@ public class UserController {
 //    }
 
     @PatchMapping("/password")
-    public String patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq,HttpServletResponse response){
+    public BaseResponse<String> patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq,HttpServletResponse response){
 
         checkPasswordValidation(patchPasswordReq.getPassword());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -170,7 +170,7 @@ public class UserController {
         response.addHeader("Authorization","");
         expireCookie(response,"refreshToken");
 
-        return result;
+        return new BaseResponse<>(result);
 
     }
 
