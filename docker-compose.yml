@@ -1,17 +1,17 @@
-version : '3.8'
+version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: reservation_db
+    container_name: preorder_db
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: preorder
       MYSQL_USER: kuk329
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: 1234
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
-
-
+volumes:
+  mysql_data:

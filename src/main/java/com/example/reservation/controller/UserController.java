@@ -3,6 +3,7 @@ package com.example.reservation.controller;
 import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
+import com.example.reservation.dto.response.UserDto;
 import com.example.reservation.response.BaseResponse;
 import com.example.reservation.dto.request.EmailCertificationReq;
 import com.example.reservation.dto.request.LoginReq;
@@ -102,6 +103,17 @@ public class UserController {
         response.addHeader("Authorization","");
         expireCookie(response,"refreshToken");
         return new BaseResponse<>("로그아웃을 완료했습니다.");
+    }
+
+    @GetMapping("")
+    public BaseResponse<UserDto> getUserInfo(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        UserDto userDto = userService.getUserInfo(userEmail);
+
+        return new BaseResponse<>(userDto);
+
     }
 
     // 이메일 인증

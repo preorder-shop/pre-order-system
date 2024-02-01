@@ -50,17 +50,6 @@ public class JWTUtil { // JWT 생성
          return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
     }
 
-    // JWT 토큰을 생성할 메서드
-//    public String createJwt(String username, String role, Long expiredMs) {
-//
-//        return Jwts.builder()
-//                .claim("email", username)
-//                .claim("role", role)
-//                .issuedAt(new Date(System.currentTimeMillis()))
-//                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-//                .signWith(secretKey)
-//                .compact();
-//    }
 
     public String createToken(String email,String role,String type){
         long now = (new Date()).getTime();

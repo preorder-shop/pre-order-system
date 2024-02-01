@@ -10,6 +10,7 @@ import com.example.reservation.dto.request.PatchPasswordReq;
 import com.example.reservation.dto.request.PatchUserInfoReq;
 import com.example.reservation.dto.request.SignUpReq;
 import com.example.reservation.dto.response.SignUpRes;
+import com.example.reservation.dto.response.UserDto;
 import com.example.reservation.entity.Certification;
 import com.example.reservation.entity.Token;
 import com.example.reservation.entity.User;
@@ -107,6 +108,20 @@ public class UserService {
         return "해당 이메일로 인증코드를 전송했습니다.";
 
     }
+    public UserDto getUserInfo(String email){
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .greeting(user.getGreeting())
+                .profileImg(user.getProfile_img_url())
+                .build();
+
+    }
 
     public void deleteRefreshToken(String email) {
 
@@ -133,7 +148,9 @@ public class UserService {
             String profile_img_url = user.getProfile_img_url();
 
             if(profile_img_url!=null && !profile_img_url.isBlank()){
+                //todo : 삭제 안되는 원인 찾기
                 s3Service.deleteImage(profile_img_url);
+
             }
             user.changeProfileImage(image_url);
         }
