@@ -70,6 +70,8 @@ public class UserService {
         User user = signUpReq.toEntity(encoder.encode(signUpReq.getPassword())); // 회원 entity 생성
         User save = userRepository.save(user);// db에 push
 
+        certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
+
         return new SignUpRes(save.getId(), save.getName(), save.getEmail(), save.getGreeting());
     }
 
