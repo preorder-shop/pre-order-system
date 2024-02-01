@@ -3,7 +3,7 @@ package com.example.reservation.service;
 import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.entity.Feed;
+import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.Follow;
 import com.example.reservation.entity.User;
 import com.example.reservation.entity.User.State;
@@ -65,12 +65,12 @@ public class FollowService {
 
         }
 
-        Feed feed = Feed.builder()
+        UserLog userLog = UserLog.builder()
                 .user(fromUser)
                 .name(fromUser.getName())
                 .log(log)
                 .build();
-        feedRepository.save(feed);
+        feedRepository.save(userLog);
 
         return message;
     }

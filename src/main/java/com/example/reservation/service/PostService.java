@@ -7,7 +7,7 @@ import static com.example.reservation.response.BaseResponseStatus.USERS_INVALID_
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.request.CreatePostReq;
 import com.example.reservation.dto.response.CreatePostRes;
-import com.example.reservation.entity.Feed;
+import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
@@ -45,12 +45,12 @@ public class PostService {
 
         String log = user.getName() + "님이 " + post.getTitle() + " 이라는 제목의 글을 작성했습니다.";
 
-        Feed feed = Feed.builder()
+        UserLog userLog = UserLog.builder()
                 .user(user)
                 .name(user.getName())
                 .log(log)
                 .build();
-        feedRepository.save(feed);
+        feedRepository.save(userLog);
 
         return CreatePostRes.builder()
                 .id(post.getId())
@@ -89,12 +89,12 @@ public class PostService {
 
             String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글을 좋아합니다.";
 
-            Feed feed = Feed.builder()
+            UserLog userLog = UserLog.builder()
                     .user(user)
                     .name(userName)
                     .log(log)
                     .build();
-            feedRepository.save(feed);
+            feedRepository.save(userLog);
 
             return "해당 글에 좋아요를 완료했습니다.";
 
@@ -104,12 +104,12 @@ public class PostService {
 
         String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글 좋아요를 취소했습니다.";
 
-        Feed feed = Feed.builder()
+        UserLog userLog = UserLog.builder()
                 .user(user)
                 .name(userName)
                 .log(log)
                 .build();
-        feedRepository.save(feed);
+        feedRepository.save(userLog);
 
         return "해당 글에 좋아요를 취소했습니다.";
 

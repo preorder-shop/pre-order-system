@@ -8,7 +8,7 @@ import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.request.CreateCommentReq;
 import com.example.reservation.dto.response.CreateCommentRes;
 import com.example.reservation.entity.Comment;
-import com.example.reservation.entity.Feed;
+import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.LikeComment;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
@@ -54,12 +54,12 @@ public class CommentService {
 
         String log = user.getName()+"님이 "+post.getUser().getName()+"의 글에 "+comment.getContent()+" 라는 내용의 댓글을 작성했습니다." ;
 
-        Feed feed = Feed.builder()
+        UserLog userLog = UserLog.builder()
                 .user(user)
                 .name(user.getName())
                 .log(log)
                 .build();
-        feedRepository.save(feed);
+        feedRepository.save(userLog);
 
         return CreateCommentRes.builder()
                 .id(comment.getId())
@@ -94,12 +94,12 @@ public class CommentService {
 
             String log = userName+"님이 "+commentUserName+"님의 "+comment.getContent() +" 내용의 댓글을 좋아합니다." ;
 
-            Feed feed = Feed.builder()
+            UserLog userLog = UserLog.builder()
                     .user(user)
                     .name(userName)
                     .log(log)
                     .build();
-            feedRepository.save(feed);
+            feedRepository.save(userLog);
 
             return "해당 댓글에 좋아요를 완료했습니다.";
 
@@ -109,12 +109,12 @@ public class CommentService {
 
         String log = userName+"님이 "+commentUserName+"님의 "+comment.getContent() +" 내용의 댓글에 좋아요를 취소했습니다." ;
 
-        Feed feed = Feed.builder()
+        UserLog userLog = UserLog.builder()
                 .user(user)
                 .name(userName)
                 .log(log)
                 .build();
-        feedRepository.save(feed);
+        feedRepository.save(userLog);
 
         return "해당 댓글에 좋아요를 취소했습니다.";
 

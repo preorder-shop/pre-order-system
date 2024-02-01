@@ -18,18 +18,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class Feed {
+public class UserLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user; // 해당 활동 행위자 id
+    @JoinColumn(name = "actor",nullable = false)
+    private User user; // 해당 활동을 한 유저
 
-    @Column(nullable = false)
-    private String name; // 해당 활동 행위자 이름
+    @ManyToOne
+    @JoinColumn(name = "recipient",nullable = false)
+    private User name; // 특정 행위를 당한 유저
 
     @Column(nullable = false)
     private String log; //  활동 내용
@@ -44,7 +45,7 @@ public class Feed {
 
 
     @Builder
-    public Feed(User user,String name,String log){
+    public UserLog(User user, String name, String log){
         this.user = user;
         this.name = name;
         this.log = log;
