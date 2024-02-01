@@ -1,4 +1,4 @@
-package com.example.reservation.config;
+package com.example.reservation.common.config;
 
 
 import com.amazonaws.auth.AWSCredentials;

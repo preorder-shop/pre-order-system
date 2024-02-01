@@ -5,13 +5,14 @@ import static com.example.reservation.response.BaseResponseStatus.POST_ID_INVALI
 import static com.example.reservation.response.BaseResponseStatus.USERS_INVALID_EMAIL;
 
 import com.example.reservation.common.exceptions.BaseException;
+import com.example.reservation.domain.ActiveType;
 import com.example.reservation.dto.request.CreatePostReq;
 import com.example.reservation.dto.response.CreatePostRes;
 import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
-import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.common.jwt.JWTUtil;
 import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.LikePostRepository;
 import com.example.reservation.repository.PostRepository;
@@ -46,9 +47,10 @@ public class PostService {
         String log = user.getName() + "님이 " + post.getTitle() + " 이라는 제목의 글을 작성했습니다.";
 
         UserLog userLog = UserLog.builder()
-                .user(user)
-                .name(user.getName())
+                .actor(user)
+                .recipient(post.getUser())
                 .log(log)
+                .activeType(ActiveType.WRITE_POST)
                 .build();
         feedRepository.save(userLog);
 
@@ -90,9 +92,10 @@ public class PostService {
             String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글을 좋아합니다.";
 
             UserLog userLog = UserLog.builder()
-                    .user(user)
-                    .name(userName)
+                    .actor(user)
+                    .recipient(post.getUser())
                     .log(log)
+                    .activeType(ActiveType.LIKE_POST)
                     .build();
             feedRepository.save(userLog);
 
@@ -105,9 +108,10 @@ public class PostService {
         String log = userName + "님이 " + postUserName + "님의 " + post.getTitle() + "제목의 글 좋아요를 취소했습니다.";
 
         UserLog userLog = UserLog.builder()
-                .user(user)
-                .name(userName)
+                .actor(user)
+                .recipient(post.getUser())
                 .log(log)
+                .activeType(ActiveType.CANCEL_LIKE_POST)
                 .build();
         feedRepository.save(userLog);
 

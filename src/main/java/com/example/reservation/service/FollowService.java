@@ -3,11 +3,12 @@ package com.example.reservation.service;
 import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
+import com.example.reservation.domain.ActiveType;
 import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.Follow;
 import com.example.reservation.entity.User;
 import com.example.reservation.entity.User.State;
-import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.common.jwt.JWTUtil;
 import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.FollowRepository;
 import com.example.reservation.repository.UserRepository;
@@ -31,6 +32,7 @@ public class FollowService {
 
         String log;
         String message="";
+        ActiveType activeType = null;
 
         // 토큰값으로 from 유저 확인
         User fromUser = userRepository.findByEmail(userEmail)
@@ -51,6 +53,8 @@ public class FollowService {
             log = fromUser.getName() + "님이 " + toUser.getName() + " 님을 팔로우 취소 했습니다.";
             message = "팔로우를 취소했습니다.";
 
+            activeType = ActiveType.CANCEL_FOLLOW;
+
         } else {
             Follow follow = Follow.builder()
                     .toUser(toUser)
@@ -63,12 +67,15 @@ public class FollowService {
 
             message = "해당 사용자를 팔로우했습니다.";
 
+            activeType=ActiveType.FOLLOW;
+
         }
 
         UserLog userLog = UserLog.builder()
-                .user(fromUser)
-                .name(fromUser.getName())
+                .actor(fromUser)
+                .recipient(fromUser)
                 .log(log)
+                .activeType(activeType)
                 .build();
         feedRepository.save(userLog);
 

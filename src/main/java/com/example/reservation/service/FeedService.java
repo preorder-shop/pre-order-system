@@ -7,7 +7,7 @@ import com.example.reservation.dto.response.GetFeedRes;
 import com.example.reservation.entity.UserLog;
 import com.example.reservation.entity.Follow;
 import com.example.reservation.entity.User;
-import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.common.jwt.JWTUtil;
 import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.FollowRepository;
 import com.example.reservation.repository.UserRepository;
@@ -40,7 +40,7 @@ public class FeedService {
         List<User> users = follows.stream().map(Follow::getToUser).toList(); // 내가 팔로우한 유저 목록
 
         if(users.size()>0){
-            List<UserLog> allByUserIn = feedRepository.findAllByUserIn(users);
+            List<UserLog> allByUserIn = feedRepository.findAllByActorIn(users);
             for (UserLog userLog : allByUserIn) {
                 result.add(new GetFeedRes(userLog.getLog()));
             }

@@ -1,4 +1,4 @@
-package com.example.reservation.jwt;
+package com.example.reservation.common.jwt;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

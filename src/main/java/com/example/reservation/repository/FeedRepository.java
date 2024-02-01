@@ -10,6 +10,6 @@ public interface FeedRepository extends JpaRepository<UserLog, Long> {
 //    Slice<Feed> findAllByUserIn(List<User> users, Pageable pageable); // 해당 유저정보를 갖고있는 피드 전체 가져옴. -> 에러
 
     //   List<Feed> findAllByUserInOrderByCreated_atDesc(List<User> users); -> 에러
-    List<UserLog> findAllByUserIn(List<User> users);
+    List<UserLog> findAllByActorIn(List<User> users);
 
 }

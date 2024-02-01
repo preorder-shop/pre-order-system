@@ -1,10 +1,8 @@
-package com.example.reservation.config;
+package com.example.reservation.common.config;
 
-import com.example.reservation.jwt.JWTFilter;
-import com.example.reservation.jwt.JWTUtil;
-import com.example.reservation.jwt.LoginFilter;
-import com.example.reservation.repository.TokenRepository;
-import com.example.reservation.service.TokenService;
+import com.example.reservation.common.jwt.JWTFilter;
+import com.example.reservation.common.jwt.JWTUtil;
+import com.example.reservation.common.jwt.LoginFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
