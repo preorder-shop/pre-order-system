@@ -1,17 +1,15 @@
 package com.example.reservation.service;
 
-import static com.example.reservation.common.response.BaseResponseStatus.COMMENT_ID_INVALID;
-import static com.example.reservation.common.response.BaseResponseStatus.POST_ID_INVALID;
-import static com.example.reservation.common.response.BaseResponseStatus.TOKEN_INVALID;
+import static com.example.reservation.response.BaseResponseStatus.COMMENT_ID_INVALID;
+import static com.example.reservation.response.BaseResponseStatus.POST_ID_INVALID;
+import static com.example.reservation.response.BaseResponseStatus.TOKEN_INVALID;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.CreateCommentReq;
 import com.example.reservation.dto.CreateCommentRes;
-import com.example.reservation.dto.CreatePostReq;
 import com.example.reservation.entity.Comment;
 import com.example.reservation.entity.Feed;
 import com.example.reservation.entity.LikeComment;
-import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;
 import com.example.reservation.entity.User;
 import com.example.reservation.jwt.JWTUtil;

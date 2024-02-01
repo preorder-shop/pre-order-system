@@ -1,9 +1,9 @@
 package com.example.reservation.controller;
 
-import static com.example.reservation.common.response.BaseResponseStatus.*;
+import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.common.response.BaseResponse;
+import com.example.reservation.response.BaseResponse;
 import com.example.reservation.dto.EmailCertificationReq;
 import com.example.reservation.dto.LoginReq;
 import com.example.reservation.dto.PatchPasswordReq;
@@ -11,13 +11,10 @@ import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
 import com.example.reservation.dto.SignUpRes;
 import com.example.reservation.jwt.JWTUtil;
-import com.example.reservation.jwt.LoginFilter;
 import com.example.reservation.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import java.net.http.HttpResponse;
 import java.util.Date;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,10 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

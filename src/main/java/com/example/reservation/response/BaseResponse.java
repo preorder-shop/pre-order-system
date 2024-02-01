@@ -1,6 +1,4 @@
-package com.example.reservation.common.response;
-
-import static com.example.reservation.common.response.BaseResponseStatus.SUCCESS;
+package com.example.reservation.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,9 +19,9 @@ public class BaseResponse<T> {
     private T result;
 
     public BaseResponse(T result) {
-        this.isSuccess = SUCCESS.isSuccess();
-        this.message = SUCCESS.getMessage();
-        this.code = SUCCESS.getCode();
+        this.isSuccess = BaseResponseStatus.SUCCESS.isSuccess();
+        this.message = BaseResponseStatus.SUCCESS.getMessage();
+        this.code = BaseResponseStatus.SUCCESS.getCode();
         this.result = result;
     }
 

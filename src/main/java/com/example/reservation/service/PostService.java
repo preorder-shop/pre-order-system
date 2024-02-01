@@ -1,9 +1,8 @@
 package com.example.reservation.service;
 
 
-import static com.example.reservation.common.response.BaseResponseStatus.POST_ID_INVALID;
-import static com.example.reservation.common.response.BaseResponseStatus.TOKEN_INVALID;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_INVALID_EMAIL;
+import static com.example.reservation.response.BaseResponseStatus.POST_ID_INVALID;
+import static com.example.reservation.response.BaseResponseStatus.USERS_INVALID_EMAIL;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.CreatePostReq;
@@ -17,7 +16,6 @@ import com.example.reservation.repository.FeedRepository;
 import com.example.reservation.repository.LikePostRepository;
 import com.example.reservation.repository.PostRepository;
 import com.example.reservation.repository.UserRepository;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

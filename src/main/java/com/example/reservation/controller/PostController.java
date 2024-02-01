@@ -1,12 +1,10 @@
 package com.example.reservation.controller;
 
-import static com.example.reservation.common.response.BaseResponseStatus.POST_EMPTY_CONTENT;
-import static com.example.reservation.common.response.BaseResponseStatus.POST_EMPTY_TITLE;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_EMAIL_CODE;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_EMPTY_PASSWORD;
+import static com.example.reservation.response.BaseResponseStatus.POST_EMPTY_CONTENT;
+import static com.example.reservation.response.BaseResponseStatus.POST_EMPTY_TITLE;
 
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.common.response.BaseResponse;
+import com.example.reservation.response.BaseResponse;
 import com.example.reservation.dto.CreatePostReq;
 import com.example.reservation.dto.CreatePostRes;
 import com.example.reservation.service.PostService;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

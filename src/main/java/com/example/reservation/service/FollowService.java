@@ -1,6 +1,6 @@
 package com.example.reservation.service;
 
-import static com.example.reservation.common.response.BaseResponseStatus.*;
+import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.entity.Feed;

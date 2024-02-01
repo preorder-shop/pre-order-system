@@ -1,4 +1,4 @@
-package com.example.reservation.common.response;
+package com.example.reservation.response;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -60,6 +60,8 @@ public enum BaseResponseStatus {
      */
 
     FAIL_SEND_CODE(false,HttpStatus.INTERNAL_SERVER_ERROR.value(), "인증코드 전송을 실패했습니다."),
+    FAIL_SAVE_FILE(false,HttpStatus.INTERNAL_SERVER_ERROR.value(), "파일 업로드에 실패했습니다."),
+
     UNEXPECTED_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상치 못한 에러가 발생했습니다.");
 
 

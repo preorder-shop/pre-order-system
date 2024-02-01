@@ -1,6 +1,6 @@
 package com.example.reservation.common.exceptions;
 
-import com.example.reservation.common.response.BaseResponseStatus;
+import com.example.reservation.response.BaseResponseStatus;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,7 @@
 package com.example.reservation.common.exceptions;
 
-import com.example.reservation.common.response.BaseResponse;
-import com.example.reservation.common.response.BaseResponseStatus;
+import com.example.reservation.response.BaseResponse;
+import com.example.reservation.response.BaseResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

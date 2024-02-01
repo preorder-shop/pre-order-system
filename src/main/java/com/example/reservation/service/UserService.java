@@ -1,12 +1,11 @@
 package com.example.reservation.service;
 
-import static com.example.reservation.common.response.BaseResponseStatus.*;
+import static com.example.reservation.response.BaseResponseStatus.*;
 
 
 import com.example.reservation.common.CertificationNumber;
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.EmailCertificationReq;
-import com.example.reservation.dto.LoginReq;
 import com.example.reservation.dto.PatchPasswordReq;
 import com.example.reservation.dto.PatchUserInfoReq;
 import com.example.reservation.dto.SignUpReq;
@@ -25,7 +24,6 @@ import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

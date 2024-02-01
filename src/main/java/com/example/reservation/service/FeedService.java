@@ -1,7 +1,6 @@
 package com.example.reservation.service;
 
-import static com.example.reservation.common.response.BaseResponseStatus.TOKEN_INVALID;
-import static com.example.reservation.common.response.BaseResponseStatus.USERS_INVALID_EMAIL;
+import static com.example.reservation.response.BaseResponseStatus.USERS_INVALID_EMAIL;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.dto.GetFeedRes;
@@ -14,13 +13,7 @@ import com.example.reservation.repository.FollowRepository;
 import com.example.reservation.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
