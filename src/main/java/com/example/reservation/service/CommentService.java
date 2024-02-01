@@ -5,8 +5,8 @@ import static com.example.reservation.response.BaseResponseStatus.POST_ID_INVALI
 import static com.example.reservation.response.BaseResponseStatus.TOKEN_INVALID;
 
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.dto.CreateCommentReq;
-import com.example.reservation.dto.CreateCommentRes;
+import com.example.reservation.dto.request.CreateCommentReq;
+import com.example.reservation.dto.response.CreateCommentRes;
 import com.example.reservation.entity.Comment;
 import com.example.reservation.entity.Feed;
 import com.example.reservation.entity.LikeComment;

@@ -4,13 +4,14 @@ import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.response.BaseResponse;
-import com.example.reservation.dto.EmailCertificationReq;
-import com.example.reservation.dto.LoginReq;
-import com.example.reservation.dto.PatchPasswordReq;
-import com.example.reservation.dto.PatchUserInfoReq;
-import com.example.reservation.dto.SignUpReq;
-import com.example.reservation.dto.SignUpRes;
+import com.example.reservation.dto.request.EmailCertificationReq;
+import com.example.reservation.dto.request.LoginReq;
+import com.example.reservation.dto.request.PatchPasswordReq;
+import com.example.reservation.dto.request.PatchUserInfoReq;
+import com.example.reservation.dto.request.SignUpReq;
+import com.example.reservation.dto.response.SignUpRes;
 import com.example.reservation.jwt.JWTUtil;
+import com.example.reservation.service.S3Service;
 import com.example.reservation.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,13 +22,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,8 +39,8 @@ public class UserController {
 
     private final UserService userService;
     private final JWTUtil jwtUtil;
-    private final BCryptPasswordEncoder encoder;
     private final AuthenticationManager authenticationManager; // DB를 통해서 유저정보를 가져와서 로그인한 데이터와 검증
+    private final S3Service s3Service;
 
     // 회원가입
     @PostMapping("/signup")
@@ -114,45 +116,24 @@ public class UserController {
 
     // ==== 변경 관련 ====
 
-    // 사용자 정보 변경
-
-//    @PatchMapping("")
-//    public String patchUserInfo(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PatchUserInfoReq patchUserInfoReq){
-//
-//        checkUsernameValidation(patchUserInfoReq.getName());
-//        checkGreetingValidation(patchUserInfoReq.getGreeting());
-//
-//        String jwtToken = authorizationHeader.substring(7);
-//        String result = userService.patchUserInfo(patchUserInfoReq, jwtToken);
-//
-//        return result;
-//    }
-
     @PatchMapping("")
-    public BaseResponse<String> patchUserInfo(@RequestBody PatchUserInfoReq patchUserInfoReq){
-
-        checkUsernameValidation(patchUserInfoReq.getName());
-        checkGreetingValidation(patchUserInfoReq.getGreeting());
+    public BaseResponse<String> patchUserInfo(MultipartFile profileImage,String name,String greeting){
+//        checkUsernameValidation(name);
+//        checkGreetingValidation(greeting);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
+        String img_url=null;
 
-        String result = userService.patchUserInfo(patchUserInfoReq, userEmail);
+        if(!profileImage.isEmpty()){
+            img_url = s3Service.uploadImage(profileImage);
+        }
+
+       String result = userService.patchUserInfo(userEmail, name, greeting, img_url);
 
         return new BaseResponse<>(result);
     }
 
-    // 비밀번호 변경
-//    @PatchMapping("/password")
-//    public String patchUserPassword(@RequestHeader("Authorization") String authorizationHeader,@RequestBody PatchPasswordReq patchPasswordReq){
-//
-//        // todo : 값에 대한 형식적 validation 처리
-//        String jwtToken = authorizationHeader.substring(7);
-//        String result = userService.patchPassword(patchPasswordReq, jwtToken);
-//
-//        return result;
-//
-//    }
 
     @PatchMapping("/password")
     public BaseResponse<String> patchUserPassword(@RequestBody PatchPasswordReq patchPasswordReq,HttpServletResponse response){

@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.request;
 
 import com.example.reservation.entity.User;
 import jakarta.validation.constraints.NotBlank;

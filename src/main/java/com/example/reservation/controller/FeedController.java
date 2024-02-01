@@ -2,7 +2,7 @@ package com.example.reservation.controller;
 
 
 import com.example.reservation.response.BaseResponse;
-import com.example.reservation.dto.GetFeedRes;
+import com.example.reservation.dto.response.GetFeedRes;
 import com.example.reservation.service.FeedService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

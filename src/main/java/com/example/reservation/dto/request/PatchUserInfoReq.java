@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +8,5 @@ public class PatchUserInfoReq {
 
     private String name; // 유저이름
     private String greeting; // 인사말
-
 
 }

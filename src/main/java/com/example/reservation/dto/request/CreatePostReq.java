@@ -1,15 +1,17 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class GetFeedRes {
+public class CreatePostReq {
 
+    private String title;
     private String content;
-
 
 }

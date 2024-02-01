@@ -4,8 +4,8 @@ import static com.example.reservation.response.BaseResponseStatus.COMMENT_EMPTY;
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.response.BaseResponse;
-import com.example.reservation.dto.CreateCommentReq;
-import com.example.reservation.dto.CreateCommentRes;
+import com.example.reservation.dto.request.CreateCommentReq;
+import com.example.reservation.dto.response.CreateCommentRes;
 import com.example.reservation.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,18 +8,20 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-public class CreatePostRes {
+public class CreateCommentRes {
+
     private Long id;
-    private String title;
-    private String content;
+    private Long postId;
+    private String comment;
     private String writer;
 
     @Builder
-    public CreatePostRes(Long id, String title,String content,String writer){
-        this.title = title;
-        this.content = content;
+    public CreateCommentRes(Long id,Long postId,String comment,String writer){
         this.id = id;
+        this.postId = postId;
+        this.comment = comment;
         this.writer = writer;
 
     }
+
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Service {
 
     private final AmazonS3 amazonS3;
-
     @Value("${cloud.aws.s3.bucket}")
-    private final String BUCKET_NAME;
+    private String BUCKET_NAME;
 
     public String uploadImage(MultipartFile file){ // todo -> 예외터졌을때 응답 코드로 보낼수 있게 test후 변경
         String fileName = createFileName(file.getOriginalFilename());// multipart 객체에서 파일 명 추출
@@ -44,5 +44,9 @@ public class S3Service {
     private String createFileName(String fileName){
         return UUID.randomUUID().toString().concat(fileName.substring(fileName.lastIndexOf(".")));
 
+    }
+
+    public void deleteImage(String fileName){
+        amazonS3.deleteObject(BUCKET_NAME,fileName);
     }
 }

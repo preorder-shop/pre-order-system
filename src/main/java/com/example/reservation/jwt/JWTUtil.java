@@ -24,7 +24,7 @@ public class JWTUtil { // JWT 생성
                    @Value("${jwt.token-valid-in-seconds}") long tokenValidInSeconds) { // 생성자를 주입받음.
 
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.accessTokenValidMs =tokenValidInSeconds*1000/24/60; // 1 minutes
+        this.accessTokenValidMs =tokenValidInSeconds*1000/24; // 1 hour
         this.refreshTokenValidMs = tokenValidInSeconds*1000*1; // 1 days (하루) -> 테스트를 위해
 
     }

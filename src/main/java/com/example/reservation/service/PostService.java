@@ -5,8 +5,8 @@ import static com.example.reservation.response.BaseResponseStatus.POST_ID_INVALI
 import static com.example.reservation.response.BaseResponseStatus.USERS_INVALID_EMAIL;
 
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.dto.CreatePostReq;
-import com.example.reservation.dto.CreatePostRes;
+import com.example.reservation.dto.request.CreatePostReq;
+import com.example.reservation.dto.response.CreatePostRes;
 import com.example.reservation.entity.Feed;
 import com.example.reservation.entity.LikePost;
 import com.example.reservation.entity.Post;

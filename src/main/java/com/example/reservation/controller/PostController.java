@@ -5,8 +5,8 @@ import static com.example.reservation.response.BaseResponseStatus.POST_EMPTY_TIT
 
 import com.example.reservation.common.exceptions.BaseException;
 import com.example.reservation.response.BaseResponse;
-import com.example.reservation.dto.CreatePostReq;
-import com.example.reservation.dto.CreatePostRes;
+import com.example.reservation.dto.request.CreatePostReq;
+import com.example.reservation.dto.response.CreatePostRes;
 import com.example.reservation.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

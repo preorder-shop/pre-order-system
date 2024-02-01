@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.request;
 
 import jakarta.persistence.SecondaryTable;
 import jakarta.validation.constraints.Email;

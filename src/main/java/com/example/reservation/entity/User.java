@@ -84,6 +84,10 @@ public class User {
         this.password = password;
     }
 
+    public void changeProfileImage(String url){
+        this.profile_img_url = url;
+    }
+
     public enum State {
         ACTIVE,
         INACTIVE, // 휴면계정 (오랫동안 접속 안했을때)

@@ -5,11 +5,11 @@ import static com.example.reservation.response.BaseResponseStatus.*;
 
 import com.example.reservation.common.CertificationNumber;
 import com.example.reservation.common.exceptions.BaseException;
-import com.example.reservation.dto.EmailCertificationReq;
-import com.example.reservation.dto.PatchPasswordReq;
-import com.example.reservation.dto.PatchUserInfoReq;
-import com.example.reservation.dto.SignUpReq;
-import com.example.reservation.dto.SignUpRes;
+import com.example.reservation.dto.request.EmailCertificationReq;
+import com.example.reservation.dto.request.PatchPasswordReq;
+import com.example.reservation.dto.request.PatchUserInfoReq;
+import com.example.reservation.dto.request.SignUpReq;
+import com.example.reservation.dto.response.SignUpRes;
 import com.example.reservation.entity.Certification;
 import com.example.reservation.entity.Token;
 import com.example.reservation.entity.User;
@@ -40,6 +40,8 @@ public class UserService {
     private final CertificationRepository certificationRepository;
     private final JWTUtil jwtUtil;
     private final TokenRepository tokenRepository;
+
+    private final S3Service s3Service;
 
     public SignUpRes createUser(SignUpReq signUpReq) {
 
@@ -112,23 +114,30 @@ public class UserService {
 
     }
 
-    public String patchUserInfo(PatchUserInfoReq patchUserInfoReq, String email) {
-
-        //  jwt 꺼내서 해당 사용자 객체 가져옴.
-     //   User user = getUserByJWTToken(token);
+    public String patchUserInfo(String email,String name, String greeting  , String image_url) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
 
-        if (patchUserInfoReq.getName() != null) {
-            user.changeName(patchUserInfoReq.getName());
+        if (name!=null && !name.isBlank()) {
+            user.changeName(name);
 
         }
-        if (patchUserInfoReq.getGreeting() != null) {
-            user.changeGreeting(patchUserInfoReq.getGreeting());
+        if (greeting!=null && !greeting.isBlank()) {
+            user.changeGreeting(greeting);
 
         }
+        if(image_url!=null){
+
+            String profile_img_url = user.getProfile_img_url();
+
+            if(profile_img_url!=null && !profile_img_url.isBlank()){
+                s3Service.deleteImage(profile_img_url);
+            }
+            user.changeProfileImage(image_url);
+        }
+
 
         return "유저 정보를 변경했습니다.";
 

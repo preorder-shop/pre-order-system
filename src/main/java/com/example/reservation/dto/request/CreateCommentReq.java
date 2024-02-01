@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostReq {
+@NoArgsConstructor
+public class CreateCommentReq {
 
-    private String title;
     private String content;
 
 }

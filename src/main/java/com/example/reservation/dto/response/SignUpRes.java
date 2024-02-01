@@ -1,4 +1,4 @@
-package com.example.reservation.dto;
+package com.example.reservation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
