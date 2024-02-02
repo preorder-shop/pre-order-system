@@ -1,1 +1,4 @@
 rootProject.name = 'reservation'
+include 'user_service'
+include 'activity_service'
+include 'newsfeed_service'
