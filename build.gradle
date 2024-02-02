@@ -19,6 +19,7 @@ configurations {
     }
 }
 
+
 repositories {
     mavenCentral()
 }
@@ -52,11 +53,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // db
-    runtimeOnly 'com.h2database:h2' // h2
+    //  runtimeOnly 'com.h2database:h2' // h2
     runtimeOnly 'com.mysql:mysql-connector-j' // mysql
 
 
-//     jpa
+    //     jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // jwt 필수 의존성 0.12.3 v

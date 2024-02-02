@@ -9,7 +9,9 @@ src/main/resources/application-aws.properties
 src/main/resources/application-mail.properties
 src/main/resources/application-config.properties
 
-
+user_service/src/main/resources/application-config.properties
+activity_service/src/main/resources/application-config.properties
+newsfeed_service/src/main/resources/application-config.properties
 ### STS ###
 .apt_generated
 .classpath
