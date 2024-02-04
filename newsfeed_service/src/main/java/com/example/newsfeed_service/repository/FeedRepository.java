@@ -1,6 +1,5 @@
 package com.example.newsfeed_service.repository;
 
-import com.example.newsfeed_service.entity.User;
 import com.example.newsfeed_service.entity.UserLog;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,5 @@
 package com.example.newsfeed_service.dto;
 
-import com.example.newsfeed_service.entity.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
