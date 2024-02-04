@@ -1,6 +1,5 @@
 package com.example.activity_service.dto.request;
 
-import com.example.activity_service.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
