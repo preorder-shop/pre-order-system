@@ -33,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
