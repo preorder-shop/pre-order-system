@@ -37,7 +37,7 @@ public class Token {
     private LocalDateTime updated_at;
 
     @Builder
-    public Token(String refreshToken,String email,Date expiredDate){
+    public Token(String refreshToken, String email, Date expiredDate){
         this.refreshToken = refreshToken;
         this.email = email;
         this.expiredDate = expiredDate;

@@ -10,10 +10,9 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public Token validateRefreshToken(String refreshToken,String email){
+    public void validateRefreshToken(String refreshToken, String email){
 
-        Token token = tokenRepository.findByRefreshTokenAndEmail(refreshToken, email)
+     tokenRepository.findByRefreshTokenAndEmail(refreshToken, email)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰값입니다."));
-        return token;
     }
 }

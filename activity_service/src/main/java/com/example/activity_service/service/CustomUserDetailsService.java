@@ -1,8 +1,6 @@
 package com.example.activity_service.service;
 
 import com.example.activity_service.dto.CustomUserDetails;
-import com.example.activity_service.entity.User;
-import com.example.activity_service.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

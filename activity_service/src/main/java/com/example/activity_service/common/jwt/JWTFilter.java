@@ -1,7 +1,6 @@
 package com.example.activity_service.common.jwt;
 
 import com.example.activity_service.dto.CustomUserDetails;
-import com.example.activity_service.entity.User;
 import com.example.activity_service.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
