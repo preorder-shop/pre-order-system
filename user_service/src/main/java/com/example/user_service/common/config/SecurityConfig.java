@@ -63,8 +63,8 @@ public class SecurityConfig {
         // 인증 인가 관련
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/users/signup", "/api/v1/users/email-certification",
-                                "/api/v1/users/login", "/login","/main"
+                        .requestMatchers("/users/signup", "/users/email-certification",
+                                "/users/login", "/login","/main"
                         ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
