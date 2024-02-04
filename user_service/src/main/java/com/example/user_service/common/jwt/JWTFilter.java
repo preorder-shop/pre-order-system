@@ -9,6 +9,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,8 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 @Component
 public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> 헤더로 들어온 jwt 토큰을 검증
-
-    private static final String[] whileLists = {"/api/v1/users/login", "/api/v1/users/logout"}; // jwt 검증을 해야되는 경로 저장..
+    private static final List<String> whileLists=new ArrayList<>(Arrays.asList("/users/login","/users/logout","/users/test/welcome"));
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final JWTUtil jwtUtil;
@@ -62,11 +64,11 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
         }
 
         // 로그인 권한이 필요 없는 경로 처리
-        if (Objects.equals(requestURI, "/api/v1/users/login") || Objects.equals(requestURI,
-                "/api/v1/users/email-certification") || Objects.equals(requestURI, "/api/v1/users/signup")||Objects.equals(requestURI,"/main")) {
+        if(whileLists.contains(requestURI)){
             filterChain.doFilter(request, response);
             return;
         }
+
 
         boolean validate = false;
 
@@ -248,10 +250,6 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 //        SecurityContextHolder.getContext().setAuthentication(authToken);
 //
 
-    }
-
-    private boolean checkIsLoginPath(String requestURI) { // 로그인을 해야만 하는 경로 (jwt, 인가가 필요한 경로인지 확인)
-        return !PatternMatchUtils.simpleMatch(whileLists, requestURI);
     }
 
     private boolean validateRefreshToken(String refreshToken) {
