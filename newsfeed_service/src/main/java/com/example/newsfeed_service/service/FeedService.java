@@ -6,12 +6,8 @@ import static com.example.newsfeed_service.common.response.BaseResponseStatus.US
 import com.example.newsfeed_service.common.exceptions.BaseException;
 import com.example.newsfeed_service.common.jwt.JWTUtil;
 import com.example.newsfeed_service.dto.response.GetFeedRes;
-import com.example.newsfeed_service.entity.Follow;
-import com.example.newsfeed_service.entity.User;
 import com.example.newsfeed_service.entity.UserLog;
 import com.example.newsfeed_service.repository.FeedRepository;
-import com.example.newsfeed_service.repository.FollowRepository;
-import com.example.newsfeed_service.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

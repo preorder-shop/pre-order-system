@@ -2,8 +2,6 @@ package com.example.newsfeed_service.service;
 
 
 import com.example.newsfeed_service.dto.CustomUserDetails;
-import com.example.newsfeed_service.entity.User;
-import com.example.newsfeed_service.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

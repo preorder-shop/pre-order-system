@@ -1,6 +1,5 @@
 package com.example.newsfeed_service.dto.request;
 
-import com.example.newsfeed_service.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 

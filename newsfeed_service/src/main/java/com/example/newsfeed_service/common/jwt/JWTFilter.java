@@ -1,7 +1,6 @@
 package com.example.newsfeed_service.common.jwt;
 
 import com.example.newsfeed_service.dto.CustomUserDetails;
-import com.example.newsfeed_service.entity.User;
 import com.example.newsfeed_service.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
