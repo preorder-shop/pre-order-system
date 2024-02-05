@@ -89,7 +89,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<JWTFilter> jwtFilterFilterRegistrationBean(){
         FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtFilter);
-        registrationBean.addUrlPatterns("/api/*"); // 필터를 어떤 URL에 적용할지 지정
+        registrationBean.addUrlPatterns("/users/*"); // 필터를 어떤 URL에 적용할지 지정
         return registrationBean;
     }
 

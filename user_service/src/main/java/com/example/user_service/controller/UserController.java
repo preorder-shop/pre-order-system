@@ -16,6 +16,7 @@ import com.example.user_service.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -159,6 +160,15 @@ public class UserController {
 
         return new BaseResponse<>(result);
 
+    }
+
+    @GetMapping("/follower")
+    public BaseResponse<List<Long>> getFollowers(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        List<Long> result = userService.getFollowers(userEmail);
+        return new BaseResponse<>(result);
     }
 
     private static void expireCookie(HttpServletResponse response,String name) {

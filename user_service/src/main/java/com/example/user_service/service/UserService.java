@@ -2,12 +2,14 @@ package com.example.user_service.service;
 
 import static com.example.user_service.common.response.BaseResponseStatus.*;
 
+import com.example.user_service.client.ActivityServiceClient;
 import com.example.user_service.common.CertificationNumber;
 import com.example.user_service.common.exceptions.BaseException;
 import com.example.user_service.common.jwt.JWTUtil;
 import com.example.user_service.dto.request.EmailCertificationReq;
 import com.example.user_service.dto.request.PatchPasswordReq;
 import com.example.user_service.dto.request.SignUpReq;
+import com.example.user_service.dto.response.GetFollowerRes;
 import com.example.user_service.dto.response.SignUpRes;
 import com.example.user_service.dto.response.UserDto;
 import com.example.user_service.entity.Certification;
@@ -19,7 +21,9 @@ import com.example.user_service.repository.TokenRepository;
 import com.example.user_service.repository.UserRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +43,9 @@ public class UserService {
     private final CertificationRepository certificationRepository;
     private final JWTUtil jwtUtil;
     private final TokenRepository tokenRepository;
-
     private final S3Service s3Service;
+
+    private final ActivityServiceClient activityServiceClient;
 
     public SignUpRes createUser(SignUpReq signUpReq) {
 
@@ -172,6 +177,18 @@ public class UserService {
         deleteRefreshToken(email);
 
         return "비밀번호 변경을 완료했습니다.";
+
+    }
+
+    public List<Long> getFollowers(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()->new BaseException(USERS_INVALID_EMAIL));
+
+        Long userId = user.getId();
+        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
+        List<Long> longList = new ArrayList<>();
+        getFollowerResList.forEach(v->longList.add(v.getFollowerId()));
+        return longList;
 
     }
 

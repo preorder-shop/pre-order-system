@@ -1,10 +1,11 @@
 package com.example.activity_service.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder
+@AllArgsConstructor
 @Getter @Setter
 public class UserDto {
 
@@ -13,6 +14,14 @@ public class UserDto {
     private String email;
     private String greeting;
     private String profileImg;
+
+//    @Builder
+//    public UserDto(Long id,String name,String greeting,String profileImg){
+//        this.id = id;
+//        this.name = name;
+//        this.greeting = greeting;
+//        this.profileImg = profileImg;
+//    }
 
 
 

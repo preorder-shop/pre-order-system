@@ -24,12 +24,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 @Component
 public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> 헤더로 들어온 jwt 토큰을 검증
-    private static final List<String> whileLists=new ArrayList<>(Arrays.asList("/users/login","/users/logout","/users/test/welcome"));
+    private static final List<String> whileLists=new ArrayList<>(Arrays.asList("/users/login","/users/logout","/users/test/welcome","/users/test/message"));
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final JWTUtil jwtUtil;
-
-    //   private final TokenRepository tokenRepository;
 
     private final TokenService tokenService;
 
