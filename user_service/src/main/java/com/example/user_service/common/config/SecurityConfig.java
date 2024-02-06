@@ -70,11 +70,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-//
-//        httpSecurity
-//                .addFilterBefore(new JWTFilter(jwtUtil,tokenService), LoginFilter.class);
-
-
         httpSecurity
                 .addFilterBefore(jwtFilter,LoginFilter.class);
         httpSecurity

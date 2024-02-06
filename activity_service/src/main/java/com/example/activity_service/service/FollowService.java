@@ -1,12 +1,17 @@
 package com.example.activity_service.service;
 
 
+import com.example.activity_service.client.UserServiceClient;
+import com.example.activity_service.common.jwt.JWTUtil;
+import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.response.GetFollowerRes;
 import com.example.activity_service.dto.response.UserDto;
 import com.example.activity_service.entity.Follow;
 import com.example.activity_service.repository.FollowRepository;
+import com.example.activity_service.repository.UserLogRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,27 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowService {
 
     private final FollowRepository followRepository;
-//    private final UserRepository userRepository;
-//    private final JWTUtil jwtUtil;
-//    private final FeedRepository feedRepository;
+    private final JWTUtil jwtUtil;
+    private final UserLogRepository userLogRepository;
+    private final UserServiceClient userServiceClient;
 
-//    public String followOther(String userEmail, Long id) {
-//
-//        String log;
-//        String message="";
-//        ActiveType activeType = null;
-//
-//        // 토큰값으로 from 유저 확인
-//        User fromUser = userRepository.findByEmail(userEmail)
-//                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
-//
-//        // Id 값으로 to 유저 확인
+    public String followOther(String fromUserId, Long toUserId) {
+
+        String log;
+
+        // Id 값으로 to 유저 확인
 //        User toUser = userRepository.findByIdAndState(id, State.ACTIVE)
 //                .orElseThrow(() -> new BaseException(USERS_INVALID_ID));
 //
-//        if (Objects.equals(fromUser.getId(), toUser.getId())) {
-//            throw new BaseException(FOLLOW_INVALID);
-//        }
+//        userServiceClient.validateUserId(toUserId);
+//
+////        if (Objects.equals(fromUserId, toUser.getId())) {
+////            throw new BaseException(FOLLOW_INVALID);
+////        }
 //
 //        Optional<Follow> exist = followRepository.findByFromUserAndToUser(fromUser, toUser);
 //
@@ -72,7 +73,7 @@ public class FollowService {
 //        feedRepository.save(userLog);
 //
 //        return message;
-//    }
+    }
 
     public List<GetFollowerRes> getFollowers(Long userId){
 

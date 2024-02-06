@@ -12,8 +12,10 @@ import com.example.user_service.dto.request.SignUpReq;
 import com.example.user_service.dto.response.SignUpRes;
 import com.example.user_service.dto.response.UserDto;
 import com.example.user_service.service.S3Service;
+import com.example.user_service.service.TokenService;
 import com.example.user_service.service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +44,8 @@ public class UserController {
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager; // DB를 통해서 유저정보를 가져와서 로그인한 데이터와 검증
     private final S3Service s3Service;
+
+    private final TokenService tokenService;
 
     // 회원가입
     @PostMapping("/signup")
@@ -171,6 +175,16 @@ public class UserController {
         return new BaseResponse<>(result);
     }
 
+    @GetMapping("/internal/token") // 내부적으로 사용
+    public void validateRefreshToken(HttpServletRequest request){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        String refreshTokenInCooke = getRefreshTokenInCooke(request);
+
+        tokenService.validateRefreshToken(refreshTokenInCooke,userEmail);
+    }
+
     private static void expireCookie(HttpServletResponse response,String name) {
         Cookie cookie=new Cookie(name, null);
         cookie.setMaxAge(0);
@@ -206,5 +220,22 @@ public class UserController {
         if(greeting==null || greeting.isBlank()){
             throw new BaseException(USERS_EMPTY_GREETING);
         }
+    }
+
+    private String getRefreshTokenInCooke(HttpServletRequest request){ // jwt Filter 를 거치기 때문에 무조건 존재함.
+        String refreshToken="";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+
+            if(cookie.getName().equals("refreshToken")){
+                refreshToken= cookie.getValue();
+                System.out.println("내부 통신을 통해 유저 서비스를 호출해서 리프레시 토큰의 유효성 검사 진행");
+                System.out.println(refreshToken);
+                break;
+            }
+        }
+        return refreshToken;
+
+
     }
 }

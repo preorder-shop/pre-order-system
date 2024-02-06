@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +37,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
             throws ServletException, IOException {
 
         // 요청값에 헤더에서 jwt token 꺼냄.
-        String authorization = request.getHeader(AUTHORIZATION_HEADER);
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestURI = request.getRequestURI(); // 요청한 경로
 
         System.out.println("어서라이제이션값 확인");

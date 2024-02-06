@@ -69,6 +69,8 @@ dependencies {
     // open feign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    implementation 'org.modelmapper:modelmapper:2.4.2'
+
 
 }
 

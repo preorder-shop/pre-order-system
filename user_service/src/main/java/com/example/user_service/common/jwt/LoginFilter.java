@@ -25,7 +25,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JWTUtil jwtUtil;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
 
         // todo : 입력 값에 대한 형식적 validation 처리
 //        String username = obtainUsername(request);
@@ -34,12 +35,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String password = request.getParameter("password");
 
 
-        System.out.println("==============");
-        System.out.println(email);
-        System.out.println(password);
-        System.out.println("==============");
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email,password,null);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email
+                ,password,null);
 
         return authenticationManager.authenticate(authenticationToken);
 
