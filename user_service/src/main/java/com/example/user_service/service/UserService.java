@@ -75,7 +75,7 @@ public class UserService {
 
         certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
 
-        return new SignUpRes(save.getId(), save.getName(), save.getEmail(), save.getGreeting());
+        return new SignUpRes(save.getUserId(), save.getName(), save.getEmail(), save.getGreeting());
     }
 
 
@@ -205,20 +205,27 @@ public class UserService {
 
     }
 
-    public String getUserRole(String email) {
+    public List<String> getUserIdAndRole(String email) {
+
+        List<String> userInfo = new ArrayList<>();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(INVALID_LOGIN));
 
-        return user.getRole();
+        userInfo.add(user.getUserId());
+        userInfo.add(user.getRole());
 
+
+        return userInfo;
     }
 
-    public void accessTokenSave(String refreshToken, String userEmail, Date expiredDate) {
+
+
+    public void accessTokenSave(String refreshToken, String userId, Date expiredDate) {
 
         Token token = Token.builder()
                 .refreshToken(refreshToken)
-                .email(userEmail)
+                .userId(userId)
                 .expiredDate(expiredDate)
                 .build();
 

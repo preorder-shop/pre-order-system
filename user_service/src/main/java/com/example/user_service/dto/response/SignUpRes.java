@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignUpRes { // 회원가입 응답
 
-    private Long id;
+    private String userId;
     private String name;
     private String email;
     private String greeting;

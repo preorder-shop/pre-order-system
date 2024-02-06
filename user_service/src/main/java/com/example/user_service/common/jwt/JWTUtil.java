@@ -30,6 +30,11 @@ public class JWTUtil { // JWT 생성
 
     // 검증을 진행할 3개의 메서드
 
+    public String getUserId(String token) {
+
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", String.class);
+    }
+
     public String getEmail(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
@@ -50,13 +55,13 @@ public class JWTUtil { // JWT 생성
     }
 
 
-    public String createToken(String email,String role,String type){
+    public String createToken(String userId,String role,String type){
         long now = (new Date()).getTime();
         if(Objects.equals(type, "ACCESS")){
             now +=this.accessTokenValidMs;
             Date validity = new Date(now);
             return Jwts.builder()
-                    .claim("email",email)
+                    .claim("userId",userId)
                     .claim("role",role)
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(validity)
@@ -68,7 +73,7 @@ public class JWTUtil { // JWT 생성
             now +=this.refreshTokenValidMs;
             Date validity = new Date(now);
             return Jwts.builder()
-                    .claim("email",email)
+                    .claim("userId",userId)
                     .claim("role",role)
                     .issuedAt(new Date(System.currentTimeMillis()))
                     .expiration(validity)

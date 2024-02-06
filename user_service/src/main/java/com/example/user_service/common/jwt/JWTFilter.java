@@ -106,12 +106,12 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
                 System.out.println("리프래시 토큰에 문제있음.");
                 return;
             }
-            String email = jwtUtil.getEmail(refreshToken);
+            String userId = jwtUtil.getUserId(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
-            tokenService.validateRefreshToken(refreshToken, email);
+            tokenService.validateRefreshToken(refreshToken, userId);
 
-            authenticateUser(email, role);
-            issuedNewAccessToken(response, email, role);
+            authenticateUser(userId, role);
+            issuedNewAccessToken(response, userId, role);
             filterChain.doFilter(request, response);
 
             System.out.println("refresh token 확인하고 access token 새로 발급함.");
@@ -263,21 +263,21 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
         return true;
     }
 
-    private void issuedNewAccessToken(HttpServletResponse response, String email, String role) {
+    private void issuedNewAccessToken(HttpServletResponse response, String userId, String role) {
 
-        String newAccess = jwtUtil.createToken(email, role, "ACCESS");
+        String newAccess = jwtUtil.createToken(userId, role, "ACCESS");
         response.addHeader("Authorization", "Bearer " + newAccess);
 
     }
 
-    private void authenticateUser(String email, String role) {
+    private void authenticateUser(String userId, String role) {
         User user = User.builder()
-                .email(email)
+                .userId(userId)
                 .password("temppassword")
                 .role(role)
                 .build();
 
-        // UserDetails에 회원 정보 객체 담기
+        // UserDetails 에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         // 스프링 시큐리티 인증 토큰 생성

@@ -42,7 +42,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
 
-        return user.getEmail(); // email 과 password 로 로그인을 진행하기 때문
+        return user.getUserId(); // email 과 password 로 로그인을 진행하기 때문
     }
 
     @Override

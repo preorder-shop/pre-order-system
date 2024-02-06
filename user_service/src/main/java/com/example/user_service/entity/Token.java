@@ -24,7 +24,7 @@ public class Token {
 
     private String refreshToken;
 
-    private String email; // 유저 식별값
+    private String userId; // 유저 식별값
 
     private Date expiredDate;
 
@@ -37,9 +37,9 @@ public class Token {
     private LocalDateTime updated_at;
 
     @Builder
-    public Token(String refreshToken,String email,Date expiredDate){
+    public Token(String refreshToken,String userId,Date expiredDate){
         this.refreshToken = refreshToken;
-        this.email = email;
+        this.userId = userId;
         this.expiredDate = expiredDate;
     }
 

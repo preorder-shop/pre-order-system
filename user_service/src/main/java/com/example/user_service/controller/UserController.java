@@ -47,7 +47,11 @@ public class UserController {
 
     private final TokenService tokenService;
 
-    // 회원가입
+    /**
+     * 회원가입 API
+     * @param signUpReq
+     * @return
+     */
     @PostMapping("/signup")
     public BaseResponse<SignUpRes> createUser(@RequestBody SignUpReq signUpReq){
 
@@ -64,7 +68,12 @@ public class UserController {
     }
 
 
-    // 로그인
+    /**
+     * 로그인 API
+     * @param loginReq
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     public BaseResponse<String> login(@RequestBody LoginReq loginReq, HttpServletResponse response){
 
@@ -80,15 +89,14 @@ public class UserController {
             throw new BaseException(INVALID_LOGIN);
         }
 
-        String userRole = userService.getUserRole(loginReq.getEmail());
+        List<String> userIdAndRole = userService.getUserIdAndRole(loginReq.getEmail());
 
-        String accessToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "ACCESS");
-        String refreshToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "REFRESH");
+        String accessToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "ACCESS");
+        String refreshToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "REFRESH");
 
 
         Date expiredDate = jwtUtil.getExpiredDate(refreshToken);
-        String userEmail = loginReq.getEmail();
-        userService.accessTokenSave(refreshToken,userEmail,expiredDate);
+        userService.accessTokenSave(refreshToken,userIdAndRole.get(0),expiredDate);
 
 
         response.addHeader("Authorization", "Bearer " + accessToken);
