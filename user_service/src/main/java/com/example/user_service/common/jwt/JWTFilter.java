@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,6 +28,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> 헤더로 들어온 jwt 토큰을 검증
     private static final List<String> whileLists=new ArrayList<>(Arrays.asList("/users/login","/users/logout","/users/test/welcome","/users/test/message"));
     private static final String AUTHORIZATION_HEADER = "Authorization";
+
+    private static final String COOKIE_NAME = "refreshToken";
 
     private final JWTUtil jwtUtil;
 
@@ -50,10 +53,11 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
         if (cookies != null) {
             System.out.println("==================");
             System.out.println("쿠키 정보 확인");
+
             for (Cookie cookie : cookies) {
                 System.out.println(cookie.getName());
                 System.out.println(cookie.getValue());
-                if (Objects.equals(cookie.getName(), "refreshToken")) {
+                if (Objects.equals(cookie.getName(), COOKIE_NAME)) {
                     refreshToken = cookie.getValue();
                 }
             }
@@ -76,8 +80,6 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 
             validate = validateRefreshToken(refreshToken);
             if (!validate) {
-                System.out.println("로그인 화면으로 redirect");
-              //  response.sendRedirect("/api/v1/users/login");
                 response.sendError(404,"다시 로그인 해주세요.");
                 filterChain.doFilter(request,response);
                 return;

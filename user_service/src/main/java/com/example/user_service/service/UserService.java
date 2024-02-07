@@ -7,6 +7,7 @@ import com.example.user_service.common.CertificationNumber;
 import com.example.user_service.common.exceptions.BaseException;
 import com.example.user_service.common.jwt.JWTUtil;
 import com.example.user_service.dto.request.EmailCertificationReq;
+import com.example.user_service.dto.request.LoginReq;
 import com.example.user_service.dto.request.PatchPasswordReq;
 import com.example.user_service.dto.request.SignUpReq;
 import com.example.user_service.dto.response.GetFollowerRes;
@@ -78,6 +79,24 @@ public class UserService {
         return new SignUpRes(save.getUserId(), save.getName(), save.getEmail(), save.getGreeting());
     }
 
+    public List<String> login(LoginReq loginReq) {
+
+        User user = userRepository.findByEmail(loginReq.getEmail())
+                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
+        boolean matches = encoder.matches(loginReq.getPassword(), user.getPassword());
+        if (!matches) {
+            throw new BaseException(INVALID_LOGIN);
+        }
+
+        List<String> userInfo = new ArrayList<>();
+
+        userInfo.add(user.getUserId());
+        userInfo.add(user.getRole());
+
+        return userInfo;
+
+    }
+
 
     public String emailCertificate(EmailCertificationReq emailCertificationReq) {
 
@@ -113,7 +132,8 @@ public class UserService {
         return "해당 이메일로 인증코드를 전송했습니다.";
 
     }
-    public UserDto getUserInfo(String email){
+
+    public UserDto getUserInfo(String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
@@ -134,32 +154,30 @@ public class UserService {
 
     }
 
-    public String patchUserInfo(String email,String name, String greeting  , String image_url) {
+    public String patchUserInfo(String email, String name, String greeting, String image_url) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
-
-        if (name!=null && !name.isBlank()) {
+        if (name != null && !name.isBlank()) {
             user.changeName(name);
 
         }
-        if (greeting!=null && !greeting.isBlank()) {
+        if (greeting != null && !greeting.isBlank()) {
             user.changeGreeting(greeting);
 
         }
-        if(image_url!=null){
+        if (image_url != null) {
 
             String profile_img_url = user.getProfile_img_url();
 
-            if(profile_img_url!=null && !profile_img_url.isBlank()){
+            if (profile_img_url != null && !profile_img_url.isBlank()) {
                 //todo : 삭제 안되는 원인 찾기
                 s3Service.deleteImage(profile_img_url);
 
             }
             user.changeProfileImage(image_url);
         }
-
 
         return "유저 정보를 변경했습니다.";
 
@@ -180,14 +198,14 @@ public class UserService {
 
     }
 
-    public List<Long> getFollowers(String email){
+    public List<Long> getFollowers(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new BaseException(USERS_INVALID_EMAIL));
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         Long userId = user.getId();
         List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
         List<Long> longList = new ArrayList<>();
-        getFollowerResList.forEach(v->longList.add(v.getFollowerId()));
+        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
         return longList;
 
     }
@@ -205,20 +223,19 @@ public class UserService {
 
     }
 
-    public List<String> getUserIdAndRole(String email) {
-
-        List<String> userInfo = new ArrayList<>();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
-
-        userInfo.add(user.getUserId());
-        userInfo.add(user.getRole());
-
-
-        return userInfo;
-    }
-
+//    public List<String> getUserIdAndRole(String email) {
+//
+//        List<String> userInfo = new ArrayList<>();
+//
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
+//
+//        userInfo.add(user.getUserId());
+//        userInfo.add(user.getRole());
+//
+//
+//        return userInfo;
+//    }
 
 
     public void accessTokenSave(String refreshToken, String userId, Date expiredDate) {

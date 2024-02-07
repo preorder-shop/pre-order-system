@@ -80,26 +80,29 @@ public class UserController {
         checkEmailValidation(loginReq.getEmail());
         checkPasswordValidation(loginReq.getPassword());
 
-        try{  // 유저 검증
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
-            authenticationManager.authenticate(authenticationToken);
+//        try{  // 유저 검증
+//            UsernamePasswordAuthenticationToken authenticationToken =
+//                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
+//            authenticationManager.authenticate(authenticationToken);
+//
+//        }catch (Exception e){
+//            throw new BaseException(INVALID_LOGIN);
+//        }
 
-        }catch (Exception e){
-            throw new BaseException(INVALID_LOGIN);
-        }
+        // 로그인에서는 유저 이메일과 password 를 가지고 로그인
+        // -> jwtFilter는 탈 필요가 없으므로 바로 컨트롤러로 넘어와서 User db에 이메일과 비번이 일치하는 객체가 있는지 확인.
 
-        List<String> userIdAndRole = userService.getUserIdAndRole(loginReq.getEmail());
+        List<String> userIdAndRole = userService.login(loginReq);
 
         String accessToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "ACCESS");
         String refreshToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "REFRESH");
 
-
         Date expiredDate = jwtUtil.getExpiredDate(refreshToken);
-        userService.accessTokenSave(refreshToken,userIdAndRole.get(0),expiredDate);
+
+        userService.accessTokenSave(refreshToken,userIdAndRole.get(0),expiredDate); // 토큰 관리를 위한 db 저장
 
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        jwtUtil.addAccessTokenInHeader(accessToken,response);
         jwtUtil.addRefreshTokenInCookie(refreshToken,response);
 
         return new BaseResponse<>("로그인을 완료했습니다.");

@@ -24,7 +24,7 @@ public class Token {
 
     private String refreshToken;
 
-    private String userId; // 유저 식별값
+    private String userId; // 유저 식별값 (UUID)
 
     private Date expiredDate;
 
