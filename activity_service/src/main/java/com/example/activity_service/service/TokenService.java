@@ -1,5 +1,7 @@
 package com.example.activity_service.service;
 
+import com.example.activity_service.common.exceptions.BaseException;
+import com.example.activity_service.common.response.BaseResponseStatus;
 import com.example.activity_service.entity.Token;
 import com.example.activity_service.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +12,10 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void validateRefreshToken(String refreshToken, String email){
+    public void validateRefreshToken(String refreshToken, String userId) {
 
-     tokenRepository.findByRefreshTokenAndEmail(refreshToken, email)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰값입니다."));
+        tokenRepository.findByRefreshTokenAndUserId(refreshToken, userId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.TOKEN_INVALID));
+
     }
 }

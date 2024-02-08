@@ -30,12 +30,12 @@ public class PostService {
     private final LikePostRepository likePostRepository;
     private final UserLogRepository userLogRepository;
 
-    public CreatePostRes createPost(String userEmail, CreatePostReq createPostReq) {
+    public CreatePostRes createPost(String userId, CreatePostReq createPostReq) {
 
         Post buildPost = Post.builder()
                 .title(createPostReq.getTitle())
                 .content(createPostReq.getContent())
-                .userId(userEmail)
+                .userId(userId)
                 .build();
 
         Post post = postRepository.save(buildPost);
@@ -43,7 +43,7 @@ public class PostService {
  //       String log = user.getName() + "님이 " + post.getTitle() + " 이라는 제목의 글을 작성했습니다.";
 
         UserLog userLog = UserLog.builder()
-                .actor(userEmail)
+                .actor(userId)
                 .recipient(post.getUserId())
                 .activeType(ActiveType.WRITE_POST)
                 .build();
@@ -59,7 +59,7 @@ public class PostService {
 
     }
 
-    public String likePost(String userEmail, Long postId) {
+    public String likePost(String userId, Long postId) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(POST_ID_INVALID));
@@ -70,19 +70,19 @@ public class PostService {
 //        }
 
 
-        Optional<LikePost> byUserAndPost = likePostRepository.findByUserIdAndPost(userEmail, post);
+        Optional<LikePost> byUserAndPost = likePostRepository.findByUserIdAndPost(userId, post);
 
         if (!byUserAndPost.isPresent()) {
 
             LikePost likePost = LikePost.builder()
-                    .userId(userEmail)
+                    .userId(userId)
                     .post(post)
                     .build();
 
             likePostRepository.save(likePost);
 
             UserLog userLog = UserLog.builder()
-                    .actor(userEmail)
+                    .actor(userId)
                     .recipient(post.getUserId())
                     .activeType(ActiveType.LIKE_POST)
                     .build();
@@ -97,7 +97,7 @@ public class PostService {
 
 
         UserLog userLog = UserLog.builder()
-                .actor(userEmail)
+                .actor(userId)
                 .recipient(post.getUserId())
                 .activeType(ActiveType.CANCEL_LIKE_POST)
                 .build();
