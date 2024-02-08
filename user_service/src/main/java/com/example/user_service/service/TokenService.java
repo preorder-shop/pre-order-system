@@ -13,9 +13,9 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void validateRefreshToken(String refreshToken, String email) {
+    public void validateRefreshToken(String refreshToken, String userId) {
 
-        tokenRepository.findByRefreshTokenAndEmail(refreshToken, email)
+        tokenRepository.findByRefreshTokenAndUserId(refreshToken, userId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.TOKEN_INVALID));
 
     }

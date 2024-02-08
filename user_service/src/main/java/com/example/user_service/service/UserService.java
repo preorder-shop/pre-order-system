@@ -2,7 +2,7 @@ package com.example.user_service.service;
 
 import static com.example.user_service.common.response.BaseResponseStatus.*;
 
-import com.example.user_service.client.ActivityServiceClient;
+
 import com.example.user_service.common.CertificationNumber;
 import com.example.user_service.common.exceptions.BaseException;
 import com.example.user_service.common.jwt.JWTUtil;
@@ -46,7 +46,7 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final S3Service s3Service;
 
-    private final ActivityServiceClient activityServiceClient;
+   // private final ActivityServiceClient activityServiceClient;
 
     public SignUpRes createUser(SignUpReq signUpReq) {
 
@@ -148,16 +148,16 @@ public class UserService {
 
     }
 
-    public void deleteRefreshToken(String email) {
+    public void deleteRefreshToken(String userId) {
 
-        tokenRepository.deleteByEmail(email);
+        tokenRepository.deleteByUserId(userId);
 
     }
 
-    public String patchUserInfo(String email, String name, String greeting, String image_url) {
+    public String patchUserInfo(String userId, String name, String greeting, String image_url) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_ID));
 
         if (name != null && !name.isBlank()) {
             user.changeName(name);
@@ -183,32 +183,32 @@ public class UserService {
 
     }
 
-    public String patchPassword(PatchPasswordReq patchPasswordReq, String email) {
+    public String patchPassword(PatchPasswordReq patchPasswordReq, String userId) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         String newPassword = encoder.encode(patchPasswordReq.getPassword());
 
         user.changePassword(newPassword);
 
-        deleteRefreshToken(email);
+        deleteRefreshToken(userId);
 
         return "비밀번호 변경을 완료했습니다.";
 
     }
 
-    public List<Long> getFollowers(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
-
-        Long userId = user.getId();
-        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
-        List<Long> longList = new ArrayList<>();
-        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
-        return longList;
-
-    }
+//    public List<Long> getFollowers(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+//
+//        Long userId = user.getId();
+//        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
+//        List<Long> longList = new ArrayList<>();
+//        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
+//        return longList;
+//
+//    }
 
     private boolean checkEmailDuplication(String email) {
         return userRepository.existsByEmail(email);
