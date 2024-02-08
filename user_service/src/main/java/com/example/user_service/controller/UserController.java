@@ -179,14 +179,14 @@ public class UserController {
 
     }
 
-//    @GetMapping("/follower")
-//    public BaseResponse<List<Long>> getFollowers(){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String userEmail = auth.getName();
-//
-//        List<Long> result = userService.getFollowers(userEmail);
-//        return new BaseResponse<>(result);
-//    }
+    @GetMapping("/follower")
+    public BaseResponse<List<Long>> getFollowers(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        List<Long> result = userService.getFollowers(userId);
+        return new BaseResponse<>(result);
+    }
 
     @GetMapping("/internal/token") // 내부적으로 사용
     public void validateRefreshToken(HttpServletRequest request){

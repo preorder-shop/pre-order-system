@@ -3,6 +3,7 @@ package com.example.user_service.service;
 import static com.example.user_service.common.response.BaseResponseStatus.*;
 
 
+import com.example.user_service.client.ActivityServiceClient;
 import com.example.user_service.common.CertificationNumber;
 import com.example.user_service.common.exceptions.BaseException;
 import com.example.user_service.common.jwt.JWTUtil;
@@ -46,7 +47,7 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final S3Service s3Service;
 
-   // private final ActivityServiceClient activityServiceClient;
+   private final ActivityServiceClient activityServiceClient;
 
     public SignUpRes createUser(SignUpReq signUpReq) {
 
@@ -198,17 +199,16 @@ public class UserService {
 
     }
 
-//    public List<Long> getFollowers(String email) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
-//
-//        Long userId = user.getId();
-//        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
-//        List<Long> longList = new ArrayList<>();
-//        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
-//        return longList;
-//
-//    }
+    public List<Long> getFollowers(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+
+        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
+        List<Long> longList = new ArrayList<>();
+        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
+        return longList;
+
+    }
 
     private boolean checkEmailDuplication(String email) {
         return userRepository.existsByEmail(email);
