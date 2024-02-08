@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -198,6 +199,11 @@ public class UserController {
         tokenService.validateRefreshToken(refreshTokenInCooke,userEmail);
     }
 
+    @GetMapping("/internal/{userId}") // 내부적으로 사용
+    public void validateUserId(@PathVariable String userId){
+
+        userService.validateUserId(userId);
+    }
     private static void expireCookie(HttpServletResponse response,String name) {
         Cookie cookie=new Cookie(name, null);
         cookie.setMaxAge(0);

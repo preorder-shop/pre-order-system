@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GetFollowerRes {
 
-    private Long followerId;
+    private String followerId;
 }

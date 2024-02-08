@@ -250,4 +250,9 @@ public class UserService {
 
     }
 
+    public void validateUserId(String userId){
+        userRepository.findByUserId(userId)
+                .orElseThrow(()->new BaseException(TOKEN_INVALID));
+    }
+
 }

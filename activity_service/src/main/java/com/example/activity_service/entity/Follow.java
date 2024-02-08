@@ -32,10 +32,10 @@ public class Follow {
 //    private User fromUser; // follow 를 신청한 id
 
     @Column(nullable = false,name = "toUserId")
-    private Long toUserId;  // follow 신청 받은 유저 id
+    private String toUserId;  // follow 신청 받은 유저 id
 
     @Column(nullable = false,name = "fromUserId")
-    private Long fromUserId; // follow 를 신청한 유저 id
+    private String fromUserId; // follow 를 신청한 유저 id
 
     @CreationTimestamp
     @Column(nullable = false,name = "createdAt")
@@ -54,9 +54,9 @@ public class Follow {
 //    }
 
     @Builder
-    public Follow(Long toUser,Long fromUser){
-        this.toUserId = toUser;
-        this.fromUserId = fromUser;
+    public Follow(String toUserId,String fromUserId){
+        this.toUserId = toUserId;
+        this.fromUserId = fromUserId;
     }
 }
 

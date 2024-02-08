@@ -23,12 +23,12 @@ public class FollowController {
     private final FollowService followService;
 
     @GetMapping("/{userId}")
-    public BaseResponse<String> followOther(@PathVariable(name = "userId") Long userId){
+    public BaseResponse<String> followOther(@PathVariable(name = "userId") String followId){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
 
-        String result = followService.followOther(userEmail, userId);
+        String result = followService.followOther(userId, followId);
 
         return new BaseResponse<>(result);
     }
