@@ -21,12 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/post")
+@RequestMapping("/activity/post")
 @RestController
 public class PostController {
 
     private final PostService postService;
 
+    /**
+     * 포스트 작성 API
+     * @param createPostReq
+     * @return
+     */
     @PostMapping("")
     public BaseResponse<CreatePostRes> createPost(@RequestBody CreatePostReq createPostReq){
 
@@ -42,7 +47,7 @@ public class PostController {
     }
 
     /**
-     * 좋아요 API
+     * 포스트 좋아요 API
      */
     @GetMapping ("/like/{id}")
     public BaseResponse<String> likePost(@PathVariable("id") Long id){

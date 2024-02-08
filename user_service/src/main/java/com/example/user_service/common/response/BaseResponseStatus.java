@@ -19,7 +19,7 @@ public enum BaseResponseStatus {
 
     POST_USERS_EXISTS_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"이미 가입한 이메일 입니다."),
 
-    USERS_INVALID_ID(false,HttpStatus.BAD_REQUEST.value(),"잘못된 아이디 정보입니다."),
+    USERS_INVALID_ID(false,HttpStatus.BAD_REQUEST.value(),"잘못된 유저 정보입니다."),
     USERS_INVALID_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"이메일 정보를 다시 확인해주세요."),
     USERS_INVALID_PASSWORD(false,HttpStatus.BAD_REQUEST.value(),"비밀번호 정보를 다시 확인해주세요."),
 

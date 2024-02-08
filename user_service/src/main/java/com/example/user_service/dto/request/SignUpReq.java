@@ -4,6 +4,7 @@ import com.example.user_service.entity.User;
 import jakarta.validation.constraints.NegativeOrZero;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class SignUpReq {
     public User toEntity(String encryptedPw) {
         return User
                 .builder()
+                .userId(UUID.randomUUID().toString())
                 .name(this.name)
                 .email(this.email)
                 .password(encryptedPw)

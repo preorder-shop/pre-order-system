@@ -1,6 +1,7 @@
 package com.example.activity_service.common.jwt;
 
-import com.example.activity_service.dto.CustomUserDetails;
+
+import com.example.activity_service.client.UserServiceClient;
 import com.example.activity_service.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,27 +9,37 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 @Component
 public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> 헤더로 들어온 jwt 토큰을 검증
 
-    private static final String[] whileLists = {"/api/v1/users/login", "/api/v1/users/logout"}; // jwt 검증을 해야되는 경로 저장..
+    private static final List<String> whileLists=new ArrayList<>(
+            Arrays.asList(""));
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final JWTUtil jwtUtil;
+    private final UserServiceClient userServiceClient;
 
     //   private final TokenRepository tokenRepository;
 
-    private final TokenService tokenService;
+ //   private final TokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -61,8 +72,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
         }
 
         // 로그인 권한이 필요 없는 경로 처리
-        if (Objects.equals(requestURI, "/api/v1/users/login") || Objects.equals(requestURI,
-                "/api/v1/users/email-certification") || Objects.equals(requestURI, "/api/v1/users/signup")) {
+        if(whileLists.contains(requestURI)){
             filterChain.doFilter(request, response);
             return;
         }
@@ -82,7 +92,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
             }
             String email = jwtUtil.getEmail(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
-            tokenService.validateRefreshToken(refreshToken, email);
+            userServiceClient.validateRefreshToken();
 
             authenticateUser(email, role);
             issuedNewAccessToken(response, email, role);
@@ -106,7 +116,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
             }
             String email = jwtUtil.getEmail(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
-            tokenService.validateRefreshToken(refreshToken, email);
+            userServiceClient.validateRefreshToken();
 
             authenticateUser(email, role);
             issuedNewAccessToken(response, email, role);
@@ -126,132 +136,10 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 
         filterChain.doFilter(request, response);
 
-//        if(StringUtils.hasText(accessToken)&& !jwtUtil.isExpired(accessToken)){ // AccessToken 이 존재하고 유효한 경우
-//            System.out.println("해당 ACCESSTOKEN 은 유효함 -> 인증 ok.");
-//            // 인가 처리
-//            String email = jwtUtil.getEmail(accessToken);
-//            String role = jwtUtil.getRole(accessToken);
-//            User user = User.builder()
-//                    .email(email)
-//                    .password("temppassword")
-//                    .role(role)
-//                    .build();
-//
-//            // UserDetails에 회원 정보 객체 담기
-//            CustomUserDetails customUserDetails = new CustomUserDetails(user);
-//
-//            // 스프링 시큐리티 인증 토큰 생성
-//            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-//                    customUserDetails.getAuthorities());
-//            // 세션에 사용자 등록
-//            SecurityContextHolder.getContext().setAuthentication(authToken);
-//
-//        }else if(StringUtils.hasText(accessToken) && jwtUtil.isExpired(accessToken)){ // AccessToken 이 존재하지만 만료된 경우
-//            System.out.println("해당 ACCESSTOKEN은 만료됬음.");
-//
-//
-//
-//
-//            if(StringUtils.hasText(refreshToken)) { // RefreshToken 이 존재하면
-//                if (!jwtUtil.isExpired(refreshToken)) { // RefreshToken 이 유효하면
-//                    // todo : access 토큰 새로 발급.
-//                    String email = jwtUtil.getEmail(refreshToken);
-//                    String role = jwtUtil.getRole(refreshToken);
-//                    String newRefresh = jwtUtil.createToken(email, role, "REFRESH");
-//                    String newAccess = jwtUtil.createToken(email,role,"ACCESS");
-//                    response.addHeader("Authorization", "Bearer " + newAccess);
-//                    jwtUtil.addRefreshTokenInCookie(newRefresh,response);
-//
-//                    User user = User.builder()
-//                            .email(email)
-//                            .password("temppassword")
-//                            .role(role)
-//                            .build();
-//
-//                    // UserDetails에 회원 정보 객체 담기
-//                    CustomUserDetails customUserDetails = new CustomUserDetails(user);
-//
-//                    // 스프링 시큐리티 인증 토큰 생성
-//                    Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-//                            customUserDetails.getAuthorities());
-//                    // 세션에 사용자 등록
-//                    SecurityContextHolder.getContext().setAuthentication(authToken);
-//                } else {
-//                    // todo : 인가 거절
-//                    System.out.println("인가 거절 : 재로그인 필요");
-//                    response.sendRedirect("/api/v1/users/login");
-//                }
-//
-//            }else{ // Refresh Token 이 존재하지 않음.
-//                // todo : 거절
-//                System.out.println("인가 거절 : 재로그인 필요");
-//                response.sendRedirect("/api/v1/users/login");
-//
-//            }
-//        }else{ // AccessToken 없음
-//            if(StringUtils.hasText(refreshToken)) { // RefreshToken 이 존재하면
-//                if (!jwtUtil.isExpired(refreshToken)) { // RefreshToken 이 유효하면
-//                    // todo : access 토큰 새로 발급.
-//                    String email = jwtUtil.getEmail(refreshToken);
-//                    String role = jwtUtil.getRole(refreshToken);
-//                    String newRefresh = jwtUtil.createToken(email, role, "REFRESH");
-//                    String newAccess = jwtUtil.createToken(email,role,"ACCESS");
-//                    response.addHeader("Authorization", "Bearer " + newAccess);
-//                    jwtUtil.addRefreshTokenInCookie(newRefresh,response);
-//
-//                    User user = User.builder()
-//                            .email(email)
-//                            .password("temppassword")
-//                            .role(role)
-//                            .build();
-//
-//                    // UserDetails에 회원 정보 객체 담기
-//                    CustomUserDetails customUserDetails = new CustomUserDetails(user);
-//
-//                    // 스프링 시큐리티 인증 토큰 생성
-//                    Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-//                            customUserDetails.getAuthorities());
-//                    // 세션에 사용자 등록
-//                    SecurityContextHolder.getContext().setAuthentication(authToken);
-//                } else {
-//                    // todo : 인가 거절
-//                    System.out.println("인가 거절 : 재로그인 필요");
-//                    response.sendRedirect("/api/v1/users/login");
-//                }
-//
-//            }else{ // Refresh Token 이 존재하지 않음.
-//                // todo : 거절
-//                System.out.println("인가 거절 : 재로그인 필요");
-//                response.sendRedirect("/api/v1/users/login");
-//
-//            }
 
-        //    }
-
-//        String email = jwtUtil.getEmail(token);
-//        String role = jwtUtil.getRole(token);
-//
-//        User user = User.builder()
-//                .email(email)
-//                .password("temppassword")
-//                .role(role)
-//                .build();
-//
-//
-//        // UserDetails에 회원 정보 객체 담기
-//        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-//
-//        // 스프링 시큐리티 인증 토큰 생성
-//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-//        // 세션에 사용자 등록
-//        SecurityContextHolder.getContext().setAuthentication(authToken);
-//
 
     }
 
-    private boolean checkIsLoginPath(String requestURI) { // 로그인을 해야만 하는 경로 (jwt, 인가가 필요한 경로인지 확인)
-        return !PatternMatchUtils.simpleMatch(whileLists, requestURI);
-    }
 
     private boolean validateRefreshToken(String refreshToken) {
 
@@ -273,20 +161,27 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
     }
 
     private void authenticateUser(String email, String role) {
-        User user = User.builder()
-                .email(email)
+//        User user = User.builder()
+//                .email(email)
+//                .password("temppassword")
+//                .role(role)
+//                .build();
+//
+//        // UserDetails에 회원 정보 객체 담기
+//        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+//
+//        // 스프링 시큐리티 인증 토큰 생성
+//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
+//                customUserDetails.getAuthorities());
+//        // 세션에 사용자 등록
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        UserDetails user = User.builder()  // 해당 서비스에서 인증 처리를 위해 사용 (유저는 이메일로 구분)
+                .username(email)
                 .password("temppassword")
-                .role(role)
                 .build();
 
-        // UserDetails에 회원 정보 객체 담기
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-
-        // 스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-                customUserDetails.getAuthorities());
-        // 세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        new InMemoryUserDetailsManager(user);
 
     }
 }

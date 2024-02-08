@@ -23,9 +23,8 @@ public class LikePost {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false,name="user_id")
-    private User user;
+    @Column(nullable = false,name = "userId")
+    private String userId;
 
     @ManyToOne
     @JoinColumn(nullable = false,name = "post_id")
@@ -40,8 +39,8 @@ public class LikePost {
     private LocalDateTime updated_at;
 
     @Builder
-    public LikePost(User user,Post post){
-        this.user = user;
+    public LikePost(String userId,Post post){
+        this.userId = userId;
         this.post = post;
     }
 

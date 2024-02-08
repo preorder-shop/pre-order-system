@@ -2,12 +2,15 @@ package com.example.user_service.service;
 
 import static com.example.user_service.common.response.BaseResponseStatus.*;
 
+
 import com.example.user_service.common.CertificationNumber;
 import com.example.user_service.common.exceptions.BaseException;
 import com.example.user_service.common.jwt.JWTUtil;
 import com.example.user_service.dto.request.EmailCertificationReq;
+import com.example.user_service.dto.request.LoginReq;
 import com.example.user_service.dto.request.PatchPasswordReq;
 import com.example.user_service.dto.request.SignUpReq;
+import com.example.user_service.dto.response.GetFollowerRes;
 import com.example.user_service.dto.response.SignUpRes;
 import com.example.user_service.dto.response.UserDto;
 import com.example.user_service.entity.Certification;
@@ -19,7 +22,9 @@ import com.example.user_service.repository.TokenRepository;
 import com.example.user_service.repository.UserRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +44,9 @@ public class UserService {
     private final CertificationRepository certificationRepository;
     private final JWTUtil jwtUtil;
     private final TokenRepository tokenRepository;
-
     private final S3Service s3Service;
+
+   // private final ActivityServiceClient activityServiceClient;
 
     public SignUpRes createUser(SignUpReq signUpReq) {
 
@@ -70,7 +76,25 @@ public class UserService {
 
         certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
 
-        return new SignUpRes(save.getId(), save.getName(), save.getEmail(), save.getGreeting());
+        return new SignUpRes(save.getUserId(), save.getName(), save.getEmail(), save.getGreeting());
+    }
+
+    public List<String> login(LoginReq loginReq) {
+
+        User user = userRepository.findByEmail(loginReq.getEmail())
+                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
+        boolean matches = encoder.matches(loginReq.getPassword(), user.getPassword());
+        if (!matches) {
+            throw new BaseException(INVALID_LOGIN);
+        }
+
+        List<String> userInfo = new ArrayList<>();
+
+        userInfo.add(user.getUserId());
+        userInfo.add(user.getRole());
+
+        return userInfo;
+
     }
 
 
@@ -108,7 +132,8 @@ public class UserService {
         return "해당 이메일로 인증코드를 전송했습니다.";
 
     }
-    public UserDto getUserInfo(String email){
+
+    public UserDto getUserInfo(String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
@@ -123,31 +148,30 @@ public class UserService {
 
     }
 
-    public void deleteRefreshToken(String email) {
+    public void deleteRefreshToken(String userId) {
 
-        tokenRepository.deleteByEmail(email);
+        tokenRepository.deleteByUserId(userId);
 
     }
 
-    public String patchUserInfo(String email,String name, String greeting  , String image_url) {
+    public String patchUserInfo(String userId, String name, String greeting, String image_url) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new BaseException(USERS_INVALID_ID));
 
-
-        if (name!=null && !name.isBlank()) {
+        if (name != null && !name.isBlank()) {
             user.changeName(name);
 
         }
-        if (greeting!=null && !greeting.isBlank()) {
+        if (greeting != null && !greeting.isBlank()) {
             user.changeGreeting(greeting);
 
         }
-        if(image_url!=null){
+        if (image_url != null) {
 
             String profile_img_url = user.getProfile_img_url();
 
-            if(profile_img_url!=null && !profile_img_url.isBlank()){
+            if (profile_img_url != null && !profile_img_url.isBlank()) {
                 //todo : 삭제 안되는 원인 찾기
                 s3Service.deleteImage(profile_img_url);
 
@@ -155,25 +179,36 @@ public class UserService {
             user.changeProfileImage(image_url);
         }
 
-
         return "유저 정보를 변경했습니다.";
 
     }
 
-    public String patchPassword(PatchPasswordReq patchPasswordReq, String email) {
+    public String patchPassword(PatchPasswordReq patchPasswordReq, String userId) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         String newPassword = encoder.encode(patchPasswordReq.getPassword());
 
         user.changePassword(newPassword);
 
-        deleteRefreshToken(email);
+        deleteRefreshToken(userId);
 
         return "비밀번호 변경을 완료했습니다.";
 
     }
+
+//    public List<Long> getFollowers(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
+//
+//        Long userId = user.getId();
+//        List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
+//        List<Long> longList = new ArrayList<>();
+//        getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
+//        return longList;
+//
+//    }
 
     private boolean checkEmailDuplication(String email) {
         return userRepository.existsByEmail(email);
@@ -188,20 +223,26 @@ public class UserService {
 
     }
 
-    public String getUserRole(String email) {
+//    public List<String> getUserIdAndRole(String email) {
+//
+//        List<String> userInfo = new ArrayList<>();
+//
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
+//
+//        userInfo.add(user.getUserId());
+//        userInfo.add(user.getRole());
+//
+//
+//        return userInfo;
+//    }
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(INVALID_LOGIN));
 
-        return user.getRole();
-
-    }
-
-    public void accessTokenSave(String refreshToken, String userEmail, Date expiredDate) {
+    public void accessTokenSave(String refreshToken, String userId, Date expiredDate) {
 
         Token token = Token.builder()
                 .refreshToken(refreshToken)
-                .email(userEmail)
+                .userId(userId)
                 .expiredDate(expiredDate)
                 .build();
 

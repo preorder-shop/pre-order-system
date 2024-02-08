@@ -64,16 +64,11 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/users/signup", "/users/email-certification",
-                                "/users/login", "/login","/main"
+                                "/users/login", "/users/test/**","/main"
                         ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
-
-//
-//        httpSecurity
-//                .addFilterBefore(new JWTFilter(jwtUtil,tokenService), LoginFilter.class);
-
 
         httpSecurity
                 .addFilterBefore(jwtFilter,LoginFilter.class);
@@ -89,7 +84,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<JWTFilter> jwtFilterFilterRegistrationBean(){
         FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtFilter);
-        registrationBean.addUrlPatterns("/api/*"); // 필터를 어떤 URL에 적용할지 지정
+        registrationBean.addUrlPatterns("/users/*"); // 필터를 어떤 URL에 적용할지 지정
         return registrationBean;
     }
 

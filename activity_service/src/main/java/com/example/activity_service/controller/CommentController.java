@@ -19,18 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/comment")
+@RequestMapping("/activity/comment")
 @RestController
 public class CommentController {
 
     private final CommentService commentService;
 
+    /**
+     * 댓글 작성 API
+     * @param auth
+     * @param createCommentReq
+     * @param id
+     * @return
+     */
     @PostMapping("/{id}")
     public BaseResponse<CreateCommentRes> createComment(@RequestHeader("Authorization") String auth, @RequestBody CreateCommentReq createCommentReq, @PathVariable("id") Long id){
 
         checkCommentValidation(createCommentReq.getContent());
 
-        String jwtToken = auth.substring(7);
+        String jwtToken = auth.substring(7); // filter 에서 검증을 했기때문에 유효한 토큰임.
         CreateCommentRes createCommentRes = commentService.createComment(jwtToken, createCommentReq, id);
 
         return new BaseResponse<>(createCommentRes);
@@ -43,7 +50,7 @@ public class CommentController {
     }
 
     /**
-     * 좋아요 API
+     * 댓글 좋아요 API
      */
     @GetMapping("/like/{id}")
     public BaseResponse<String> likeComment(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("id") Long id){
@@ -53,4 +60,5 @@ public class CommentController {
 
         return new BaseResponse<>(result);
     }
+
 }

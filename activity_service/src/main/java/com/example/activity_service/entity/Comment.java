@@ -1,5 +1,6 @@
 package com.example.activity_service.entity;
 
+import com.example.activity_service.domain.State;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,13 +27,19 @@ public class Comment {
 
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User user;
+
+    @Column(nullable = false)
+    private String userId; // userId로 이메일값 사용 (추후 변경 가능)
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
+
+//    @Column(nullable = false,name = "postId")
+//    private Long postId;
 
     @CreationTimestamp
     @Column(nullable = false,name="createdAt")
@@ -44,21 +51,15 @@ public class Comment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private User.State state;
+    private State state;
 
-
-    public enum State {
-        ACTIVE,
-        BLACK, // 신고로 차단 / 블랙 글
-        DELETE // 삭제한 글
-    }
 
     @Builder
-    public Comment(String content, User user,Post post){
+    public Comment(String content, String userId,Post post){
         this.content = content;
-        this.user = user;
+        this.userId = userId;
         this.post = post;
-        this.state = User.State.ACTIVE;
+        this.state = State.ACTIVE;
     }
 
 

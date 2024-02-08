@@ -27,16 +27,22 @@ public class UserLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "actor",nullable = false)
-    private User actor; // 해당 활동을 한 유저
-
-    @ManyToOne
-    @JoinColumn(name = "recipient",nullable = false)
-    private User recipient; // 특정 행위를 당한 유저
+//    @ManyToOne
+//    @JoinColumn(name = "actor",nullable = false)
+//    private User actor; // 해당 활동을 한 유저
 
     @Column(nullable = false)
-    private String log; //  활동 내용
+    private String actor; // 해당 활동을 한 유저
+
+//    @ManyToOne
+//    @JoinColumn(name = "recipient",nullable = false)
+//    private User recipient; // 특정 행위를 당한 유저
+
+    @Column(nullable = false)
+    private String recipient;  // 특정 행위를 당한 유저
+
+//    @Column(nullable = false)
+//    private String log; //  활동 내용
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,10 +58,9 @@ public class UserLog {
 
 
     @Builder
-    public UserLog(User actor, User recipient, String log,ActiveType activeType){
+    public UserLog(String actor, String recipient, ActiveType activeType){
         this.actor = actor;
         this.recipient = recipient;
-        this.log = log;
         this.activeType = activeType;
     }
 

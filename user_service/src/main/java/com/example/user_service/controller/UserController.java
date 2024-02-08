@@ -12,10 +12,13 @@ import com.example.user_service.dto.request.SignUpReq;
 import com.example.user_service.dto.response.SignUpRes;
 import com.example.user_service.dto.response.UserDto;
 import com.example.user_service.service.S3Service;
+import com.example.user_service.service.TokenService;
 import com.example.user_service.service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
@@ -42,7 +45,13 @@ public class UserController {
     private final AuthenticationManager authenticationManager; // DB를 통해서 유저정보를 가져와서 로그인한 데이터와 검증
     private final S3Service s3Service;
 
-    // 회원가입
+    private final TokenService tokenService;
+
+    /**
+     * 회원가입 API
+     * @param signUpReq
+     * @return
+     */
     @PostMapping("/signup")
     public BaseResponse<SignUpRes> createUser(@RequestBody SignUpReq signUpReq){
 
@@ -59,34 +68,40 @@ public class UserController {
     }
 
 
-    // 로그인
+    /**
+     * 로그인 API
+     * @param loginReq
+     * @param response
+     * @return
+     */
     @PostMapping("/login")
     public BaseResponse<String> login(@RequestBody LoginReq loginReq, HttpServletResponse response){
 
         checkEmailValidation(loginReq.getEmail());
         checkPasswordValidation(loginReq.getPassword());
 
-        try{  // 유저 검증
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
-            authenticationManager.authenticate(authenticationToken);
+//        try{  // 유저 검증
+//            UsernamePasswordAuthenticationToken authenticationToken =
+//                    new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword());
+//            authenticationManager.authenticate(authenticationToken);
+//
+//        }catch (Exception e){
+//            throw new BaseException(INVALID_LOGIN);
+//        }
 
-        }catch (Exception e){
-            throw new BaseException(INVALID_LOGIN);
-        }
+        // 로그인에서는 유저 이메일과 password 를 가지고 로그인
+        // -> jwtFilter는 탈 필요가 없으므로 바로 컨트롤러로 넘어와서 User db에 이메일과 비번이 일치하는 객체가 있는지 확인.
 
-        String userRole = userService.getUserRole(loginReq.getEmail());
+        List<String> userIdAndRole = userService.login(loginReq);
 
-        String accessToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "ACCESS");
-        String refreshToken = jwtUtil.createToken(loginReq.getEmail(), userRole, "REFRESH");
-
+        String accessToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "ACCESS");
+        String refreshToken = jwtUtil.createToken(userIdAndRole.get(0), userIdAndRole.get(1), "REFRESH");
 
         Date expiredDate = jwtUtil.getExpiredDate(refreshToken);
-        String userEmail = loginReq.getEmail();
-        userService.accessTokenSave(refreshToken,userEmail,expiredDate);
 
+        userService.accessTokenSave(refreshToken,userIdAndRole.get(0),expiredDate); // 토큰 관리를 위한 db 저장
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        jwtUtil.addAccessTokenInHeader(accessToken,response);
         jwtUtil.addRefreshTokenInCookie(refreshToken,response);
 
         return new BaseResponse<>("로그인을 완료했습니다.");
@@ -96,9 +111,9 @@ public class UserController {
     public BaseResponse<String> logout(HttpServletResponse response){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
 
-        userService.deleteRefreshToken(userEmail);
+        userService.deleteRefreshToken(userId);
         response.addHeader("Authorization","");
         expireCookie(response,"refreshToken");
         return new BaseResponse<>("로그아웃을 완료했습니다.");
@@ -133,14 +148,17 @@ public class UserController {
 //        checkGreetingValidation(greeting);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
+        System.out.println("userId 확인");
+        System.out.println(userId);
         String img_url=null;
 
-        if(!profileImage.isEmpty()){
+
+        if(profileImage!=null && !profileImage.isEmpty()){
             img_url = s3Service.uploadImage(profileImage);
         }
 
-       String result = userService.patchUserInfo(userEmail, name, greeting, img_url);
+       String result = userService.patchUserInfo(userId, name, greeting, img_url);
 
         return new BaseResponse<>(result);
     }
@@ -151,14 +169,33 @@ public class UserController {
 
         checkPasswordValidation(patchPasswordReq.getPassword());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
 
-        String result = userService.patchPassword(patchPasswordReq, userEmail);
+        String result = userService.patchPassword(patchPasswordReq, userId);
         response.addHeader("Authorization","");
         expireCookie(response,"refreshToken");
 
         return new BaseResponse<>(result);
 
+    }
+
+//    @GetMapping("/follower")
+//    public BaseResponse<List<Long>> getFollowers(){
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String userEmail = auth.getName();
+//
+//        List<Long> result = userService.getFollowers(userEmail);
+//        return new BaseResponse<>(result);
+//    }
+
+    @GetMapping("/internal/token") // 내부적으로 사용
+    public void validateRefreshToken(HttpServletRequest request){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        String refreshTokenInCooke = getRefreshTokenInCooke(request);
+
+        tokenService.validateRefreshToken(refreshTokenInCooke,userEmail);
     }
 
     private static void expireCookie(HttpServletResponse response,String name) {
@@ -196,5 +233,22 @@ public class UserController {
         if(greeting==null || greeting.isBlank()){
             throw new BaseException(USERS_EMPTY_GREETING);
         }
+    }
+
+    private String getRefreshTokenInCooke(HttpServletRequest request){ // jwt Filter 를 거치기 때문에 무조건 존재함.
+        String refreshToken="";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+
+            if(cookie.getName().equals("refreshToken")){
+                refreshToken= cookie.getValue();
+                System.out.println("내부 통신을 통해 유저 서비스를 호출해서 리프레시 토큰의 유효성 검사 진행");
+                System.out.println(refreshToken);
+                break;
+            }
+        }
+        return refreshToken;
+
+
     }
 }

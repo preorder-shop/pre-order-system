@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,15 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // pk
+    private Long id; // table pk
+
+    @Column(unique = true,nullable = false)
+    private String userId; // UUID
 
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = false,unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -56,7 +60,8 @@ public class User {
 
 
     @Builder
-    public User(String name, String email, String password, String role, String greeting) {
+    public User(String userId,String name, String email, String password, String role, String greeting) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
