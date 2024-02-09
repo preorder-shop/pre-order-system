@@ -1,8 +1,10 @@
 package com.example.activity_service.common.config;
 
+import com.example.activity_service.client.UserServiceClient;
 import com.example.activity_service.common.jwt.JWTFilter;
 import com.example.activity_service.common.jwt.JWTUtil;
 
+import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +21,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
-
     private final JWTFilter jwtFilter;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil
-                          ,JWTFilter jwtFilter
-    ) {
+    private final JWTUtil jwtUtil;
 
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
+    private UserServiceClient userServiceClient;
+
+    public SecurityConfig(JWTUtil jwtUtil, JWTFilter jwtFilter,UserServiceClient userServiceClient) {
+
         this.jwtFilter = jwtFilter;
+        this.jwtUtil = jwtUtil;
+        this.userServiceClient = userServiceClient;
     }
 
     @Bean
@@ -65,15 +66,15 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(
-                                "/main"
+                                "/activity/**","/activity/internal/**","/main"
                         ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                     //   .anyRequest().authenticated()
                 );
 
 //
 //        httpSecurity
-//                .addFilterBefore(jwtFilter,LoginFilter.class);
+//                .addFilterBefore(new JWTFilter(jwtUtil,userServiceClient),UsernamePasswordAuthenticationFilter.class);
 //        httpSecurity
 //                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
 //                        UsernamePasswordAuthenticationFilter.class);
@@ -86,7 +87,8 @@ public class SecurityConfig {
     public FilterRegistrationBean<JWTFilter> jwtFilterFilterRegistrationBean(){
         FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtFilter);
-        registrationBean.addUrlPatterns("/activity/*"); // 필터를 어떤 URL에 적용할지 지정
+        registrationBean.addUrlPatterns("/*"); // 필터를 어떤 URL에 적용할지 지정
+        registrationBean.setOrder(1);
         return registrationBean;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "activity") // 호출하려는 마이크로 서비스의 이름
 public interface ActivityServiceClient {
 
-    @GetMapping("/activity/follow/{userId}")
+    @GetMapping("/activity/internal/follow/{userId}")
     List<GetFollowerRes> getFollowers(@PathVariable String userId);
 
 

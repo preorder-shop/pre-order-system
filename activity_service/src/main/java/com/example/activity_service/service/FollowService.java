@@ -1,17 +1,22 @@
 package com.example.activity_service.service;
 
 
+import static com.example.activity_service.common.response.BaseResponseStatus.FOLLOW_INVALID;
+
 import com.example.activity_service.client.UserServiceClient;
+import com.example.activity_service.common.exceptions.BaseException;
 import com.example.activity_service.common.jwt.JWTUtil;
 import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.response.GetFollowerRes;
 import com.example.activity_service.dto.response.UserDto;
 import com.example.activity_service.entity.Follow;
+import com.example.activity_service.entity.UserLog;
 import com.example.activity_service.repository.FollowRepository;
 import com.example.activity_service.repository.UserLogRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,57 +30,58 @@ public class FollowService {
     private final UserLogRepository userLogRepository;
     private final UserServiceClient userServiceClient;
 
-    public String followOther(String fromUserId, Long toUserId) {
 
-        String log;
+    public String followOther(String fromUserId, String toUserId) {
+
+        String message;
 
         // Id 값으로 to 유저 확인
-//        User toUser = userRepository.findByIdAndState(id, State.ACTIVE)
-//                .orElseThrow(() -> new BaseException(USERS_INVALID_ID));
-//
-//        userServiceClient.validateUserId(toUserId);
-//
-////        if (Objects.equals(fromUserId, toUser.getId())) {
-////            throw new BaseException(FOLLOW_INVALID);
-////        }
-//
-//        Optional<Follow> exist = followRepository.findByFromUserAndToUser(fromUser, toUser);
-//
-//        if (exist.isPresent()) { // 이미 팔로우 했으면 취소 처리
-//            followRepository.delete(exist.get());
-//            log = fromUser.getName() + "님이 " + toUser.getName() + " 님을 팔로우 취소 했습니다.";
-//            message = "팔로우를 취소했습니다.";
-//
-//            activeType = ActiveType.CANCEL_FOLLOW;
-//
-//        } else {
-//            Follow follow = Follow.builder()
-//                    .toUser(toUser)
-//                    .fromUser(fromUser)
-//                    .build();
-//
-//            followRepository.save(follow);
-//
-//            log = fromUser.getName() + "님이 " + toUser.getName() + " 님을 팔로우 했습니다.";
-//
-//            message = "해당 사용자를 팔로우했습니다.";
-//
-//            activeType=ActiveType.FOLLOW;
-//
-//        }
-//
-//        UserLog userLog = UserLog.builder()
-//                .actor(fromUser)
-//                .recipient(fromUser)
-//                .log(log)
-//                .activeType(activeType)
-//                .build();
-//        feedRepository.save(userLog);
-//
-//        return message;
+
+        userServiceClient.validateUserId(toUserId);
+
+        if (Objects.equals(fromUserId, toUserId)) {
+            throw new BaseException(FOLLOW_INVALID);
+        }
+
+        Optional<Follow> exist = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+
+        if (exist.isPresent()) { // 이미 팔로우 했으면 취소 처리
+            followRepository.delete(exist.get());
+
+            UserLog userLog = UserLog.builder()
+                    .actor(fromUserId)
+                    .recipient(toUserId)
+                    .activeType(ActiveType.CANCEL_FOLLOW)
+                    .build();
+
+            userLogRepository.save(userLog);
+
+            message="팔로우를 취소했습니다.";
+
+        } else {
+            Follow follow = Follow.builder()
+                    .toUserId(toUserId)
+                    .fromUserId(fromUserId)
+                    .build();
+
+            followRepository.save(follow);
+
+            UserLog userLog = UserLog.builder()
+                    .actor(fromUserId)
+                    .recipient(toUserId)
+                    .activeType(ActiveType.FOLLOW)
+                    .build();
+
+            userLogRepository.save(userLog);
+
+            message="해당 사용자를 팔로우했습니다.";
+
+        }
+
+        return message;
     }
 
-    public List<GetFollowerRes> getFollowers(Long userId){
+    public List<GetFollowerRes> getFollowers(String userId){
 
         List<Follow> follow = followRepository.findAllByToUserId(userId);
 

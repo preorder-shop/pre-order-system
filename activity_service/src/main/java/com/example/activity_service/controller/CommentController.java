@@ -37,7 +37,7 @@ public class CommentController {
 
         checkCommentValidation(createCommentReq.getContent());
 
-        String jwtToken = auth.substring(7); // filter 에서 검증을 했기때문에 유효한 토큰임.
+        String jwtToken = auth.substring(7);
         CreateCommentRes createCommentRes = commentService.createComment(jwtToken, createCommentReq, id);
 
         return new BaseResponse<>(createCommentRes);

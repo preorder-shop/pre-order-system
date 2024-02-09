@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -180,23 +181,16 @@ public class UserController {
     }
 
     @GetMapping("/follower")
-    public BaseResponse<List<Long>> getFollowers(){
+    public BaseResponse<List<String>> getFollowers(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
 
-        List<Long> result = userService.getFollowers(userId);
+        List<String> result = userService.getFollowers(userId);
         return new BaseResponse<>(result);
     }
 
-    @GetMapping("/internal/token") // 내부적으로 사용
-    public void validateRefreshToken(HttpServletRequest request){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
 
-        String refreshTokenInCooke = getRefreshTokenInCooke(request);
 
-        tokenService.validateRefreshToken(refreshTokenInCooke,userEmail);
-    }
 
     private static void expireCookie(HttpServletResponse response,String name) {
         Cookie cookie=new Cookie(name, null);
@@ -235,20 +229,5 @@ public class UserController {
         }
     }
 
-    private String getRefreshTokenInCooke(HttpServletRequest request){ // jwt Filter 를 거치기 때문에 무조건 존재함.
-        String refreshToken="";
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
 
-            if(cookie.getName().equals("refreshToken")){
-                refreshToken= cookie.getValue();
-                System.out.println("내부 통신을 통해 유저 서비스를 호출해서 리프레시 토큰의 유효성 검사 진행");
-                System.out.println(refreshToken);
-                break;
-            }
-        }
-        return refreshToken;
-
-
-    }
 }

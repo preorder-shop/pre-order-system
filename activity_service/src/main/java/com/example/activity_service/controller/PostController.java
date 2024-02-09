@@ -39,9 +39,9 @@ public class PostController {
         checkContentValidation(createPostReq.getContent());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
 
-        CreatePostRes createPostRes = postService.createPost(userEmail, createPostReq);
+        CreatePostRes createPostRes = postService.createPost(userId , createPostReq);
 
         return new BaseResponse<>(createPostRes);
     }
@@ -53,8 +53,8 @@ public class PostController {
     public BaseResponse<String> likePost(@PathVariable("id") Long id){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
-        String result = postService.likePost(userEmail, id);
+        String userId = auth.getName();
+        String result = postService.likePost(userId, id);
 
         return new BaseResponse<>(result);
     }
