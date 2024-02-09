@@ -81,7 +81,7 @@ public class FollowService {
         return message;
     }
 
-    public List<GetFollowerRes> getFollowers(Long userId){
+    public List<GetFollowerRes> getFollowers(String userId){
 
         List<Follow> follow = followRepository.findAllByToUserId(userId);
 

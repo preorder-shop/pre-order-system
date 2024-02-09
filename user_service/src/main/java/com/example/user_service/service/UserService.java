@@ -199,12 +199,12 @@ public class UserService {
 
     }
 
-    public List<Long> getFollowers(String userId) {
+    public List<String> getFollowers(String userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         List<GetFollowerRes> getFollowerResList = activityServiceClient.getFollowers(userId);
-        List<Long> longList = new ArrayList<>();
+        List<String> longList = new ArrayList<>();
         getFollowerResList.forEach(v -> longList.add(v.getFollowerId()));
         return longList;
 
@@ -253,6 +253,7 @@ public class UserService {
     public void validateUserId(String userId){
         userRepository.findByUserId(userId)
                 .orElseThrow(()->new BaseException(TOKEN_INVALID));
+
     }
 
 }
