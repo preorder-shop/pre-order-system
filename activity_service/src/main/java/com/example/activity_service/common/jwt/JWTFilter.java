@@ -156,7 +156,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
         // 세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
-     //  userServiceClient.validateUserId(userId);
+        userServiceClient.validateUserId(userId);
 
 
     }
