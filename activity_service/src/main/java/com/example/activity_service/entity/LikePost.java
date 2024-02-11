@@ -28,7 +28,7 @@ public class LikePost {
     private String userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,name = "post_id")
+    @JoinColumn(nullable = false,name = "postId")
     private Post post;
 
     @CreationTimestamp

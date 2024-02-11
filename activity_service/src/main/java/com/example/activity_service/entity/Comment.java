@@ -41,14 +41,6 @@ public class Comment {
 //    @Column(nullable = false,name = "postId")
 //    private Long postId;
 
-    @CreationTimestamp
-    @Column(nullable = false,name="createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(nullable = false,name = "updatedAt")
-    private LocalDateTime updated_at;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private State state;
