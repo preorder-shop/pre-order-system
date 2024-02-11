@@ -19,7 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class LikePost {
+public class LikePost extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,14 +30,6 @@ public class LikePost {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false,name = "postId")
     private Post post;
-
-    @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
     @Builder
     public LikePost(String userId,Post post){

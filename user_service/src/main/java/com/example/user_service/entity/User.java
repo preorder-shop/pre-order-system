@@ -19,7 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class User {
+public class User extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,14 +41,6 @@ public class User {
 
     @Column(name = "profileImgUrl")
     private String profile_img_url;
-
-    @CreationTimestamp
-    @Column(name = "createdAt", nullable = false, updatable = false)
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
     @Column(nullable = false)
     private String role; // 사용자 권한 관련

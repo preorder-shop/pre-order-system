@@ -18,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class Follow {
+public class Follow extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,14 +36,6 @@ public class Follow {
 
     @Column(nullable = false,name = "fromUserId")
     private String fromUserId; // follow 를 신청한 유저 id
-
-    @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
     // from -> to from 이 to 로 follow 요청
 

@@ -18,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // 생성자를 통해서 값 변경 목적으로 접근하는 메시지들 차단
 @Getter
 @Entity
-public class Post {
+public class Post extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,14 +33,6 @@ public class Post {
 
     @Column(nullable = false,name = "userId")
     private String userId;
-
-    @CreationTimestamp
-    @Column(nullable = false,name="createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(nullable = false,name = "updatedAt")
-    private LocalDateTime updated_at;
 
     @Builder
     public Post(String title,String content,String userId){

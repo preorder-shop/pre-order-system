@@ -20,7 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Comment {
+public class Comment extends BaseEntity{
 
     @Id @GeneratedValue
     private Long id;

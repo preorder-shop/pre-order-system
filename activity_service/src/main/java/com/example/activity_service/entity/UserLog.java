@@ -21,7 +21,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class UserLog {
+public class UserLog extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,14 +47,6 @@ public class UserLog {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ActiveType activeType;
-
-    @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
 
     @Builder
