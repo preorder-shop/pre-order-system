@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final Environment env;
 
+    @GetMapping("")
+    public String test(){
+        return "success";
+    }
+
     @GetMapping("/welcome")
     public String welcome(){
         return "Welcome to User Service";

@@ -32,7 +32,7 @@ public class Post {
 //    private User user;
 
     @Column(nullable = false,name = "userId")
-    private String userId; // 이메일값
+    private String userId;
 
     @CreationTimestamp
     @Column(nullable = false,name="createdAt")
