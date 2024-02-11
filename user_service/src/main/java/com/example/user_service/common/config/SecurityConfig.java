@@ -71,10 +71,10 @@ public class SecurityConfig {
                 );
 
         httpSecurity
-                .addFilterBefore(jwtFilter,LoginFilter.class);
-        httpSecurity
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
+//        httpSecurity
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
+//                        UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
 

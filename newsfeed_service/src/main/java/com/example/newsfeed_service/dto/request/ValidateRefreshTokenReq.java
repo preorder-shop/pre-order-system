@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CreateCommentReq {
+public class ValidateRefreshTokenReq {
 
-    private String content;
-
+    private String refreshToken;
+    private String userId;
 }

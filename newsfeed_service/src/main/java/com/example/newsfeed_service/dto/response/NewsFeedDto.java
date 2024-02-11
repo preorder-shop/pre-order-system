@@ -1,17 +1,17 @@
-package com.example.newsfeed_service.dto.request;
+package com.example.newsfeed_service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostReq {
+@Getter @Setter
+public class NewsFeedDto {
 
+    private Long id; // pk
     private String title;
     private String content;
-
+    private String writer;
 }
