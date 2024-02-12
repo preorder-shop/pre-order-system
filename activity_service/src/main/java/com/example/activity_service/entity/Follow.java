@@ -23,14 +23,6 @@ public class Follow extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "to_user",nullable = false)
-//    private User toUser; //  follow 신청 받은 유저
-//
-//    @ManyToOne
-//    @JoinColumn(name = "from_user",nullable = false)
-//    private User fromUser; // follow 를 신청한 id
-
     @Column(nullable = false,name = "toUserId")
     private String toUserId;  // follow 신청 받은 유저 id
 
@@ -38,12 +30,6 @@ public class Follow extends BaseEntity{
     private String fromUserId; // follow 를 신청한 유저 id
 
     // from -> to from 이 to 로 follow 요청
-
-//    @Builder
-//    public Follow(User toUser,User fromUser){
-//        this.toUser = toUser;
-//        this.fromUser = fromUser;
-//    }
 
     @Builder
     public Follow(String toUserId,String fromUserId){

@@ -42,17 +42,22 @@ public class NewsFeedService {
 
         if(sort.equals("date") && type.equals("follow")){
             PageRequest pageRequest = PageRequest.of(startPage,5, Sort.by(Sort.Direction.DESC,"id"));
-            List<Follow> allByFromUsers = followRepository.findAllByFromUserId(userId); // 내가 팔로우한 유저 목록
-            List<String> userIds = allByFromUsers.stream().map(Follow::getToUserId).toList();
-            Slice<Post> postSlice = postRepository.findAllByUserIdIn(userIds,pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
+            List<Follow> myFollowList = followRepository.findAllByFromUserId(userId); // 내가 팔로우한 유저 목록
+            List<String> myFollowIdList = myFollowList.stream().map(Follow::getToUserId).toList();
+            Slice<Post> postSlice = postRepository.findAllByUserIdIn(myFollowIdList,pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
 
 
         }
 
+        if(sort.equals("like") && type.equals("all")){
+
+        }
+
+        if(sort.equals("like") && type.equals("follow")){
+
+        }
 
 
-        // 글을 가져오 모든 사람의 글인지 내가 팔로우한 사용자의 글인지
-        postRepository.findAll();
 
         return null;
 
