@@ -50,6 +50,8 @@ public enum BaseResponseStatus {
 
     COMMENT_ID_INVALID(false,HttpStatus.BAD_REQUEST.value(), "유효하지 않은 댓글 아이디입니다."),
 
+    INVALID_REQUEST(false,HttpStatus.BAD_REQUEST.value(),"유효하지 않은 조건값입니다."),
+
 
 
 

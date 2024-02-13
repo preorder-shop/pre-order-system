@@ -1,8 +1,11 @@
 package com.example.newsfeed_service.controller;
 
 
+import static com.example.newsfeed_service.common.response.BaseResponseStatus.INVALID_REQUEST;
+
 import com.example.newsfeed_service.client.ActivityServiceClient;
 
+import com.example.newsfeed_service.common.exceptions.BaseException;
 import com.example.newsfeed_service.common.response.BaseResponse;
 import com.example.newsfeed_service.dto.request.GetNewsFeedReq;
 import com.example.newsfeed_service.dto.response.NewsFeedDto;
@@ -23,41 +26,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FeedController {
 
-   // private final FeedService feedService;
-
     private final ActivityServiceClient activityServiceClient;
 
     /**
      *  포스트 리스트 조회 API
      */
-    @GetMapping("")
-    public BaseResponse<List<NewsFeedDto>> getFeedList(HttpServletRequest request, @RequestParam(name = "type",defaultValue = "all") String type,
+    @GetMapping("/post")
+    public BaseResponse<List<NewsFeedDto>> getPostListByCondition(HttpServletRequest request, @RequestParam(name = "type",defaultValue = "all") String type,
                                     @RequestParam(name = "sort",defaultValue = "date")String sort,
                                     @RequestParam(name = "startPage",defaultValue = "0") int startPage){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
-//    //    List<GetFeedRes> feedList = feedService.getFeedList(userId);
-//        activityService
 
+        if(!sort.equals("date") && !sort.equals("like")){
+            throw new BaseException(INVALID_REQUEST);
+        }
 
-   //     return new BaseResponse<>(feedList);
-        System.out.println("포스트 리스트 API url 정보");
-        System.out.println(request.getRequestURI());
-        System.out.println(userId);
-        System.out.println(type);
-        System.out.println(sort);
-        log.info("knk");
-        // todo : 비 정상적인 값에 대한 예외처리
+        if(!type.equals("all") && !type.equals("follow")){
+            throw new BaseException(INVALID_REQUEST);
+        }
 
         GetNewsFeedReq getNewsFeedReq = new GetNewsFeedReq(userId,type,sort, startPage);
-        List<NewsFeedDto> feedList = activityServiceClient.getFeedList(getNewsFeedReq);
-     //   System.out.println(feedList);
+        List<NewsFeedDto> feedList = activityServiceClient.getPostListByCondition(getNewsFeedReq);
+
         return new BaseResponse<>(feedList);
     }
 
 
- //   @GetMapping("")
+
 
 
 }

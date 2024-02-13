@@ -1,10 +1,14 @@
 package com.example.activity_service.service;
 
+import static com.example.activity_service.common.response.BaseResponseStatus.UNEXPECTED_ERROR;
+
+import com.example.activity_service.common.exceptions.BaseException;
 import com.example.activity_service.dto.request.GetNewsFeedReq;
 import com.example.activity_service.dto.response.NewsFeedDto;
 import com.example.activity_service.entity.Follow;
 import com.example.activity_service.entity.Post;
 import com.example.activity_service.repository.FollowRepository;
+import com.example.activity_service.repository.JdbcRepository;
 import com.example.activity_service.repository.PostRepository;
 import com.example.activity_service.repository.UserLogRepository;
 import java.util.List;
@@ -24,10 +28,11 @@ public class NewsFeedService {
 
     private final UserLogRepository userLogRepository;
     private final PostRepository postRepository;
-
     private final FollowRepository followRepository;
 
-    public List<NewsFeedDto> getFeedList(GetNewsFeedReq getNewsFeedReq){
+    private final JdbcRepository jdbcRepository;
+
+    public List<NewsFeedDto> getPostListByCondition(GetNewsFeedReq getNewsFeedReq){
 
         String userId = getNewsFeedReq.getUserId();
         String type = getNewsFeedReq.getType(); // all, follow
@@ -54,19 +59,27 @@ public class NewsFeedService {
             return collect;
         }
 
+        List<NewsFeedDto> result=null;
         if(sort.equals("like") && type.equals("all")){
 
+           result = jdbcRepository.getPostListByCondition(userId, "all");
 
+            if(result==null){
+                throw new BaseException(UNEXPECTED_ERROR);
+            }
 
         }
 
         if(sort.equals("like") && type.equals("follow")){
+           result = jdbcRepository.getPostListByCondition(userId, "follow");
+
+            if(result==null){
+                throw new BaseException(UNEXPECTED_ERROR);
+            }
 
         }
 
-
-
-        return null;
+        return result;
 
 
     }
