@@ -25,12 +25,16 @@ public class FollowController {
     private final FollowService followService;
     private final JWTUtil jwtUtil;
 
-    @GetMapping("/{userId}")
-    public BaseResponse<String> followOther( @PathVariable(name = "userId") String followId){
+    @GetMapping("/{followId}")
+    public BaseResponse<String> followOther( @PathVariable(name = "followId") String followId){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
+        System.out.println("현재 팔로우를 요청한 사람");
+        System.out.println(userId);
 
+        System.out.println("팔로우 신청을 받은 사람");
+        System.out.println(followId);
 
         String result = followService.followOther(userId, followId);
 

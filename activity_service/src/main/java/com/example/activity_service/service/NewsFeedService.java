@@ -37,7 +37,9 @@ public class NewsFeedService {
         if(sort.equals("date") && type.equals("all")){
             PageRequest pageRequest = PageRequest.of(startPage,5, Sort.by(Sort.Direction.DESC,"id"));
             Slice<Post> postSlice = postRepository.findAllBy(pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
-
+            List<Post> content = postSlice.getContent();
+            List<NewsFeedDto> collect = content.stream().map(NewsFeedDto::of).collect(Collectors.toList());
+            return collect;
         }
 
         if(sort.equals("date") && type.equals("follow")){
@@ -45,11 +47,16 @@ public class NewsFeedService {
             List<Follow> myFollowList = followRepository.findAllByFromUserId(userId); // 내가 팔로우한 유저 목록
             List<String> myFollowIdList = myFollowList.stream().map(Follow::getToUserId).toList();
             Slice<Post> postSlice = postRepository.findAllByUserIdIn(myFollowIdList,pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
+            List<Post> content = postSlice.getContent();
 
+            List<NewsFeedDto> collect = content.stream().map(NewsFeedDto::of).collect(Collectors.toList());
 
+            return collect;
         }
 
         if(sort.equals("like") && type.equals("all")){
+
+
 
         }
 

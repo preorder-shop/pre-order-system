@@ -120,12 +120,13 @@ public class UserController {
         return new BaseResponse<>("로그아웃을 완료했습니다.");
     }
 
+    // 유저 정보를 조회
     @GetMapping("")
     public BaseResponse<UserDto> getUserInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = auth.getName();
+        String userId = auth.getName();
 
-        UserDto userDto = userService.getUserInfo(userEmail);
+        UserDto userDto = userService.getUserInfo(userId);
 
         return new BaseResponse<>(userDto);
 
@@ -188,6 +189,7 @@ public class UserController {
         List<String> result = userService.getFollowers(userId);
         return new BaseResponse<>(result);
     }
+
 
 
 

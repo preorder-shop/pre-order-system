@@ -77,18 +77,16 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 
         // important !
 
+        // important !
+
         if(authorization!=null){
-            log.info("헤더에 값 존재");
             if(authorization.startsWith("Bearer ")) {
-                log.info("헤더에 Bearer token 존재");
                 String accessToken = authorization.split(" ")[1];
                 if(!jwtUtil.isExpired(accessToken)){
-                    log.info("accessToken 값 만료안됨.");
                     String userId = jwtUtil.getUserId(accessToken);
                     String userRole = jwtUtil.getRole(accessToken);
                     authenticateUser(userId,userRole);
                     log.info("accessToken 인증 성공");
-
 
 
                 }else{ // refreshToken 확인
@@ -120,7 +118,6 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 
         filterChain.doFilter(request,response);
 
-
     }
 
     private String[] validateRefreshToken(String refreshToken) {
@@ -134,7 +131,7 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
             throw new BaseException(TOKEN_INVALID);
         }
         String userId = jwtUtil.getUserId(refreshToken);
-        userServiceClient.validateRefreshToken(new ValidateRefreshTokenReq(refreshToken,userId));
+        userServiceClient.validateRefreshToken(new ValidateRefreshTokenReq(refreshToken, userId));
         String userRole = jwtUtil.getRole(refreshToken);
         result[0] = userId;
         result[1] = userRole;
@@ -151,14 +148,18 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
 
     private void authenticateUser(String userId, String role) {
 
+        // UserDetails 에 회원 정보 객체 담기
+//        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+//
+//        // 스프링 시큐리티 인증 토큰 생성
+//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
+//                customUserDetails.getAuthorities());
+//        // 세션에 사용자 등록
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
         // 스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(userId,null,null);
         // 세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        userServiceClient.validateUserId(userId);
-
-
     }
 
     private boolean isLoginCheckPath(String requestURI){

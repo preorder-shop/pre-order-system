@@ -151,14 +151,17 @@ public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> �
                 .build();
 
         // UserDetails 에 회원 정보 객체 담기
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-
+//        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+//
+//        // 스프링 시큐리티 인증 토큰 생성
+//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
+//                customUserDetails.getAuthorities());
+//        // 세션에 사용자 등록
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
         // 스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-                customUserDetails.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(userId,null,null);
         // 세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
-
     }
 
     private boolean isLoginCheckPath(String requestURI){

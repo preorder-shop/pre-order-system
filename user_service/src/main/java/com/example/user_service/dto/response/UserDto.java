@@ -1,9 +1,10 @@
 package com.example.user_service.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 @Builder
 @Getter @Setter
 public class UserDto {
@@ -13,6 +14,7 @@ public class UserDto {
     private String email;
     private String greeting;
     private String profileImg;
+
 
 
 
