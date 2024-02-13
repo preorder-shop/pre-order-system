@@ -7,7 +7,9 @@ import com.example.activity_service.common.exceptions.BaseException;
 import com.example.activity_service.dto.request.CreatePostReq;
 import com.example.activity_service.dto.response.CreatePostRes;
 import com.example.activity_service.common.response.BaseResponse;
+import com.example.activity_service.dto.response.PostDto;
 import com.example.activity_service.service.PostService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -47,6 +49,17 @@ public class PostController {
     }
 
     /**
+     * 내가 작성한 포스트(글) 목록 조회 API
+     */
+    @GetMapping("")
+    public BaseResponse<List<PostDto>> getMyPostList(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        List<PostDto> result = postService.getMyPostList(userId);
+        return new BaseResponse<>(result);
+    }
+
+    /**
      * 포스트 좋아요 API
      */
     @GetMapping ("/like/{id}")
@@ -58,6 +71,8 @@ public class PostController {
 
         return new BaseResponse<>(result);
     }
+
+
 
     private void checkTitleValidation(String title){
         if(title==null || title.isBlank()){

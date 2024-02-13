@@ -10,13 +10,16 @@ import com.example.activity_service.common.jwt.JWTUtil;
 import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.request.CreatePostReq;
 import com.example.activity_service.dto.response.CreatePostRes;
+import com.example.activity_service.dto.response.PostDto;
 import com.example.activity_service.entity.LikePost;
 import com.example.activity_service.entity.Post;
 import com.example.activity_service.entity.UserLog;
 import com.example.activity_service.repository.LikePostRepository;
 import com.example.activity_service.repository.PostRepository;
 import com.example.activity_service.repository.UserLogRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
@@ -56,6 +59,12 @@ public class PostService {
                 .content(post.getContent())
                 .writer(post.getUserId())
                 .build();
+
+    }
+    public List<PostDto> getMyPostList(String userId){
+        List<Post> posts = postRepository.findAllByUserId(userId);
+        List<PostDto> postDtos = posts.stream().map(PostDto::of).collect(Collectors.toList());
+        return postDtos;
 
     }
 

@@ -12,4 +12,6 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     Slice<Post> findAllByUserIdIn(List<String> userIds, Pageable pageable);
 
+    List<Post> findAllByUserId(String userId);
+
 }

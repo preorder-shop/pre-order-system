@@ -27,10 +27,6 @@ public class Post extends BaseEntity{
 
     private String content;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
     @Column(nullable = false,name = "userId")
     private String userId;
 
