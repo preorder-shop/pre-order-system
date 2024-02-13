@@ -122,4 +122,13 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByUserId(userId);
         return comments.stream().map(CommentDto::of).collect(Collectors.toList());
     }
+
+    public List<CommentDto> getMyLikeCommentList(String userId) {
+        List<LikeComment> likeComments = likeCommentRepository.findAllByUserId(userId);
+        List<Long> commentIds = likeComments.stream().map(lc -> lc.getComment().getId()).collect(Collectors.toList());
+
+        List<Comment> comments = commentRepository.findAllById(commentIds);
+
+        return comments.stream().map(CommentDto::of).collect(Collectors.toList());
+    }
 }

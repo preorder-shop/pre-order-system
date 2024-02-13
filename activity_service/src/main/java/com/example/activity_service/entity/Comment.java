@@ -27,12 +27,8 @@ public class Comment extends BaseEntity{
 
     private String content;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
     @Column(nullable = false)
-    private String userId; // userId로 이메일값 사용 (추후 변경 가능)
+    private String userId; // userId (UUID)
 
     @ManyToOne
     @JoinColumn(name = "post_id")

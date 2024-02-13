@@ -31,10 +31,6 @@ public class CommentController {
 
     /**
      * 댓글 작성 API
-     * @param auth
-     * @param createCommentReq
-     * @param id
-     * @return
      */
     @PostMapping("/{id}")
     public BaseResponse<CreateCommentRes> createComment(@RequestHeader("Authorization") String auth, @RequestBody CreateCommentReq createCommentReq, @PathVariable("id") Long id){
@@ -46,6 +42,11 @@ public class CommentController {
 
         return new BaseResponse<>(createCommentRes);
     }
+
+    /**
+     * 내가 작성한 댓글 조회 API
+     * @return
+     */
 
     @GetMapping ("")
     public BaseResponse<List<CommentDto>> getMyCommentList(){
@@ -67,6 +68,18 @@ public class CommentController {
         String jwtToken = authorizationHeader.substring(7);
         String result = commentService.likeComment(jwtToken, id);
 
+        return new BaseResponse<>(result);
+    }
+
+    /**
+     * 내가 좋아요한 댓글 조회 API
+     */
+    @GetMapping("/like")
+    public BaseResponse<List<CommentDto>> getMyLikeCommentList(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        List<CommentDto> result = commentService.getMyLikeCommentList(userId);
         return new BaseResponse<>(result);
     }
 
