@@ -72,6 +72,18 @@ public class PostController {
         return new BaseResponse<>(result);
     }
 
+    /**
+     * 내가 좋아요한 포스트 목록 조회 API
+     */
+    @GetMapping("/like")
+    public BaseResponse<List<PostDto>> getMyLikePostList(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        List<PostDto> result = postService.getMyLikePostList(userId);
+        return new BaseResponse<>(result);
+
+    }
+
 
 
     private void checkTitleValidation(String title){

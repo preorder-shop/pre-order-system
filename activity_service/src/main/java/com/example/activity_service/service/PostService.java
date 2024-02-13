@@ -116,4 +116,14 @@ public class PostService {
         return "해당 글에 좋아요를 취소했습니다.";
 
     }
+
+    public List<PostDto> getMyLikePostList(String userId) {
+
+        List<LikePost> likePosts = likePostRepository.findAllByUserId(userId);
+        List<Long> postIds = likePosts.stream().map(p -> p.getPost().getId()).collect(Collectors.toList());
+        // 포스트 id 에 속하는 post 리스트 가져옴.
+        List<Post> posts = postRepository.findAllById(postIds);
+
+        return posts.stream().map(PostDto::of).collect(Collectors.toList());
+    }
 }
