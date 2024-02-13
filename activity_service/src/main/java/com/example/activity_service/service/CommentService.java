@@ -8,6 +8,7 @@ import com.example.activity_service.common.exceptions.BaseException;
 import com.example.activity_service.common.jwt.JWTUtil;
 import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.request.CreateCommentReq;
+import com.example.activity_service.dto.response.CommentDto;
 import com.example.activity_service.dto.response.CreateCommentRes;
 import com.example.activity_service.entity.Comment;
 import com.example.activity_service.entity.LikeComment;
@@ -17,7 +18,9 @@ import com.example.activity_service.repository.CommentRepository;
 import com.example.activity_service.repository.LikeCommentRepository;
 import com.example.activity_service.repository.PostRepository;
 import com.example.activity_service.repository.UserLogRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,4 +118,8 @@ public class CommentService {
     }
 
 
+    public List<CommentDto> getMyCommentList(String userId) {
+        List<Comment> comments = commentRepository.findAllByUserId(userId);
+        return comments.stream().map(CommentDto::of).collect(Collectors.toList());
+    }
 }

@@ -4,11 +4,15 @@ import static com.example.activity_service.common.response.BaseResponseStatus.CO
 
 import com.example.activity_service.common.exceptions.BaseException;
 import com.example.activity_service.dto.request.CreateCommentReq;
+import com.example.activity_service.dto.response.CommentDto;
 import com.example.activity_service.dto.response.CreateCommentRes;
 import com.example.activity_service.common.response.BaseResponse;
 import com.example.activity_service.service.CommentService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +47,16 @@ public class CommentController {
         return new BaseResponse<>(createCommentRes);
     }
 
-    private void checkCommentValidation(String comment){
-        if(comment==null || comment.isBlank())
-            throw new BaseException(COMMENT_EMPTY);
+    @GetMapping ("")
+    public BaseResponse<List<CommentDto>> getMyCommentList(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+        List<CommentDto> result = commentService.getMyCommentList(userId);
+        return new BaseResponse<>(result);
 
     }
+
+
 
     /**
      * 댓글 좋아요 API
@@ -59,6 +68,12 @@ public class CommentController {
         String result = commentService.likeComment(jwtToken, id);
 
         return new BaseResponse<>(result);
+    }
+
+    private void checkCommentValidation(String comment){
+        if(comment==null || comment.isBlank())
+            throw new BaseException(COMMENT_EMPTY);
+
     }
 
 }
