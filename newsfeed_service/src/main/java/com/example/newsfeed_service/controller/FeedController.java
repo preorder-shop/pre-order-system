@@ -8,7 +8,9 @@ import com.example.newsfeed_service.client.ActivityServiceClient;
 import com.example.newsfeed_service.common.exceptions.BaseException;
 import com.example.newsfeed_service.common.response.BaseResponse;
 import com.example.newsfeed_service.dto.request.GetNewsFeedReq;
+import com.example.newsfeed_service.dto.response.NewsFeedActivityDto;
 import com.example.newsfeed_service.dto.response.NewsFeedDto;
+import com.example.newsfeed_service.dto.response.UserLogDto;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +54,39 @@ public class FeedController {
 
         return new BaseResponse<>(feedList);
     }
+
+    /**
+     * 내가 팔로우한 사용자의 활동
+     */
+    @GetMapping("/my-following")
+    public BaseResponse<List<UserLogDto>> getMyFollowingActivity(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        List<UserLogDto> result = activityServiceClient.getMyFollowingActivity(userId);
+
+        return new BaseResponse<>(result);
+    }
+
+
+//    /**
+//     * 내 포스트 알림 (댓글 , 좋아요)
+//     */
+//    @GetMapping("/mypost")
+//    public BaseResponse<List<NewsFeedActivityDto>> getMyPostAlarm(){
+//
+//
+//    }
+//
+//    /**
+//     * 나를 팔로우하는 사용자의 활동
+//     */
+//    @GetMapping("/myfollower")
+//    public BaseResponse<List<NewsFeedActivityDto>> getMyFollowerActivity(){
+//
+//    }
+
+
 
 
 

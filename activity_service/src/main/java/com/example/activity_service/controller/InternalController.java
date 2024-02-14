@@ -3,6 +3,7 @@ package com.example.activity_service.controller;
 import com.example.activity_service.dto.request.GetNewsFeedReq;
 import com.example.activity_service.dto.response.GetFollowerRes;
 import com.example.activity_service.dto.response.NewsFeedDto;
+import com.example.activity_service.dto.response.UserLogDto;
 import com.example.activity_service.service.FollowService;
 import com.example.activity_service.service.NewsFeedService;
 import java.util.List;
@@ -23,6 +24,8 @@ public class InternalController {
 
     private final FollowService followService;
     private final NewsFeedService newsFeedService;
+
+
     @GetMapping("/follow/{userId}")
     public List<GetFollowerRes> getFollowers(@PathVariable(name="userId") String userId){ // 나를 팔로우하는 사람들 목록
 
@@ -35,6 +38,14 @@ public class InternalController {
 
         return newsFeedService.getPostListByCondition(getNewsFeedReq);
 
+    }
+
+    @PostMapping("/newsfeed/my-following")
+    public List<UserLogDto> getMyFollowingActivity(@RequestBody String userId){
+
+        List<UserLogDto> result = newsFeedService.getMyFollowingActivity(userId);
+
+        return result;
     }
 
 }
