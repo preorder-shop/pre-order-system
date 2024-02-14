@@ -48,4 +48,13 @@ public class InternalController {
         return result;
     }
 
+    @PostMapping("/newsfeed/my-follower")
+    public List<UserLogDto> getMyFollowerActivity(@RequestBody String userId){
+
+        List<UserLogDto> result = newsFeedService.getMyFollowerActivity(userId);
+
+        return result;
+    }
+
+
 }

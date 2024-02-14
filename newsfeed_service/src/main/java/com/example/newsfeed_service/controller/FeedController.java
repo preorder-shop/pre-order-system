@@ -31,25 +31,26 @@ public class FeedController {
     private final ActivityServiceClient activityServiceClient;
 
     /**
-     *  포스트 리스트 조회 API
+     * 포스트 리스트 조회 API
      */
     @GetMapping("/post")
-    public BaseResponse<List<NewsFeedDto>> getPostListByCondition(HttpServletRequest request, @RequestParam(name = "type",defaultValue = "all") String type,
-                                    @RequestParam(name = "sort",defaultValue = "date")String sort,
-                                    @RequestParam(name = "startPage",defaultValue = "0") int startPage){
+    public BaseResponse<List<NewsFeedDto>> getPostListByCondition(HttpServletRequest request,
+                                                                  @RequestParam(name = "type", defaultValue = "all") String type,
+                                                                  @RequestParam(name = "sort", defaultValue = "date") String sort,
+                                                                  @RequestParam(name = "startPage", defaultValue = "0") int startPage) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
 
-        if(!sort.equals("date") && !sort.equals("like")){
+        if (!sort.equals("date") && !sort.equals("like")) {
             throw new BaseException(INVALID_REQUEST);
         }
 
-        if(!type.equals("all") && !type.equals("follow")){
+        if (!type.equals("all") && !type.equals("follow")) {
             throw new BaseException(INVALID_REQUEST);
         }
 
-        GetNewsFeedReq getNewsFeedReq = new GetNewsFeedReq(userId,type,sort, startPage);
+        GetNewsFeedReq getNewsFeedReq = new GetNewsFeedReq(userId, type, sort, startPage);
         List<NewsFeedDto> feedList = activityServiceClient.getPostListByCondition(getNewsFeedReq);
 
         return new BaseResponse<>(feedList);
@@ -59,7 +60,7 @@ public class FeedController {
      * 내가 팔로우한 사용자의 활동
      */
     @GetMapping("/my-following")
-    public BaseResponse<List<UserLogDto>> getMyFollowingActivity(){
+    public BaseResponse<List<UserLogDto>> getMyFollowingActivity() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userId = auth.getName();
 
@@ -68,6 +69,18 @@ public class FeedController {
         return new BaseResponse<>(result);
     }
 
+    /**
+     * 나를 팔로우하는 사용자의 활동
+     */
+    @GetMapping("/my-follower")
+    public BaseResponse<List<UserLogDto>> getMyFollowerActivity() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        List<UserLogDto> result = activityServiceClient.getMyFollowerActivity(userId);
+        return new BaseResponse<>(result);
+
+    }
 
 //    /**
 //     * 내 포스트 알림 (댓글 , 좋아요)
@@ -78,18 +91,6 @@ public class FeedController {
 //
 //    }
 //
-//    /**
-//     * 나를 팔로우하는 사용자의 활동
-//     */
-//    @GetMapping("/myfollower")
-//    public BaseResponse<List<NewsFeedActivityDto>> getMyFollowerActivity(){
-//
-//    }
-
-
-
-
-
 
 
 }

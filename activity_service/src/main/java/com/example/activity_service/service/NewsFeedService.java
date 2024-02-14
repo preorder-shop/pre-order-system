@@ -87,7 +87,18 @@ public class NewsFeedService {
     }
 
     public List<UserLogDto> getMyFollowingActivity(String userId) {
-        List<UserLog> userLogs = userLogRepository.findAllByActor(userId);
+        // 내가 팔로우 하는 사용자 목록
+        List<Follow> myFollowings = followRepository.findAllByFromUserId(userId);
+        List<String> myFollowingIds = myFollowings.stream().map(Follow::getToUserId).collect(Collectors.toList());
+        List<UserLog> userLogs = userLogRepository.findAllByActorIn(myFollowingIds);
+        return userLogs.stream().map(UserLogDto::of).collect(Collectors.toList());
+    }
+
+    public List<UserLogDto> getMyFollowerActivity(String userId) {
+        // 나를 팔로우 하는 사용자 목록
+        List<Follow> myFollowers = followRepository.findAllByToUserId(userId);
+        List<String> myFollowerIds = myFollowers.stream().map(Follow::getFromUserId).collect(Collectors.toList());
+        List<UserLog> userLogs = userLogRepository.findAllByRecipientIn(myFollowerIds);
         return userLogs.stream().map(UserLogDto::of).collect(Collectors.toList());
     }
 }

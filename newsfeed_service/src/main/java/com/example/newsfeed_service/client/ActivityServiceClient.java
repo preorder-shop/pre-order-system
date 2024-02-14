@@ -18,4 +18,7 @@ public interface ActivityServiceClient {
     @PostMapping("/activity/internal/newsfeed/my-following")
     List<UserLogDto> getMyFollowingActivity(@RequestBody String userId);
 
+    @PostMapping("/activity/internal/newsfeed/my-follower")
+    List<UserLogDto> getMyFollowerActivity(@RequestBody String userId);
+
 }
