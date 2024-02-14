@@ -10,13 +10,16 @@ import com.example.activity_service.common.jwt.JWTUtil;
 import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.request.CreatePostReq;
 import com.example.activity_service.dto.response.CreatePostRes;
+import com.example.activity_service.dto.response.PostDto;
 import com.example.activity_service.entity.LikePost;
 import com.example.activity_service.entity.Post;
 import com.example.activity_service.entity.UserLog;
 import com.example.activity_service.repository.LikePostRepository;
 import com.example.activity_service.repository.PostRepository;
 import com.example.activity_service.repository.UserLogRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
@@ -56,6 +59,12 @@ public class PostService {
                 .content(post.getContent())
                 .writer(post.getUserId())
                 .build();
+
+    }
+    public List<PostDto> getMyPostList(String userId){
+        List<Post> posts = postRepository.findAllByUserId(userId);
+        List<PostDto> postDtos = posts.stream().map(PostDto::of).collect(Collectors.toList());
+        return postDtos;
 
     }
 
@@ -106,5 +115,15 @@ public class PostService {
 
         return "해당 글에 좋아요를 취소했습니다.";
 
+    }
+
+    public List<PostDto> getMyLikePostList(String userId) {
+
+        List<LikePost> likePosts = likePostRepository.findAllByUserId(userId);
+        List<Long> postIds = likePosts.stream().map(p -> p.getPost().getId()).collect(Collectors.toList());
+        // 포스트 id 에 속하는 post 리스트 가져옴.
+        List<Post> posts = postRepository.findAllById(postIds);
+
+        return posts.stream().map(PostDto::of).collect(Collectors.toList());
     }
 }

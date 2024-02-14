@@ -62,7 +62,7 @@ public class UserService {
 
         // todo : 추후 Redis Db 로 변경 예정
         // 인증 코드 유효시간 체크
-        LocalDateTime certificateTime = certification.getUpdated_at();
+        LocalDateTime certificateTime = certification.getModifiedDateTime();
         LocalDateTime signupTime = LocalDateTime.now();
         Duration diff = Duration.between(certificateTime, signupTime);
         long diffMin = diff.toMinutes();
@@ -136,7 +136,7 @@ public class UserService {
 
     public UserDto getUserInfo(String email) {
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByUserId(email)
                 .orElseThrow(() -> new BaseException(USERS_INVALID_EMAIL));
 
         return UserDto.builder()

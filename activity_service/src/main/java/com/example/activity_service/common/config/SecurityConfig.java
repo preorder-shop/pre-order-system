@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
 
-    private UserServiceClient userServiceClient;
+    private final UserServiceClient userServiceClient;
 
     public SecurityConfig(JWTUtil jwtUtil, JWTFilter jwtFilter,UserServiceClient userServiceClient) {
 
@@ -69,15 +69,13 @@ public class SecurityConfig {
                                 "/activity/internal/**","/activity/test/**"
                         ).permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                     //   .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 );
 
-//
-//        httpSecurity
-//                .addFilterBefore(new JWTFilter(jwtUtil,userServiceClient),UsernamePasswordAuthenticationFilter.class);
-//        httpSecurity
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
-//                        UsernamePasswordAuthenticationFilter.class);
+
+        httpSecurity
+                .addFilterBefore(new JWTFilter(jwtUtil,userServiceClient),UsernamePasswordAuthenticationFilter.class);
+
 
         return httpSecurity.build();
 
@@ -87,8 +85,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<JWTFilter> jwtFilterFilterRegistrationBean(){
         FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(jwtFilter);
-        registrationBean.addUrlPatterns("/*"); // 필터를 어떤 URL에 적용할지 지정
-        registrationBean.setOrder(1);
+        registrationBean.addUrlPatterns("/activity/*"); // 필터를 어떤 URL에 적용할지 지정
         return registrationBean;
     }
 

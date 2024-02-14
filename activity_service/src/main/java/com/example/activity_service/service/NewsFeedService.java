@@ -1,10 +1,18 @@
 package com.example.activity_service.service;
 
+import static com.example.activity_service.common.response.BaseResponseStatus.UNEXPECTED_ERROR;
+
+import com.example.activity_service.common.exceptions.BaseException;
+import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.request.GetNewsFeedReq;
+import com.example.activity_service.dto.response.MyPostAlarm;
 import com.example.activity_service.dto.response.NewsFeedDto;
+import com.example.activity_service.dto.response.UserLogDto;
 import com.example.activity_service.entity.Follow;
 import com.example.activity_service.entity.Post;
+import com.example.activity_service.entity.UserLog;
 import com.example.activity_service.repository.FollowRepository;
+import com.example.activity_service.repository.JdbcRepository;
 import com.example.activity_service.repository.PostRepository;
 import com.example.activity_service.repository.UserLogRepository;
 import java.util.List;
@@ -24,38 +32,83 @@ public class NewsFeedService {
 
     private final UserLogRepository userLogRepository;
     private final PostRepository postRepository;
-
     private final FollowRepository followRepository;
 
-    public List<NewsFeedDto> getFeedList(GetNewsFeedReq getNewsFeedReq){
+    private final JdbcRepository jdbcRepository;
+
+    public List<NewsFeedDto> getPostListByCondition(GetNewsFeedReq getNewsFeedReq) {
 
         String userId = getNewsFeedReq.getUserId();
         String type = getNewsFeedReq.getType(); // all, follow
         String sort = getNewsFeedReq.getSort(); // date, like
         int startPage = getNewsFeedReq.getStartPage(); // 시작 페이지
 
-        if(sort.equals("date") && type.equals("all")){
-            PageRequest pageRequest = PageRequest.of(startPage,5, Sort.by(Sort.Direction.DESC,"id"));
+        if (sort.equals("date") && type.equals("all")) {
+            PageRequest pageRequest = PageRequest.of(startPage, 5, Sort.by(Sort.Direction.DESC, "id"));
             Slice<Post> postSlice = postRepository.findAllBy(pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
+            List<Post> content = postSlice.getContent();
+            List<NewsFeedDto> collect = content.stream().map(NewsFeedDto::of).collect(Collectors.toList());
+            return collect;
+        }
+
+        if (sort.equals("date") && type.equals("follow")) {
+            PageRequest pageRequest = PageRequest.of(startPage, 5, Sort.by(Sort.Direction.DESC, "id"));
+            List<Follow> myFollowList = followRepository.findAllByFromUserId(userId); // 내가 팔로우한 유저 목록
+            List<String> myFollowIdList = myFollowList.stream().map(Follow::getToUserId).toList();
+            Slice<Post> postSlice = postRepository.findAllByUserIdIn(myFollowIdList,
+                    pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
+            List<Post> content = postSlice.getContent();
+
+            List<NewsFeedDto> collect = content.stream().map(NewsFeedDto::of).collect(Collectors.toList());
+
+            return collect;
+        }
+
+        List<NewsFeedDto> result = null;
+        if (sort.equals("like") && type.equals("all")) {
+
+            result = jdbcRepository.getPostListByCondition(userId, "all");
+
+            if (result == null) {
+                throw new BaseException(UNEXPECTED_ERROR);
+            }
 
         }
 
-        if(sort.equals("date") && type.equals("follow")){
-            PageRequest pageRequest = PageRequest.of(startPage,5, Sort.by(Sort.Direction.DESC,"id"));
-            List<Follow> allByFromUsers = followRepository.findAllByFromUserId(userId); // 내가 팔로우한 유저 목록
-            List<String> userIds = allByFromUsers.stream().map(Follow::getToUserId).toList();
-            Slice<Post> postSlice = postRepository.findAllByUserIdIn(userIds,pageRequest); // 가장 최근에 작성한 순서대로 5개씩 잘라서 return
+        if (sort.equals("like") && type.equals("follow")) {
+            result = jdbcRepository.getPostListByCondition(userId, "follow");
 
+            if (result == null) {
+                throw new BaseException(UNEXPECTED_ERROR);
+            }
 
         }
 
+        return result;
+
+    }
+
+    public List<UserLogDto> getMyFollowingActivity(String userId) {
+        // 내가 팔로우 하는 사용자 목록
+        List<Follow> myFollowings = followRepository.findAllByFromUserId(userId);
+        List<String> myFollowingIds = myFollowings.stream().map(Follow::getToUserId).collect(Collectors.toList());
+        List<UserLog> userLogs = userLogRepository.findAllByActorIn(myFollowingIds);
+        return userLogs.stream().map(UserLogDto::of).collect(Collectors.toList());
+    }
+
+    public List<UserLogDto> getMyFollowerActivity(String userId) {
+        // 나를 팔로우 하는 사용자 목록
+        List<Follow> myFollowers = followRepository.findAllByToUserId(userId);
+        List<String> myFollowerIds = myFollowers.stream().map(Follow::getFromUserId).collect(Collectors.toList());
+        List<UserLog> userLogs = userLogRepository.findAllByRecipientIn(myFollowerIds);
+        return userLogs.stream().map(UserLogDto::of).collect(Collectors.toList());
+    }
 
 
-        // 글을 가져오 모든 사람의 글인지 내가 팔로우한 사용자의 글인지
-        postRepository.findAll();
+    public List<MyPostAlarm> getMyPostAlarm(String userId) {
 
-        return null;
-
-
+        List<MyPostAlarm> result = jdbcRepository.getMyPostAlarm(userId);
+        return result;
+        //
     }
 }

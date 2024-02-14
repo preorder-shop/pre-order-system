@@ -17,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  // 생성자를 통해서 값 변경 목적으로 접근하는 메시지들 차단
 @Getter
 @Entity
-public class Token {
+public class Token extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,14 +27,6 @@ public class Token {
     private String userId; // 유저 식별값 (UUID)
 
     private Date expiredDate;
-
-    @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
     @Builder
     public Token(String refreshToken,String userId,Date expiredDate){

@@ -7,12 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "user")
 public interface UserServiceClient {
 
-    @GetMapping ("/users/internal/token")
+    @PostMapping("/users/internal/token")
     void validateRefreshToken(@RequestBody ValidateRefreshTokenReq validateRefreshTokenReq);
 
     @GetMapping("/users/internal/{userId}")

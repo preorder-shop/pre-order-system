@@ -1,5 +1,6 @@
 package com.example.activity_service.common.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,8 +49,15 @@ public class JWTUtil { // JWT 생성
     }
 
     public Boolean isExpired(String token) {
+        boolean result = false;
+        try{
+             result = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                    .getExpiration().before(new Date());
+            return result;
+        }catch (Exception e){
+            return true;
+        }
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
     public Date getExpiredDate(String token){

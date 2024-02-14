@@ -18,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class LikeComment {
+public class LikeComment extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,13 +30,6 @@ public class LikeComment {
     @JoinColumn(nullable = false,name = "comment_id")
     private Comment comment;
 
-    @CreationTimestamp
-    @Column(nullable = false,name = "createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(name = "updatedAt", nullable = false)
-    private LocalDateTime updated_at;
 
     @Builder
     public LikeComment(String userId,Comment comment){

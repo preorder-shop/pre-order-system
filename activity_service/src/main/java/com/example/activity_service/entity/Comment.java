@@ -20,19 +20,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Comment {
+public class Comment extends BaseEntity{
 
     @Id @GeneratedValue
     private Long id;
 
     private String content;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
     @Column(nullable = false)
-    private String userId; // userId로 이메일값 사용 (추후 변경 가능)
+    private String userId; // userId (UUID)
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -40,14 +36,6 @@ public class Comment {
 
 //    @Column(nullable = false,name = "postId")
 //    private Long postId;
-
-    @CreationTimestamp
-    @Column(nullable = false,name="createdAt")
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    @Column(nullable = false,name = "updatedAt")
-    private LocalDateTime updated_at;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
