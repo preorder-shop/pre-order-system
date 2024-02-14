@@ -2,6 +2,7 @@ package com.example.activity_service.controller;
 
 import com.example.activity_service.dto.request.GetNewsFeedReq;
 import com.example.activity_service.dto.response.GetFollowerRes;
+import com.example.activity_service.dto.response.MyPostAlarm;
 import com.example.activity_service.dto.response.NewsFeedDto;
 import com.example.activity_service.dto.response.UserLogDto;
 import com.example.activity_service.service.FollowService;
@@ -54,6 +55,14 @@ public class InternalController {
         List<UserLogDto> result = newsFeedService.getMyFollowerActivity(userId);
 
         return result;
+    }
+
+    @PostMapping("/newsfeed/my-post-alarm")
+    List<MyPostAlarm> getMyPostAlarm(@RequestBody String userId){
+
+        List<MyPostAlarm> result = newsFeedService.getMyPostAlarm(userId);
+        return result;
+
     }
 
 

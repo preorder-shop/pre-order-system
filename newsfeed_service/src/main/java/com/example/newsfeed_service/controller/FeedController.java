@@ -8,6 +8,7 @@ import com.example.newsfeed_service.client.ActivityServiceClient;
 import com.example.newsfeed_service.common.exceptions.BaseException;
 import com.example.newsfeed_service.common.response.BaseResponse;
 import com.example.newsfeed_service.dto.request.GetNewsFeedReq;
+import com.example.newsfeed_service.dto.response.MyPostAlarm;
 import com.example.newsfeed_service.dto.response.NewsFeedActivityDto;
 import com.example.newsfeed_service.dto.response.NewsFeedDto;
 import com.example.newsfeed_service.dto.response.UserLogDto;
@@ -82,15 +83,22 @@ public class FeedController {
 
     }
 
-//    /**
-//     * 내 포스트 알림 (댓글 , 좋아요)
-//     */
-//    @GetMapping("/mypost")
-//    public BaseResponse<List<NewsFeedActivityDto>> getMyPostAlarm(){
-//
-//
-//    }
-//
+    /**
+     * 내 포스트 알림 (댓글 , 좋아요)
+     */
+    @GetMapping("/my-post-alarm")
+    public BaseResponse<List<MyPostAlarm>> getMyPostAlarm(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
+
+        List<MyPostAlarm> result = activityServiceClient.getMyPostAlarm(userId);
+
+        return new BaseResponse<>(result);
+
+
+
+    }
+
 
 
 }

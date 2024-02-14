@@ -3,7 +3,9 @@ package com.example.activity_service.service;
 import static com.example.activity_service.common.response.BaseResponseStatus.UNEXPECTED_ERROR;
 
 import com.example.activity_service.common.exceptions.BaseException;
+import com.example.activity_service.domain.ActiveType;
 import com.example.activity_service.dto.request.GetNewsFeedReq;
+import com.example.activity_service.dto.response.MyPostAlarm;
 import com.example.activity_service.dto.response.NewsFeedDto;
 import com.example.activity_service.dto.response.UserLogDto;
 import com.example.activity_service.entity.Follow;
@@ -100,5 +102,13 @@ public class NewsFeedService {
         List<String> myFollowerIds = myFollowers.stream().map(Follow::getFromUserId).collect(Collectors.toList());
         List<UserLog> userLogs = userLogRepository.findAllByRecipientIn(myFollowerIds);
         return userLogs.stream().map(UserLogDto::of).collect(Collectors.toList());
+    }
+
+
+    public List<MyPostAlarm> getMyPostAlarm(String userId) {
+
+        List<MyPostAlarm> result = jdbcRepository.getMyPostAlarm(userId);
+        return result;
+        //
     }
 }

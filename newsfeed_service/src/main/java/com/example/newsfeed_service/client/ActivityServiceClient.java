@@ -1,6 +1,7 @@
 package com.example.newsfeed_service.client;
 
 import com.example.newsfeed_service.dto.request.GetNewsFeedReq;
+import com.example.newsfeed_service.dto.response.MyPostAlarm;
 import com.example.newsfeed_service.dto.response.NewsFeedDto;
 import com.example.newsfeed_service.dto.response.UserLogDto;
 import java.util.List;
@@ -20,5 +21,8 @@ public interface ActivityServiceClient {
 
     @PostMapping("/activity/internal/newsfeed/my-follower")
     List<UserLogDto> getMyFollowerActivity(@RequestBody String userId);
+
+    @PostMapping("/activity/internal/newsfeed/my-post-alarm")
+    List<MyPostAlarm> getMyPostAlarm(@RequestBody String userId);
 
 }
