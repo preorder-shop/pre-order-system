@@ -67,4 +67,12 @@ class ProductRepositoryTest {
 
     }
 
+    @DisplayName("전체 상품 목록에 대해 조회한다.")
+    @Test
+    void findAllProduct(){
+        List<Product> products = productRepository.findAll();
+
+        assertThat(products).hasSize(3);
+    }
+
 }
