@@ -13,6 +13,7 @@ src/main/resources/application-config.properties
 user_service/src/main/resources/application-config.properties
 activity_service/src/main/resources/application-config.properties
 newsfeed_service/src/main/resources/application-config.properties
+payment_service/src/main/resources/application-config.properties
 
 activity_service/src/test/resources/application.properties
 ### STS ###
