@@ -43,5 +43,18 @@ public class ProductService {
     }
 
 
+    public List<ProductDto> getOrdinaryProducts(){
+
+        List<Product> products = productRepository.findALlByProductType(ProductType.NORMAL);
+
+        return products.stream().map(product -> ProductDto.builder()
+                .productNumber(product.getProductNumber())
+                .name(product.getName())
+                .productType(product.getProductType().toString())
+                .price(product.getPrice())
+                .build()
+        ).collect(Collectors.toList());
+    }
+
 
 }

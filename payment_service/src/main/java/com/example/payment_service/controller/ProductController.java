@@ -40,6 +40,17 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
     }
 
+    /**
+     * 일반 상품 목록만 조회하는 API
+     */
+    @GetMapping("/normal")
+    public ResponseEntity<List<ProductDto>> getOrdinaryProducts(){
+
+        List<ProductDto> result = productService.getOrdinaryProducts();
+
+        return ResponseEntity.ok().body(result);
+    }
+
 
 
 
