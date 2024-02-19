@@ -2,6 +2,7 @@ package com.example.payment_service.controller;
 
 import com.example.payment_service.domain.product.Product;
 import com.example.payment_service.domain.product.dto.ProductDto;
+import com.example.payment_service.domain.stock.dto.StockDto;
 import com.example.payment_service.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,12 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
 
     }
+
+    /**
+     * 상품 재고 수량 조회 API
+     */
+    @GetMapping ("/{number}/stock")
+    public ResponseEntity<StockDto>
 
 
 
