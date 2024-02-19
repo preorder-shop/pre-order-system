@@ -27,7 +27,17 @@ public class ProductController {
 
         return ResponseEntity.ok().body(result);
 
+    }
 
+    /**
+     * 예약 구매 상품 목록만 조회하는 API
+     */
+    @GetMapping("/pre-order")
+    public ResponseEntity<List<ProductDto>> getPreOrderProducts(){
+
+        List<ProductDto> result = productService.getPreOrderProducts();
+
+        return ResponseEntity.ok().body(result);
     }
 
 
