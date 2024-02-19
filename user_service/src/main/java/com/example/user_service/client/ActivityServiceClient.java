@@ -14,4 +14,6 @@ public interface ActivityServiceClient {
     List<GetFollowerRes> getFollowers(@PathVariable String userId);
 
 
+
+
 }

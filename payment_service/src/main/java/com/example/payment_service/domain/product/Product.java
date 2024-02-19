@@ -35,23 +35,12 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
-    @Column(nullable = false)
-    private int stock;
-
-
     @Builder
-    private Product(String productNumber ,ProductType productType ,String name, int price, int stock){
+    private Product(String productNumber ,ProductType productType ,String name, int price){
             this.productNumber = productNumber;
             this.productType = productType;
             this.name = name;
             this.price = price;
-            this.stock = stock;
     }
 
-    public void decrease(int stock){
-        if(this.stock-stock<0){
-            throw new RuntimeException("재고는 0개 미만이 될 수 없습니다.");
-        }
-        this.stock-=stock;
-    }
 }

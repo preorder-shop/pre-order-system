@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 public class ProductRes {
 
-    private Long id;
     private String productNumber; // 상품 번호
     private ProductType productType;
     private String name;
@@ -16,9 +15,8 @@ public class ProductRes {
 
 
     @Builder
-    private ProductRes(Long id, String productNumber, ProductType productType, String name,
+    private ProductRes(String productNumber, ProductType productType, String name,
                        int price) {
-        this.id = id;
         this.productNumber = productNumber;
         this.productType = productType;
         this.name = name;
@@ -27,7 +25,6 @@ public class ProductRes {
 
     public static ProductRes of(Product product) {
         return ProductRes.builder()
-                .id(product.getId())
                 .productNumber(product.getProductNumber())
                 .productType(product.getProductType())
                 .name(product.getName())
