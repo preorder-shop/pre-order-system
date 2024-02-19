@@ -23,6 +23,7 @@ public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
 
     @Column(nullable = false,name = "user_id")
@@ -44,5 +45,13 @@ public class Order extends BaseEntity {
         this.productNumber = productNumber;
         this.quantity = quantity;
         this.orderState = OrderState.DOING;
+    }
+
+    public void changeStateToCancel(){
+        this.orderState = OrderState.CANCEL;
+    }
+
+    public void changeStateToComplete(){
+        this.orderState = OrderState.COMPLETE;
     }
 }

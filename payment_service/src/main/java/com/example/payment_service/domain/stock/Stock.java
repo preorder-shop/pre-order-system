@@ -29,26 +29,26 @@ public class Stock extends BaseEntity {
 
 
     @Column(nullable = false)
-    private int stock;
+    private int quantity;
 
 
     public void decreaseStock(int minus) { // 재고 수량 감소
-        if (this.stock - minus < 0) {
+        if (this.quantity - minus < 0) {
             throw new RuntimeException("재고는 0개 미만이 될 수 없습니다.");
         }
-        this.stock -= minus;
+        this.quantity -= minus;
 
     }
 
     public void increaseStock(int plus) {
-        this.stock += plus;
+        this.quantity += plus;
     }
 
 
     @Builder
-    public Stock(String productNumber, int stock) {
+    public Stock(String productNumber, int quantity) {
         this.productNumber = productNumber;
-        this.stock = stock;
+        this.quantity = quantity;
 
     }
 

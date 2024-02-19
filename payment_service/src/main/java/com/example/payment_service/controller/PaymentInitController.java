@@ -35,7 +35,7 @@ public class PaymentInitController {
             return ResponseEntity.status(403).body("지금은 주문 시간이 아닙니다.");
         }
 
-        // todo : 재고 있을 경우 진입 -> db or cache
+        // todo: 재고 있을 경우 진입 -> db or cache
 
         double prob = Math.random();
 

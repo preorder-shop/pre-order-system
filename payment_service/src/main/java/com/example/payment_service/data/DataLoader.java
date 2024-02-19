@@ -30,7 +30,7 @@ public class DataLoader implements ApplicationRunner {
 
         Stock stockOne = Stock.builder()
                 .productNumber("001")
-                .stock(10)
+                .quantity(10)
                 .build();
 
         Product productTwo = Product.builder()
@@ -42,7 +42,7 @@ public class DataLoader implements ApplicationRunner {
 
         Stock stockTwo = Stock.builder()
                 .productNumber("002")
-                .stock(75)
+                .quantity(75)
                 .build();
 
         productRepository.save(productOne);

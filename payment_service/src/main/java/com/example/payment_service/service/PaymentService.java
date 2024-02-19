@@ -23,7 +23,6 @@ public class PaymentService {
             return "fail";
         }
 
-        // todo : 결제 api 호출
         Order order = Order.builder()
                 .userId(orderDto.getUserId())
                 .productNumber(orderDto.getOrderProductNumber())
@@ -38,6 +37,26 @@ public class PaymentService {
 
         String orderId = paymentServiceClient.paymentForProduct(paymentDto);
         return orderId;
+
+    }
+
+    public String paymentForOrder(PaymentDto paymentDto ,double prob) {
+
+        Order order = orderRepository.findById(paymentDto.getOrderId())
+                .orElseThrow(() -> new RuntimeException("잘못된 주문 id"));
+
+
+        if (prob < 0.2) { // 요청중 20%는 취소 처리.
+            order.changeStateToCancel();
+            return "fail";
+        }
+
+        //todo: 결제 진행.
+
+
+        order.changeStateToComplete();
+
+        return "success";
 
     }
 
