@@ -1,5 +1,6 @@
 package com.example.payment_service.controller;
 
+import com.example.payment_service.domain.order.dto.OrderDto;
 import com.example.payment_service.service.PaymentService;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,7 +27,7 @@ public class PaymentInitController {
      * 결제 진입 API
      */
     @PostMapping ("")
-    public ResponseEntity<String> paymentInit(@RequestBody ){
+    public ResponseEntity<String> paymentInit(@RequestBody OrderDto orderDto){
 
         LocalTime registerTime = LocalDateTime.now().toLocalTime();
 
@@ -34,11 +35,15 @@ public class PaymentInitController {
             return ResponseEntity.status(403).body("지금은 주문 시간이 아닙니다.");
         }
 
+        // todo : 재고 있을 경우 진입 -> db or cache
+
         double prob = Math.random();
 
-        paymentService.createPayment(prob);
+        String result = paymentService.createPayment(orderDto, prob);
 
-
+        if(result.equals("fail")){
+            return ResponseEntity.status(403).body("고객 이탈로 주문 취소");
+        }
 
         return ResponseEntity.ok().body("해당 예약 상품을 주문했습니다.");
 
