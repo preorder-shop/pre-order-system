@@ -1,8 +1,11 @@
 package com.example.payment_service.domain.order;
 
 
+import com.example.payment_service.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +33,10 @@ public class Order {
 
     @Column(nullable = false)
     private int quantity; // 주문 수량 (지금은 한개로 fix)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false,name = "order_state")
+    private OrderState orderState;
 
     @Builder
     public Order(String userId, String productNumber, int quantity){
