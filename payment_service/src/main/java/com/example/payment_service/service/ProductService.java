@@ -56,5 +56,19 @@ public class ProductService {
         ).collect(Collectors.toList());
     }
 
+    public ProductDto getProductInfo(String productNumber) {
+
+        Product product = productRepository.findByProductNumber(productNumber)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 상품 번호 입니다."));
+
+        return ProductDto.builder()
+                .productNumber(product.getProductNumber())
+                .name(product.getName())
+                .productType(product.getProductType().toString())
+                .price(product.getPrice())
+                .build();
+
+    }
+
 
 }

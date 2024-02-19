@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,12 +44,24 @@ public class ProductController {
     /**
      * 일반 상품 목록만 조회하는 API
      */
-    @GetMapping("/normal")
+    @GetMapping("/ordinary")
     public ResponseEntity<List<ProductDto>> getOrdinaryProducts(){
 
         List<ProductDto> result = productService.getOrdinaryProducts();
 
         return ResponseEntity.ok().body(result);
+    }
+
+    /**
+     * 상품 상세 조회 API
+     */
+    @GetMapping("/{number}")
+    public ResponseEntity<ProductDto> getProductInfo(@PathVariable("number") String productNumber){
+
+        ProductDto result = productService.getProductInfo(productNumber);
+
+        return ResponseEntity.ok().body(result);
+
     }
 
 
