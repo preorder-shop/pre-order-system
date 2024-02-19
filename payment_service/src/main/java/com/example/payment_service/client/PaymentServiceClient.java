@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "payment" ,url = "localhost:8084")
+@FeignClient(name = "payment" ,url = "localhost:8084/payments")
 public interface PaymentServiceClient {
 
-    @PostMapping("/pay")
+    @PostMapping("/payㅇㄹㅇ")
     String paymentForProduct(@RequestBody PaymentDto paymentDto);
 }
