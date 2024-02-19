@@ -2,12 +2,16 @@ package com.example.payment_service.service;
 
 import com.example.payment_service.domain.order.Order;
 import com.example.payment_service.domain.order.dto.OrderDto;
+import com.example.payment_service.domain.order.dto.PaymentDto;
+import com.example.payment_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class PaymentService {
+
+    private final OrderRepository orderRepository;
 
 
     public String createPayment(OrderDto orderDto, double prob) {
@@ -23,6 +27,11 @@ public class PaymentService {
                 .quantity(1)
                 .build();
 
+        Order savedOrder = orderRepository.save(order);
+        PaymentDto paymentDto = PaymentDto.builder().orderId(savedOrder.getId())
+                .productNumber(savedOrder.getProductNumber())
+                .userId(
+                        savedOrder.getUserId()).build();
 
 
 

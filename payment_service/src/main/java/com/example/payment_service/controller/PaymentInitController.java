@@ -26,7 +26,7 @@ public class PaymentInitController {
     /**
      * 결제 진입 API
      */
-    @PostMapping ("")
+    @PostMapping ("/init")
     public ResponseEntity<String> paymentInit(@RequestBody OrderDto orderDto){
 
         LocalTime registerTime = LocalDateTime.now().toLocalTime();
