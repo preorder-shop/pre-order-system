@@ -1,5 +1,6 @@
 package com.example.payment_service.service;
 
+import com.example.payment_service.client.PaymentServiceClient;
 import com.example.payment_service.domain.order.Order;
 import com.example.payment_service.domain.order.dto.OrderDto;
 import com.example.payment_service.domain.order.dto.PaymentDto;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 public class PaymentService {
 
     private final OrderRepository orderRepository;
+
+    private final PaymentServiceClient paymentServiceClient;
 
 
     public String createPayment(OrderDto orderDto, double prob) {
@@ -33,8 +36,8 @@ public class PaymentService {
                 .userId(
                         savedOrder.getUserId()).build();
 
-
-
+        String orderId = paymentServiceClient.paymentForProduct(paymentDto);
+        return orderId;
 
     }
 

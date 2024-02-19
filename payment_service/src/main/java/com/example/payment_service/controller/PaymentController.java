@@ -16,8 +16,9 @@ public class PaymentController {
 
 
     @PostMapping("/pay")
-    public void payment(@RequestBody PaymentDto paymentDto){
-
+    public String payment(@RequestBody PaymentDto paymentDto){
+        log.info("결제 api 호출");
+        return "ok";
 
     }
 
