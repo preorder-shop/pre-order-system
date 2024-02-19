@@ -51,6 +51,7 @@ public class ProductStockRepository {
             String productNumber = preProduct.getProductNumber();
             Stock stock = stockRepository.findByProductNumber(productNumber)
                     .orElseThrow(() -> new IllegalArgumentException("상품 번호 불일치"));
+
             saveStock(preProduct.getProductNumber(), stock.getQuantity());
         }
     }

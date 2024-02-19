@@ -69,7 +69,14 @@ public class ProductController {
      * 상품 재고 수량 조회 API
      */
     @GetMapping ("/{number}/stock")
-    public ResponseEntity<StockDto>
+    public ResponseEntity<StockDto> getProductStock(@PathVariable("number") String productNumber){
+
+        StockDto result = productService.getStock(productNumber);
+
+        return ResponseEntity.ok().body(result);
+
+
+    }
 
 
 

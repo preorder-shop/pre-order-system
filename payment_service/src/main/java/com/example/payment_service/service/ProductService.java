@@ -4,7 +4,10 @@ package com.example.payment_service.service;
 import com.example.payment_service.domain.ProductType;
 import com.example.payment_service.domain.product.Product;
 import com.example.payment_service.domain.product.dto.ProductDto;
+import com.example.payment_service.domain.stock.Stock;
+import com.example.payment_service.domain.stock.dto.StockDto;
 import com.example.payment_service.repository.ProductRepository;
+import com.example.payment_service.repository.StockRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final StockRepository stockRepository;
 
 
     public List<ProductDto> getProductList(){
@@ -67,6 +71,19 @@ public class ProductService {
                 .productType(product.getProductType().toString())
                 .price(product.getPrice())
                 .build();
+
+    }
+
+    public StockDto getStock(String productNumber){
+
+        Stock stock = stockRepository.findByProductNumber(productNumber)
+                .orElseThrow(() -> new IllegalArgumentException("상품 번호 불일치"));
+
+        return StockDto.builder()
+                .productNumber(stock.getProductNumber())
+                .quantity(stock.getQuantity())
+                .build();
+
 
     }
 
