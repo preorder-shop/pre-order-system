@@ -43,5 +43,6 @@ public class Order extends BaseEntity {
         this.userId = userId;
         this.productNumber = productNumber;
         this.quantity = quantity;
+        this.orderState = OrderState.DOING;
     }
 }

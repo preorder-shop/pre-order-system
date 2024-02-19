@@ -1,5 +1,6 @@
 package com.example.payment_service.service;
 
+import com.example.payment_service.domain.order.Order;
 import com.example.payment_service.domain.order.dto.OrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,14 @@ public class PaymentService {
         }
 
         // todo : 결제 api 호출
+        Order order = Order.builder()
+                .userId(orderDto.getUserId())
+                .productNumber(orderDto.getOrderProductNumber())
+                .quantity(1)
+                .build();
+
+
+
 
 
     }
