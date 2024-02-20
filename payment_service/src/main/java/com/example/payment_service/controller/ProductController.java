@@ -75,7 +75,18 @@ public class ProductController {
 
         return ResponseEntity.ok().body(result);
 
+    }
 
+    /**
+     * redis 에 상품 재고 수량 update
+     */
+    @GetMapping("/update-stock")
+    public ResponseEntity<String> updateStockInMemory(){
+
+        productService.updateStockInRedis();
+
+
+        return ResponseEntity.ok().body("update complete");
     }
 
 

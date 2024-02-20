@@ -7,6 +7,7 @@ import com.example.payment_service.domain.product.dto.ProductDto;
 import com.example.payment_service.domain.stock.Stock;
 import com.example.payment_service.domain.stock.dto.StockDto;
 import com.example.payment_service.repository.ProductRepository;
+import com.example.payment_service.repository.ProductStockRepository;
 import com.example.payment_service.repository.StockRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
+
+    private final ProductStockRepository productStockRepository;
 
 
     public List<ProductDto> getProductList(){
@@ -84,6 +87,12 @@ public class ProductService {
                 .quantity(stock.getQuantity())
                 .build();
 
+
+    }
+
+    public void updateStockInRedis(){
+
+        productStockRepository.initStockInfo();
 
     }
 
