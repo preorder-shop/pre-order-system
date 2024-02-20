@@ -34,14 +34,18 @@ public class ProductStockRepository {
         return true;
     }
 
-    public boolean decreaseStock(String producNumber) {
-        int stock = getStock(producNumber);
-        stock = stock - 1;
-        if (stock < 0) {
-//            throw new IllegalArgumentException("해당 상품은 재고 소진으로 더이상 구매가 불가능합니다.");
+    public synchronized boolean decreaseStock(String productNumber) {
+        int count = getStock(productNumber);
+        if(count==0){
+
+            Stock stock = stockRepository.findByProductNumber(productNumber)
+                    .orElseThrow(() -> new IllegalStateException("유효하지 않은 상품 번호"));
+            stock.changeStock(0);
             return false;
         }
-        saveStock(producNumber, stock);
+
+        count = count - 1;
+        saveStock(productNumber, count);
         return true;
     }
 

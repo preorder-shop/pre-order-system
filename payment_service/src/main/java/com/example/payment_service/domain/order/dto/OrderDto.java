@@ -17,5 +17,5 @@ public class OrderDto {
 
     private String orderProductNumber;
 
-    private int quantity;
+//    private int quantity;
 }

@@ -35,7 +35,10 @@ public class PaymentInitController {
 //            return ResponseEntity.status(403).body("지금은 주문 시간이 아닙니다.");
 //        }
 
-        // todo: 재고 있을 경우 진입 -> db or cache
+        //  재고 있을 경우 진입 -> db
+        if(paymentService.noStockInDB(orderDto.getOrderProductNumber())){
+            return ResponseEntity.status(403).body("재고가 모두 소진되었습니다.");
+        }
 
         double prob = Math.random();
 
@@ -48,6 +51,11 @@ public class PaymentInitController {
         if(result.equals("fail-2")){
             return ResponseEntity.status(403).body("결제 정보 오류로 주문 취소");
         }
+
+        if(result.equals("fail-3")){
+            return ResponseEntity.status(403).body("재고 부족으로 결제가 불가능합니다.");
+        }
+
 
         if(result.equals("feign error")){
             return ResponseEntity.status(500).body("서버 에러 발생으로 주문 불가");

@@ -22,14 +22,14 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         Product productOne = Product.builder()
-                .productNumber("001")
+                .productNumber("123")
                 .name("mac-book")
                 .productType(ProductType.PRE_ORDER)
                 .price(50000000)
                 .build();
 
         Stock stockOne = Stock.builder()
-                .productNumber("001")
+                .productNumber("123")
                 .quantity(10)
                 .build();
 
@@ -45,11 +45,26 @@ public class DataLoader implements ApplicationRunner {
                 .quantity(75)
                 .build();
 
+        Product productThree = Product.builder()
+                .productNumber("003")
+                .name("iphone")
+                .productType(ProductType.PRE_ORDER)
+                .price(25900)
+                .build();
+
+        Stock stockThree = Stock.builder()
+                .productNumber("003")
+                .quantity(30)
+                .build();
+
+
         productRepository.save(productOne);
         productRepository.save(productTwo);
+        productRepository.save(productThree);
 
         stockRepository.save(stockOne);
         stockRepository.save(stockTwo);
+        stockRepository.save(stockThree);
 
 
     }

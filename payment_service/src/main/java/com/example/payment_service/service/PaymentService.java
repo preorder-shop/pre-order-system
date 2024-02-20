@@ -5,7 +5,10 @@ import com.example.payment_service.domain.order.Order;
 import com.example.payment_service.domain.order.OrderState;
 import com.example.payment_service.domain.order.dto.OrderDto;
 import com.example.payment_service.domain.order.dto.PaymentDto;
+import com.example.payment_service.domain.stock.Stock;
 import com.example.payment_service.repository.OrderRepository;
+import com.example.payment_service.repository.ProductStockRepository;
+import com.example.payment_service.repository.StockRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final OrderRepository orderRepository;
-
     private final PaymentServiceClient paymentServiceClient;
+    private final StockRepository stockRepository;
 
-    @Transactional
+    private final ProductStockRepository productStockRepository;
+
     public String createPayment(OrderDto orderDto, double prob) {
 
         log.info("결제 진입 prob :{}",prob);
@@ -59,8 +63,9 @@ public class PaymentService {
     @Transactional
     public String paymentForOrder(PaymentDto paymentDto ,double prob) {
 
-        Order order = orderRepository.findById(paymentDto.getOrderId())
-                .orElseThrow(() -> new RuntimeException("잘못된 주문 id"));
+        Long orderId = paymentDto.getOrderId();
+        Order order = orderRepository.findById(orderId)
+                        .orElseThrow(()->new IllegalArgumentException("잘못된 주문 id입니다."));
 
         log.info("결제 진행 prob: {}",prob);
 
@@ -69,13 +74,24 @@ public class PaymentService {
             return "fail-2";
         }
 
-        //todo: (redis)
-
+        boolean result = productStockRepository.decreaseStock(paymentDto.getProductNumber());// redis 수량 -1
+        if(!result){
+            order.changeStateToCancel();
+            return "fail-3";
+        }
 
         order.changeStateToComplete();
 
-        return "success";
+        return orderId.toString();
 
+    }
+
+    public boolean noStockInDB(String productNumber){
+        Stock stock = stockRepository.findByProductNumber(productNumber)
+                .orElseThrow(() -> new IllegalStateException("유효한 상품번호가 아닙니다."));
+
+        int quantity = stock.getQuantity();
+        return quantity <= 0;
     }
 
 
