@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -80,7 +81,7 @@ public class ProductController {
     /**
      * redis 에 상품 재고 수량 update
      */
-    @GetMapping("/update-stock")
+    @GetMapping("/update-memory")
     public ResponseEntity<String> updateStockInMemory(){
 
         productService.updateStockInRedis();
@@ -88,6 +89,19 @@ public class ProductController {
 
         return ResponseEntity.ok().body("update complete");
     }
+
+    /**
+     * redis 에 있는 상품 재고 수량 db에 update
+     */
+    @GetMapping("/update-db")
+    public ResponseEntity<String> updateStockInDB(){
+
+        productService.updateStockInMemory();
+
+        return ResponseEntity.ok().body("update complete");
+    }
+
+
 
 
 

@@ -55,4 +55,17 @@ public class ProductStockRepository {
             saveStock(preProduct.getProductNumber(), stock.getQuantity());
         }
     }
+
+    public void updateStockInDB(){
+        List<Product> preProducts = productRepository.findALlByProductType(ProductType.PRE_ORDER);// 예약 상품목록만 가져옴.
+        for (Product preProduct : preProducts) {
+            String productNumber = preProduct.getProductNumber();
+            Stock stock = stockRepository.findByProductNumber(productNumber)
+                    .orElseThrow(() -> new IllegalArgumentException("상품 번호 불일치"));
+
+            int quantity = getStock(productNumber);
+            stock.changeStock(quantity);
+
+        }
+    }
 }

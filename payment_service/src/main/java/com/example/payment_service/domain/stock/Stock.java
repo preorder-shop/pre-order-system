@@ -44,6 +44,10 @@ public class Stock extends BaseEntity {
         this.quantity += plus;
     }
 
+    public void changeStock(int stock){
+        this.quantity = stock;
+    }
+
 
     @Builder
     public Stock(String productNumber, int quantity) {

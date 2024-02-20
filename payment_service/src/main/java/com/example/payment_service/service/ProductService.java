@@ -96,5 +96,11 @@ public class ProductService {
 
     }
 
+    public void updateStockInMemory(){
+
+        productStockRepository.updateStockInDB();
+
+    }
+
 
 }
