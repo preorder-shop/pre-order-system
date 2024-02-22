@@ -10,9 +10,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +45,14 @@ public class SecurityConfig {
 
         return configuration.getAuthenticationManager();
     }
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        return (web)->web.ignoring()
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .requestMatchers(new AntPathRequestMatcher("/favicon.ico"))
+                .requestMatchers(new AntPathRequestMatcher("/css/**"))
+                .requestMatchers(new AntPathRequestMatcher("/img/**"));
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -57,8 +66,6 @@ public class SecurityConfig {
         httpSecurity
                 .httpBasic((auth) -> auth.disable());
 
-        httpSecurity
-                .formLogin((auth) -> auth.disable());
 
         // 인증 인가 관련
         httpSecurity
