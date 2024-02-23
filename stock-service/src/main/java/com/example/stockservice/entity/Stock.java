@@ -25,25 +25,25 @@ public class Stock {
     private String productId;
 
     @Column(nullable = false)
-    private int stock;
+    private int quantity;
 
     @Builder
-    public Stock(String productId, int stock){
+    public Stock(String productId, int quantity){
         this.productId = productId;
-        this.stock = stock;
+        this.quantity = quantity;
     }
 
 
     public void increaseStock(int num){
-        this.stock+=num;
+        this.quantity+=num;
     }
 
     public void decreaseStock(int num){
-        this.stock-=num;
+        this.quantity-=num;
     }
 
     public void updateStock(int num){
-        this.stock = num;
+        this.quantity = num;
     }
 
 

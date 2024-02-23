@@ -16,7 +16,6 @@ public class DataLoader implements ApplicationRunner {
 
     private final ProductRepository productRepository;
 
-    private final StockRepository stockRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -28,21 +27,12 @@ public class DataLoader implements ApplicationRunner {
                 .price(50000000)
                 .build();
 
-        Stock stockOne = Stock.builder()
-                .productNumber("123")
-                .quantity(10)
-                .build();
 
         Product productTwo = Product.builder()
                 .productNumber("002")
                 .name("pencil")
                 .productType(ProductType.NORMAL)
                 .price(2000)
-                .build();
-
-        Stock stockTwo = Stock.builder()
-                .productNumber("002")
-                .quantity(75)
                 .build();
 
         Product productThree = Product.builder()
@@ -52,19 +42,10 @@ public class DataLoader implements ApplicationRunner {
                 .price(25900)
                 .build();
 
-        Stock stockThree = Stock.builder()
-                .productNumber("003")
-                .quantity(30)
-                .build();
-
 
         productRepository.save(productOne);
         productRepository.save(productTwo);
         productRepository.save(productThree);
-
-        stockRepository.save(stockOne);
-        stockRepository.save(stockTwo);
-        stockRepository.save(stockThree);
 
 
     }
