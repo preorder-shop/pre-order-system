@@ -17,10 +17,11 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping("/{productId}")
-    public ResponseEntity<StockResponseDto> getStock(@PathVariable(name = "productId") String productId){
+    public void getStock(@PathVariable(name = "productId") String productId){
 
+        stockService.getStock(productId);
 
-        return ResponseEntity.ok();
+       // return ResponseEntity.ok();
 
     }
 }
