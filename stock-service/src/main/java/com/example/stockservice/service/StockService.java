@@ -1,6 +1,7 @@
 package com.example.stockservice.service;
 
 import com.example.stockservice.entity.Stock;
+import com.example.stockservice.repository.StockRedisRepository;
 import com.example.stockservice.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,11 +19,20 @@ public class StockService {
 
     private final StockRepository stockRepository;
 
+    private final StockRedisRepository stockRedisRepository;
+
 //    @Cacheable(value = "",key = "#productId",cacheManager = "redisCahceManager")
 //    public int getStock(String productId){
 //
 //
 //    }
+
+    public void updateRedis(){
+
+        stockRedisRepository.initStockInformation();
+
+    }
+
 
     private Stock findStockInDB(String productId){
 
@@ -38,4 +48,6 @@ public class StockService {
     private void findStockInCache(String productId){
 
     }
+
+
 }

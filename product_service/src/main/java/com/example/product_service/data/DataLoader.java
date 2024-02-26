@@ -1,17 +1,14 @@
-package com.example.payment_service.data;
+package com.example.product_service.data;
 
-import com.example.payment_service.domain.ProductType;
-import com.example.payment_service.domain.product.Product;
-import com.example.payment_service.domain.stock.Stock;
-import com.example.payment_service.repository.ProductRepository;
-import com.example.payment_service.repository.StockRepository;
+import com.example.product_service.domain.ProductType;
+import com.example.product_service.domain.entity.Product;
+import com.example.product_service.repository.ProductRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Component
 public class DataLoader implements ApplicationRunner {
 
