@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @RequiredArgsConstructor
 @Repository
-public class ProductStockRepository {
+public class StockRedisRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ProductRepository productRepository;
@@ -38,7 +38,7 @@ public class ProductStockRepository {
         int count = getStock(productNumber);
         if(count==0){
 
-            Stock stock = stockRepository.findByProductNumber(productNumber)
+            Stock stock = stockRepository.findByProductId(productNumber)
                     .orElseThrow(() -> new IllegalStateException("유효하지 않은 상품 번호"));
             stock.changeStock(0);
             return false;
@@ -53,7 +53,7 @@ public class ProductStockRepository {
         List<Product> preProducts = productRepository.findALlByProductType(ProductType.PRE_ORDER);// 예약 상품목록만 가져옴.
         for (Product preProduct : preProducts) {
             String productNumber = preProduct.getProductNumber();
-            Stock stock = stockRepository.findByProductNumber(productNumber)
+            Stock stock = stockRepository.findByProductId(productNumber)
                     .orElseThrow(() -> new IllegalArgumentException("상품 번호 불일치"));
 
             saveStock(preProduct.getProductNumber(), stock.getQuantity());
@@ -64,7 +64,7 @@ public class ProductStockRepository {
         List<Product> preProducts = productRepository.findALlByProductType(ProductType.PRE_ORDER);// 예약 상품목록만 가져옴.
         for (Product preProduct : preProducts) {
             String productNumber = preProduct.getProductNumber();
-            Stock stock = stockRepository.findByProductNumber(productNumber)
+            Stock stock = stockRepository.findByProductId(productNumber)
                     .orElseThrow(() -> new IllegalArgumentException("상품 번호 불일치"));
 
             int quantity = getStock(productNumber);

@@ -17,12 +17,14 @@ public class DataLoader implements ApplicationRunner {
 
     private final ProductRepository productRepository;
 
+    private final StockRepository stockRepository;
+
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
         Product productOne = Product.builder()
-                .productNumber("123")
+                .productNumber("001")
                 .name("mac-book")
                 .productType(ProductType.PRE_ORDER)
                 .price(50000000)
@@ -42,7 +44,25 @@ public class DataLoader implements ApplicationRunner {
                 .productType(ProductType.PRE_ORDER)
                 .price(25900)
                 .build();
+        Stock stockOne = Stock.builder()
+                .productId("001")
+                .quantity(10)
+                .build();
 
+
+        Stock stockTwo = Stock.builder()
+                .productId("002")
+                .quantity(25)
+                .build();
+
+        Stock stockThree = Stock.builder()
+                .productId("003")
+                .quantity(30)
+                .build();
+
+        stockRepository.save(stockOne);
+        stockRepository.save(stockTwo);
+        stockRepository.save(stockThree);
 
         productRepository.save(productOne);
         productRepository.save(productTwo);

@@ -24,8 +24,8 @@ public class Stock extends BaseEntity {
     @Column(name = "stock_id")
     private Long id;
 
-    @Column(nullable = false, name = "product_number")
-    private String productNumber;
+    @Column(nullable = false, name = "product_id")
+    private String productId;
 
 
     @Column(nullable = false)
@@ -50,8 +50,8 @@ public class Stock extends BaseEntity {
 
 
     @Builder
-    public Stock(String productNumber, int quantity) {
-        this.productNumber = productNumber;
+    public Stock(String productId, int quantity) {
+        this.productId = productId;
         this.quantity = quantity;
 
     }
