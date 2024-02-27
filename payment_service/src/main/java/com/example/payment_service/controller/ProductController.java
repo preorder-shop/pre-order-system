@@ -21,52 +21,6 @@ public class ProductController {
     private final ProductService productService;
 
     /**
-     * 상품 목록을 조회하는 API
-     */
-    @GetMapping("")
-    public ResponseEntity<List<ProductDto>> getProductList(){
-
-        List<ProductDto> result = productService.getProductList();
-
-        return ResponseEntity.ok().body(result);
-
-    }
-
-    /**
-     * 예약 구매 상품 목록만 조회하는 API
-     */
-    @GetMapping("/pre-order")
-    public ResponseEntity<List<ProductDto>> getPreOrderProducts(){
-
-        List<ProductDto> result = productService.getPreOrderProducts();
-
-        return ResponseEntity.ok().body(result);
-    }
-
-    /**
-     * 일반 상품 목록만 조회하는 API
-     */
-    @GetMapping("/ordinary")
-    public ResponseEntity<List<ProductDto>> getOrdinaryProducts(){
-
-        List<ProductDto> result = productService.getOrdinaryProducts();
-
-        return ResponseEntity.ok().body(result);
-    }
-
-    /**
-     * 상품 상세 조회 API
-     */
-    @GetMapping("/{number}")
-    public ResponseEntity<ProductDto> getProductInfo(@PathVariable("number") String productNumber){
-
-        ProductDto result = productService.getProductInfo(productNumber);
-
-        return ResponseEntity.ok().body(result);
-
-    }
-
-    /**
      * 상품 재고 수량 조회 API
      */
     @GetMapping ("/{number}/stock")
@@ -84,7 +38,7 @@ public class ProductController {
     @GetMapping("/update-memory")
     public ResponseEntity<String> updateStockInMemory(){
 
-        productService.updateStockInRedis();
+        productService.updatePreOrderProductStockInRedis();
 
 
         return ResponseEntity.ok().body("update complete");
@@ -96,17 +50,10 @@ public class ProductController {
     @GetMapping("/update-db")
     public ResponseEntity<String> updateStockInDB(){
 
-        productService.updateStockInMemory();
+        productService.updatePreOrderProductStockInDB();
 
         return ResponseEntity.ok().body("update complete");
     }
-
-
-
-
-
-
-
 
 
 }

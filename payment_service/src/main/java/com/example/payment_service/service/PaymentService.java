@@ -2,12 +2,11 @@ package com.example.payment_service.service;
 
 import com.example.payment_service.client.PaymentServiceClient;
 import com.example.payment_service.domain.order.Order;
-import com.example.payment_service.domain.order.OrderState;
 import com.example.payment_service.domain.order.dto.OrderDto;
 import com.example.payment_service.domain.order.dto.PaymentDto;
 import com.example.payment_service.domain.stock.Stock;
 import com.example.payment_service.repository.OrderRepository;
-import com.example.payment_service.repository.ProductStockRepository;
+import com.example.payment_service.repository.StockRedisRepository;
 import com.example.payment_service.repository.StockRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class PaymentService {
     private final PaymentServiceClient paymentServiceClient;
     private final StockRepository stockRepository;
 
-    private final ProductStockRepository productStockRepository;
+    private final StockRedisRepository stockRedisRepository;
 
     public String createPayment(OrderDto orderDto, double prob) {
 
@@ -74,7 +73,7 @@ public class PaymentService {
             return "fail-2";
         }
 
-        boolean result = productStockRepository.decreaseStock(paymentDto.getProductNumber());// redis 수량 -1
+        boolean result = stockRedisRepository.decreaseStock(paymentDto.getProductNumber());// redis 수량 -1
         if(!result){
             order.changeStateToCancel();
             return "fail-3";
@@ -87,7 +86,7 @@ public class PaymentService {
     }
 
     public boolean noStockInDB(String productNumber){
-        Stock stock = stockRepository.findByProductNumber(productNumber)
+        Stock stock = stockRepository.findByProductId(productNumber)
                 .orElseThrow(() -> new IllegalStateException("유효한 상품번호가 아닙니다."));
 
         int quantity = stock.getQuantity();

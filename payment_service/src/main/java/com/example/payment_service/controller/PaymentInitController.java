@@ -31,9 +31,9 @@ public class PaymentInitController {
 
         LocalTime registerTime = LocalDateTime.now().toLocalTime();
 
-//        if(registerTime.isBefore(PRE_ORDER_OPEN_TIME)|| registerTime.isAfter(PRE_ORDER_CLOSE_TIME)){
-//            return ResponseEntity.status(403).body("지금은 주문 시간이 아닙니다.");
-//        }
+        if(registerTime.isBefore(PRE_ORDER_OPEN_TIME)|| registerTime.isAfter(PRE_ORDER_CLOSE_TIME)){
+            return ResponseEntity.status(403).body("지금은 주문 시간이 아닙니다.");
+        }
 
         //  재고 있을 경우 진입 -> db
         if(paymentService.noStockInDB(orderDto.getOrderProductNumber())){
@@ -64,5 +64,7 @@ public class PaymentInitController {
         return ResponseEntity.ok().body("주문번호 : "+ result+ " 주문 완료.");
 
     }
+
+
 
 }
