@@ -19,6 +19,7 @@ import com.example.user_service.entity.Token;
 import com.example.user_service.entity.User;
 import com.example.user_service.provider.EmailProvider;
 import com.example.user_service.repository.CertificationRepository;
+import com.example.user_service.repository.EmailRedisRepository;
 import com.example.user_service.repository.TokenRepository;
 import com.example.user_service.repository.UserRepository;
 import java.time.Duration;
@@ -42,7 +43,8 @@ public class UserService {
     private final BCryptPasswordEncoder encoder;
     private final EmailProvider emailProvider;
     private final UserRepository userRepository;
-    private final CertificationRepository certificationRepository;
+//    private final CertificationRepository certificationRepository;
+    private final EmailRedisRepository emailRedisRepository;
     private final JWTUtil jwtUtil;
     private final TokenRepository tokenRepository;
     private final S3Service s3Service;
@@ -56,26 +58,34 @@ public class UserService {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
 
-        Certification certification = certificationRepository.findByEmailAndCode(signUpReq.getEmail(),
-                        signUpReq.getCode())
-                .orElseThrow(() -> new BaseException(CERTIF_INVALID_CODE_OR_EMAIL));
+//        Certification certification = certificationRepository.findByEmailAndCode(signUpReq.getEmail(),
+//                        signUpReq.getCode())
+//                .orElseThrow(() -> new BaseException(CERTIF_INVALID_CODE_OR_EMAIL));
+//
+//        // todo : 추후 Redis Db 로 변경 예정
+//        // 인증 코드 유효시간 체크
+//        LocalDateTime certificateTime = certification.getModifiedDateTime();
+//        LocalDateTime signupTime = LocalDateTime.now();
+//        Duration diff = Duration.between(certificateTime, signupTime);
+//        long diffMin = diff.toMinutes();
+//        if (diffMin > 10) {
+//            throw new BaseException(CERTIF_INVALID_CODE);
+//        }
 
-        // todo : 추후 Redis Db 로 변경 예정
-        // 인증 코드 유효시간 체크
-        LocalDateTime certificateTime = certification.getModifiedDateTime();
-        LocalDateTime signupTime = LocalDateTime.now();
-        Duration diff = Duration.between(certificateTime, signupTime);
-        long diffMin = diff.toMinutes();
-        if (diffMin > 10) {
-            throw new BaseException(CERTIF_INVALID_CODE);
+        boolean result = emailRedisRepository.checkEmailCertificationNumber(signUpReq.getEmail(), signUpReq.getCode());
+        if(!result){
+            throw new BaseException(CERTIF_INVALID_CODE_OR_EMAIL);
         }
+
 
         // 회원가입 진행
 
         User user = signUpReq.toEntity(encoder.encode(signUpReq.getPassword())); // 회원 entity 생성
         User save = userRepository.save(user);// db에 push
 
-        certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
+     //   certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
+
+        emailRedisRepository.deleteEmailCertificationNumber(signUpReq.getEmail());
 
         return new SignUpRes(save.getUserId(), save.getName(), save.getEmail(), save.getGreeting());
     }
@@ -108,9 +118,9 @@ public class UserService {
         }
 
         // 이미 해당 이메일로 인증코드를 보낸적이 있는지 확인
-        Optional<Certification> byEmail = certificationRepository.findByEmail(email);
-        boolean present = byEmail.isPresent();
-        log.error("해당 이메일로 보낸적이 있는지={}", present);
+//        Optional<Certification> byEmail = certificationRepository.findByEmail(email);
+//        boolean present = byEmail.isPresent();
+//        log.info("해당 이메일로 보낸적이 있는지={}", present);
 
         String certificationNumber = CertificationNumber.getCertificationNumber(); // 인증번호
         boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
@@ -119,16 +129,18 @@ public class UserService {
             throw new BaseException(FAIL_SEND_CODE);
         }
 
-        if (present) {
-            byEmail.get().changeCertificationNumber(certificationNumber);
-        } else {
-            Certification certification = Certification.builder()
-                    .email(email)
-                    .code(certificationNumber)
-                    .build();
+        emailRedisRepository.saveEmailCertificationNumber(email,certificationNumber);
 
-            certificationRepository.save(certification); // 성공시 저장.
-        }
+//        if (present) {
+//            byEmail.get().changeCertificationNumber(certificationNumber);
+//        } else {
+//            Certification certification = Certification.builder()
+//                    .email(email)
+//                    .code(certificationNumber)
+//                    .build();
+//
+//            certificationRepository.save(certification); // 성공시 저장.
+//        }
 
         return "해당 이메일로 인증코드를 전송했습니다.";
 
