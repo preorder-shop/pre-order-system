@@ -34,7 +34,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-
+        // 인증 객체에 저장
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email
                 ,password,null);
 
