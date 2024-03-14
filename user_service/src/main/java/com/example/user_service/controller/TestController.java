@@ -1,8 +1,11 @@
 package com.example.user_service.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +28,16 @@ public class TestController {
         return "Welcome to User Service";
     }
 
+//    @GetMapping("/message")
+//    public String message(@RequestHeader("first-request") String header){
+//        log.info(header);
+//        return header;
+//
+//    }
     @GetMapping("/message")
-    public String message(@RequestHeader("first-request") String header){
-
+    public ResponseEntity<?> message(@RequestHeader("first-request") String header){
         log.info(header);
-        return header;
+        return new ResponseEntity<>(header, HttpStatusCode.valueOf(300));
 
     }
 

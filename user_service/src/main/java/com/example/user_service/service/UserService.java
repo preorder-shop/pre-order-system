@@ -79,11 +79,10 @@ public class UserService {
 
 
         // 회원가입 진행
-
         User user = signUpReq.toEntity(encoder.encode(signUpReq.getPassword())); // 회원 entity 생성
         User save = userRepository.save(user);// db에 push
 
-     //   certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
+        //   certificationRepository.deleteByEmail(save.getEmail());  // 인증 코드 db data 삭제
 
         emailRedisRepository.deleteEmailCertificationNumber(signUpReq.getEmail());
 

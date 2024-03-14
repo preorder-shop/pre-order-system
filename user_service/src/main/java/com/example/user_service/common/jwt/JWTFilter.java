@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTFilter extends OncePerRequestFilter { // JWT 검증 필터 -> 헤더로 들어온 jwt 토큰을 검증
    // private static final List<String> whileLists=new ArrayList<>(Arrays.asList("/users/login","/users/logout","/users/test/welcome","/users/test/message"));
 
-    private static final String[] whiteList = {"/users/login","/users/logout","/users/signup","/users/email-certification","/users/internal/**","/users/test"};
+    private static final String[] whiteList = {"/users/login","/users/logout","/users/signup","/users/email-certification","/users/internal/**","/users/test/**"};
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String COOKIE_NAME = "refreshToken";
     private final JWTUtil jwtUtil;
