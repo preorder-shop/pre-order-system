@@ -1,0 +1,3 @@
+[submodule "euerkaService"]
+	path = euerkaService
+	url = git@github.com:preorder-shop/eureka-server.git
