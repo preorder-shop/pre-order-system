@@ -7,3 +7,6 @@
 [submodule "newsfeedService"]
 	path = newsfeedService
 	url = git@github.com:preorder-shop/newsfeed-service.git
+[submodule "activityService1"]
+	path = activityService1
+	url = git@github.com:preorder-shop/activity-service.git
