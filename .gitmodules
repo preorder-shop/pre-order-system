@@ -4,3 +4,6 @@
 [submodule "userService"]
 	path = userService
 	url = git@github.com:preorder-shop/user-service.git
+[submodule "activityService"]
+	path = userService
+	url = git@github.com:preorder-shop/activity-service.git
