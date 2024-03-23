@@ -29,7 +29,6 @@ public class Follow extends BaseEntity{
     @Column(nullable = false,name = "fromUserId")
     private String fromUserId; // follow 를 신청한 유저 id
 
-    // from -> to from 이 to 로 follow 요청
 
     @Builder
     public Follow(String toUserId,String fromUserId){

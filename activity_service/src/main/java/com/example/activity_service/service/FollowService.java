@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowService {
 
     private final FollowRepository followRepository;
-    private final JWTUtil jwtUtil;
+
     private final UserLogRepository userLogRepository;
     private final UserServiceClient userServiceClient;
 

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FollowController {
 
     private final FollowService followService;
-    private final JWTUtil jwtUtil;
 
     @GetMapping("/{followId}")
     public BaseResponse<String> followOther( @PathVariable(name = "followId") String followId){

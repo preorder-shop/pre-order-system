@@ -1,3 +1,6 @@
 [submodule "euerkaService"]
 	path = euerkaService
 	url = git@github.com:preorder-shop/eureka-server.git
+[submodule "activity_service/userService"]
+	path = activity_service/userService
+	url = git@github.com:preorder-shop/user-service.git
