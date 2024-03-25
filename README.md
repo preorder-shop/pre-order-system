@@ -42,7 +42,7 @@
 
 ---
 ### ⚒️ 프로젝트 아키텍처
-![](../../스크린샷 2024-03-25 오후 11.06.32.png)
+<img width="1360" alt="스크린샷 2024-03-25 오후 11 06 32" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/c4085efb-fc08-4e7a-8f7f-e542dbaf0f1d">
 
 ---
 ### 🗂️ ERD 구조
