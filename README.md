@@ -21,26 +21,8 @@
 - 첫번째 주제
 ```bash
 ├── user_service
-│   ├── client
-│   ├── common
-│   ├── controller
-│   ├── domain
-│   ├── provider
-│   ├── service
-│   └── repository
 ├── activity_service
-│   ├── client
-│   ├── common
-│   ├── controller
-│   ├── domain
-│   ├── provider
-│   ├── service
-│   └── repository
 └── newsfeed_service
-    ├── client
-    ├── common
-    ├── controller
-    └── domain
 ```
 - 두번째 주제
 ```bash
@@ -49,13 +31,18 @@
 
 ```
 ---
+
+
 ### 💻 실행 환경 구축
+-  msa service 가 사용하는 database 실행 환경 구축 (MySQL, Redis)
+
+
     docker-compose up -d
-- 프로젝트에서 사용하는 mysql 과 redis 를 실행
+
 
 ---
 ### ⚒️ 프로젝트 아키텍처
-사진
+![](../../스크린샷 2024-03-25 오후 11.06.32.png)
 
 ---
 ### 🗂️ ERD 구조
