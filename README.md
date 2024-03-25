@@ -10,13 +10,18 @@
 특정 시간 트래픽이 몰리는 예약 구매 상품 결제를 시뮬레이션하면서 데이터 동시성 문제를 해결하고,  
 성능 향상을 위해 캐싱을 도입했습니다.
 
-두 프로젝트 모두 도메인과 주요 기능을 중심으로 마이크로 서비스로 분리를 하였습니다.  
-단, 프로젝트 관리상 각 서비스들을 서브 모듈로 구성하였습니다.
----
-### ⚙️ 개발환경
-- Java 17 , Gradle 8.5 , SpringBoot 3.2.2 , MySQL 8.0 , redis , docker
+- 두 프로젝트 모두 도메인과 주요 기능을 중심으로 마이크로 서비스로 분리를 하였습니다.  
 
 ---
+### ⚙️ 개발환경
+- Java 17 , Gradle 8.5 , SpringBoot 3.2.2 , MySQL 8.0 , Redis , Docker
+
+---
+### ⚒️ 프로젝트 아키텍처
+<img width="1360" alt="스크린샷 2024-03-25 오후 11 06 32" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/c4085efb-fc08-4e7a-8f7f-e542dbaf0f1d">
+
+---
+
 ### 📁 디렉토리 구조
 - 첫번째 주제
 ```bash
@@ -28,24 +33,22 @@
 ```bash
 ├── product_service
 └── payment_service
-
 ```
+
 ---
+### 🗂️ ERD 구조
 
-
+<img width="1006" alt="pre order erd" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/803a37f7-6987-4d60-ac4e-059fbe4af12a">
+---
 ### 💻 실행 환경 구축
 -  msa service 가 사용하는 database 실행 환경 구축 (MySQL, Redis)
 
 
     docker-compose up -d
 
-
 ---
-### ⚒️ 프로젝트 아키텍처
-<img width="1360" alt="스크린샷 2024-03-25 오후 11 06 32" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/c4085efb-fc08-4e7a-8f7f-e542dbaf0f1d">
 
----
-### 🗂️ ERD 구조
-
----
 ### 📜 API docs
+
+
+
