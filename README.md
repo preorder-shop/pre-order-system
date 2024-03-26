@@ -48,7 +48,7 @@
 
 ---
 
-### 📜 API docs
+### 📜 Docs
 
-
+[API 명세서](https://documenter.getpostman.com/view/18311817/2sA35D5iGf)
 
