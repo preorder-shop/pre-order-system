@@ -39,7 +39,9 @@
 ### 🗂️ ERD 구조
 
 <img width="1006" alt="pre order erd" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/803a37f7-6987-4d60-ac4e-059fbe4af12a">
+
 ---
+
 ### 💻 실행 환경 구축
 -  msa service 가 사용하는 database 실행 환경 구축 (MySQL, Redis)
 
