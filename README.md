@@ -18,8 +18,13 @@
 
 ---
 ### ⚒️ 프로젝트 아키텍처
-<img width="1360" alt="스크린샷 2024-03-25 오후 11 06 32" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/c4085efb-fc08-4e7a-8f7f-e542dbaf0f1d">
+- 첫번째
+  <img width="1384" alt="스크린샷 2024-03-28 오후 8 39 26" src="https://github.com/preorder-shop/purchase-service/assets/74480236/81c02d6e-7fe1-4ab4-a22c-426b81faedd7">
 
+---
+
+- 두번째
+  <img width="1417" alt="스크린샷 2024-03-28 오후 8 59 27" src="https://github.com/preorder-shop/purchase-service/assets/74480236/b95ed56a-95e6-4c6e-ab3a-acfc442c530f">
 ---
 
 ### 📁 디렉토리 구조
@@ -32,9 +37,24 @@
 - 두번째 주제
 ```bash
 ├── product_service
-└── payment_service
+├── stock_service
+├── payment_service
+└── purchase_service
 ```
+- 각 서비스 소개 & 링크
 
+| Service	                                                                                                                                             | Description	                     | Port   |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|:-------|
+| [`User`](https://github.com/preorder-shop/user-service)                                                                                              | 유저 정보 관리 (회원가입, 로그인, 로그아웃 등)     | `8081` |
+| [`Activity`](https://github.com/preorder-shop/activity-service)                                                                                      | 유저 활동 관리 (게시글 작성, 팔로우, 좋아요 기능 등) | `8082` |
+| [`Newsfeed`](https://github.com/preorder-shop/newsfeed-service)                                                                                      | 피드 기능 제공                         | `8083` |
+| [`Product`](https://github.com/preorder-shop/product-service)                                                                                        | 상품 관리 (일반 상품, 예약 상품)             | `8084` |
+| [`Stock`](https://github.com/preorder-shop/stock-service)                                                                                            | 실시간 재고 관리                        | `8085` |
+| [`Payment`](https://github.com/preorder-shop/payment-service)                                                                                        | 결제 진입 관리                         | `8086` |
+| [`Purchase`](https://github.com/preorder-shop/purchase-service)                                                                                      | 결제 중 관리                          | `8087` |
+| [`API Gateway`](https://github.com/preorder-shop/gateway-service)                                                                                    | 게이트웨이 역할, jwt 토큰 검사              | `8080` |
+| [`Eureka`](https://github.com/preorder-shop/eureka-server)                                                                                           | 서비스 등록 및 검색 (discovery 서버 역할)    | `8761` |
+| [`Config`](https://github.com/preorder-shop/config-service)                                                                                          | application.yml 등의 설정 정보 관리      | `9000` |
 ---
 ### 🗂️ ERD 구조
 
