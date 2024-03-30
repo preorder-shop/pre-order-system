@@ -59,13 +59,14 @@
 ### 🗂️ ERD 구조
 
 <img width="1006" alt="pre order erd" src="https://github.com/preorder-shop/purchase-service/assets/74480236/774458d8-4b28-4177-aa5d-8cce851c1a6e">
+
 ---
 
 ### 💻 실행 환경 구축
 -  msa service 가 사용하는 database 실행 환경 구축 (MySQL, Redis)
 
 
-    docker-compose up -d
+  > docker-compose up -d
 
 ---
 
