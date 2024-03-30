@@ -51,15 +51,14 @@
 | [`Product`](https://github.com/preorder-shop/product-service)                                                                                        | 상품 관리 (일반 상품, 예약 상품)             | `8084` |
 | [`Stock`](https://github.com/preorder-shop/stock-service)                                                                                            | 실시간 재고 관리                        | `8085` |
 | [`Payment`](https://github.com/preorder-shop/payment-service)                                                                                        | 결제 진입 관리                         | `8086` |
-| [`Purchase`](https://github.com/preorder-shop/purchase-service)                                                                                      | 결제 중 관리                          | `8087` |
+| [`Purchase`](https://github.com/preorder-shop/purchase-service)                                                                                      | 결제 완료 관리                         | `8087` |
 | [`API Gateway`](https://github.com/preorder-shop/gateway-service)                                                                                    | 게이트웨이 역할, jwt 토큰 검사              | `8080` |
 | [`Eureka`](https://github.com/preorder-shop/eureka-server)                                                                                           | 서비스 등록 및 검색 (discovery 서버 역할)    | `8761` |
 | [`Config`](https://github.com/preorder-shop/config-service)                                                                                          | application.yml 등의 설정 정보 관리      | `9000` |
 ---
 ### 🗂️ ERD 구조
 
-<img width="1006" alt="pre order erd" src="https://github.com/preorder-shop/pre-order-system/assets/74480236/803a37f7-6987-4d60-ac4e-059fbe4af12a">
-
+<img width="1006" alt="pre order erd" src="https://github.com/preorder-shop/purchase-service/assets/74480236/774458d8-4b28-4177-aa5d-8cce851c1a6e">
 ---
 
 ### 💻 실행 환경 구축
