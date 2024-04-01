@@ -14,7 +14,7 @@
 
 ---
 ### ⚙️ 개발환경
-- Java 17 , Gradle 8.5 , SpringBoot 3.2.2 , MySQL 8.0 , Redis , Docker
+- Java 17 , Gradle 8.5 , SpringBoot 3.2.2 , MySQL 8.0 , Redis , Docker, AWS S3
 
 ---
 ### ⚒️ 프로젝트 아키텍처
