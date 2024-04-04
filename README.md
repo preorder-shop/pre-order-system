@@ -73,4 +73,4 @@
 ### 📜 Docs
 
 [API 명세서](https://documenter.getpostman.com/view/18311817/2sA35D5iGf)
-
+[포트폴리오](https://www.notion.so/Preorder-Shop-6e46e5e5baaa491fb4f75fbe943b3402)
